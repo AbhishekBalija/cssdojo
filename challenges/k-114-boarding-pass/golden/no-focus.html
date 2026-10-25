@@ -1,0 +1,50 @@
+<!-- golden max=89.9 reason="focus ring removed" -->
+<div class="stage">
+  <div class="pass">
+    <div class="main">
+      <div class="top"><span class="airline">KESTREL AIR</span><span class="flight">KA 214</span></div>
+      <div class="route">
+        <div class="city"><b>LIS</b><span>Lisbon</span></div>
+        <svg viewBox="0 0 40 12" width="40" height="12" aria-hidden="true"><path d="M1 6h34M30 1l6 5-6 5" fill="none" stroke="#E4572E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="city"><b>OSL</b><span>Oslo</span></div>
+      </div>
+      <div class="who"><span class="k">Passenger</span><span class="v">Mara Lindqvist</span></div>
+      <div class="meta">
+        <div><span class="k">Gate</span><span class="v mono">B12</span></div>
+        <div><span class="k">Boards</span><span class="v mono">09:40</span></div>
+        <div><span class="k">Date</span><span class="v mono">14 NOV</span></div>
+      </div>
+    </div>
+    <div class="stub">
+      <div><span class="k">Seat</span><span class="seat">14A</span></div>
+      <div class="bars"></div>
+      <button class="save">Save pass</button>
+    </div>
+  </div>
+</div>
+<style>
+  body { margin: 0; }
+  .stage { height: 300px; display: grid; place-items: center; background: #1F3A5F; font-family: "Onest", sans-serif; }
+  .pass { position: relative; display: flex; width: 360px; height: 200px; background: #FBF3E4; border-radius: 14px; color: #1F3A5F; overflow: hidden; }
+  .pass::before, .pass::after { content: ""; position: absolute; left: 242px; width: 20px; height: 20px; border-radius: 50%; background: #1F3A5F; }
+  .pass::before { top: -10px; }
+  .pass::after { bottom: -10px; }
+  .main { box-sizing: border-box; width: 252px; padding: 16px 16px 14px 18px; display: flex; flex-direction: column; }
+  .top { display: flex; justify-content: space-between; align-items: center; font: 700 12px/16px "Martian Mono", monospace; letter-spacing: 1px; }
+  .flight { color: #B8431F; }
+  .route { display: flex; align-items: center; justify-content: space-between; margin-top: 14px; }
+  .city b { display: block; font: 700 32px/36px "Onest", sans-serif; letter-spacing: 1px; }
+  .city span { font: 400 12px/16px "Onest", sans-serif; color: #5B6477; }
+  .who { margin-top: 14px; }
+  .k { display: block; font: 500 12px/16px "Onest", sans-serif; color: #5B6477; text-transform: uppercase; letter-spacing: 0.5px; }
+  .v { display: block; font: 600 15px/20px "Onest", sans-serif; }
+  .meta { display: flex; gap: 14px; margin-top: auto; padding-top: 10px; border-top: 1px dashed #B9B3A5; }
+  .mono { font-family: "Martian Mono", monospace; font-weight: 600; font-size: 13px; }
+  .stub { box-sizing: border-box; width: 108px; padding: 16px 14px 14px 18px; display: flex; flex-direction: column; justify-content: space-between; border-left: 2px dashed #B9B3A5; margin-left: -2px; }
+  .seat { display: block; font: 700 28px/32px "Martian Mono", monospace; color: #B8431F; }
+  .bars { height: 36px; background: repeating-linear-gradient(90deg, #1F3A5F 0 2px, transparent 2px 4px, #1F3A5F 4px 5px, transparent 5px 8px); }
+  .save { height: 32px; background: #1F3A5F; color: #FFFFFF; border: 0; border-radius: 8px; font: 600 12px/16px "Onest", sans-serif; cursor: pointer; }
+  .save:hover { background: #B8431F; }
+  .save:focus { outline: none; }
+  .pass:has(.save:hover) .stub { background: #F6E8D0; }
+</style>

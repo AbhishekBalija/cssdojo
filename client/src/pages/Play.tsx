@@ -234,7 +234,7 @@ export function Play({ challengeId, board, kataLabel }: { challengeId: string; b
   }
 
   return (
-    <div className="app fixed" style={{ ["--editor-fs" as string]: `${fontSize}px` }}>
+    <div className="app app-locked" style={{ ["--editor-fs" as string]: `${fontSize}px` }}>
       <Header>
         <div className="crumbs">
           <button className="pick" type="button" aria-haspopup="true" aria-expanded={pop === "pick"} onClick={() => setPop(pop === "pick" ? null : "pick")}>
@@ -590,7 +590,7 @@ export function Play({ challengeId, board, kataLabel }: { challengeId: string; b
 
       <div className="status">
         <span>
-          Streak <b>{me.data?.streak ?? 0} days</b>
+          Streak <b>{me.data?.streak ?? 0} {(me.data?.streak ?? 0) === 1 ? "day" : "days"}</b>
         </span>
         <span>
           Kata resets in <b>{resetIn}</b>

@@ -1,0 +1,57 @@
+{
+  "id": "k-113-avatar-stack",
+  "number": 113,
+  "title": "Avatar stack",
+  "belt": "brown",
+  "kind": "kata",
+  "kataDay": 13,
+  "brief": "Overlapping avatar circles with initials and a +4 pill, wrapped in one link that spreads slightly on hover and rings on focus.",
+  "frames": [
+    "rest",
+    "hover",
+    "focus"
+  ],
+  "hooks": {
+    "stack": ".stack",
+    "more": ".more"
+  },
+  "states": {
+    "hover": "stack",
+    "focus": "stack"
+  },
+  "checks": [
+    "hooks-present",
+    "hover-changes",
+    "focus-visible",
+    "text-contrast-aa",
+    "target-size",
+    "semantic-control",
+    "real-text"
+  ],
+  "colors": [
+    "#F3EFE6",
+    "#2F5D62",
+    "#8A3B12",
+    "#4B3F9E",
+    "#9B2F5B",
+    "#FFFFFF",
+    "#2B2B2B"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "Atlassian AvatarGroup",
+      "url": "https://atlassian.design/components/avatar-group/examples",
+      "note": "Took the overlapping stack with a trailing overflow count; used initials, a pill overflow and a hover spread of our own."
+    },
+    {
+      "source": "Radix Themes Avatar",
+      "url": "https://www.radix-ui.com/themes/docs/components/avatar",
+      "note": "Took the initials fallback inside coloured circles; palette and ring treatment are ours."
+    }
+  ]
+}

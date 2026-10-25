@@ -1,0 +1,58 @@
+{
+  "id": "k-114-boarding-pass",
+  "number": 114,
+  "title": "Boarding pass",
+  "belt": "black",
+  "kind": "kata",
+  "kataDay": 14,
+  "brief": "A flat boarding pass: route, passenger, gate and seat in mono codes, circular notches at the perforation, a barcode and a Save pass button on the stub.",
+  "frames": [
+    "rest",
+    "hover",
+    "focus"
+  ],
+  "hooks": {
+    "pass": ".pass",
+    "save": ".save",
+    "route": ".route"
+  },
+  "states": {
+    "hover": "save",
+    "focus": "save"
+  },
+  "checks": [
+    "hooks-present",
+    "hover-changes",
+    "focus-visible",
+    "text-contrast-aa",
+    "target-size",
+    "semantic-control",
+    "real-text"
+  ],
+  "colors": [
+    "#1F3A5F",
+    "#FBF3E4",
+    "#E4572E",
+    "#B8431F",
+    "#1F3A5F",
+    "#5B6477"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest",
+      "Martian Mono"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "Dribbble boarding pass designs",
+      "url": "https://dribbble.com/tags/boarding-pass",
+      "note": "Took the idea of a ticket split by a perforation with half circle notches and a stub; airline, route, palette and layout are invented."
+    },
+    {
+      "source": "Carbon Design System tile",
+      "url": "https://carbondesignsystem.com/components/tile/usage/",
+      "note": "Took the idea of dense labelled data blocks with muted labels above values; typography and structure redesigned."
+    }
+  ]
+}

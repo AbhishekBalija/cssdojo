@@ -1,0 +1,17 @@
+<!-- golden max=89.9 reason="arrow missing" -->
+<div class="stage">
+  <div class="wrap">
+    <div class="tip" role="tooltip">Saved to your shelf</div>
+    <button class="btn">Save</button>
+  </div>
+</div>
+<style>
+  body { margin: 0; }
+  .stage { height: 300px; display: grid; place-items: center; background: #1F3A34; }
+  .wrap { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  .tip { position: relative; padding: 12px 22px; border-radius: 8px; background: #F2E8CF; color: #1F3A34; font: 600 13px/18px "Onest", sans-serif; }
+  .tip::after { content: ""; position: absolute; left: 14px; bottom: -5px; display: none; width: 10px; height: 10px; margin-left: -5px; background: #F2E8CF; transform: rotate(45deg); border-radius: 0 0 2px 0; }
+  .btn { font: 700 14px/18px "Onest", sans-serif; color: #1F3A34; background: #8FB9A8; border: 0; border-radius: 8px; padding: 9px 22px; cursor: pointer; }
+  .btn:hover { background: #F2E8CF; }
+  .btn:focus-visible { outline: 3px solid #F2E8CF; outline-offset: 4px; }
+</style>
