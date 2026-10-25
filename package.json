@@ -5,7 +5,12 @@
   "description": "CSS Dojo: practise CSS by rebuilding small, real UI pieces, scored on looks and behaviour.",
   "license": "MIT",
   "type": "module",
-  "workspaces": ["shared", "scorer", "server", "client"],
+  "workspaces": [
+    "shared",
+    "scorer",
+    "server",
+    "client"
+  ],
   "scripts": {
     "dev": "bun run --filter @cssdojo/server dev & bun run --filter @cssdojo/client dev",
     "build": "bun run --filter @cssdojo/client build",
@@ -18,7 +23,8 @@
     "db:generate": "bun run --filter @cssdojo/server db:generate",
     "db:migrate": "bun run --filter @cssdojo/server db:migrate",
     "db:seed": "bun run --filter @cssdojo/server db:seed",
-    "ci": "bun run lint && bun run typecheck && bun run test"
+    "ci": "bun run lint && bun run typecheck && bun run test",
+    "brand": "bun run client/scripts/brand.ts"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

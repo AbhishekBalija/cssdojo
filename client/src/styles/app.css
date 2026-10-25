@@ -323,3 +323,17 @@ kbd{font:500 9px/1 var(--font-mono);padding:3px 4px;border-radius:4px;border:1px
 .belt-step .bl{font-size:12.5px}
 .belt-step.earned .bl{font-weight:600}
 @media (max-width:640px){.belt-track{grid-template-columns:1fr 1fr}}
+
+/* States and the asset review sheet */
+.mark.big{width:36px;height:36px;border-width:3px;border-radius:7px;color:var(--faint)}
+.mark.big::after{height:7px;left:-7px;right:-7px}
+.row-gap{display:flex;gap:10px;align-items:center}
+.row-gap.wrap{flex-wrap:wrap}
+.asset-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.asset-grid.wide{grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}
+.asset{margin:0;display:grid;gap:8px}
+.asset-box{min-height:120px;display:grid;place-items:center;padding:16px;border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--panel)}
+.asset.on-light .asset-box{background:#F1F2F4;border-color:#E0E2E7}
+.asset figcaption{font-size:12.5px}
+.asset figcaption b{font:500 12px/1 var(--font-mono)}
+.asset-og{width:100%;height:auto;border-radius:var(--radius-lg);border:1px solid var(--line)}
