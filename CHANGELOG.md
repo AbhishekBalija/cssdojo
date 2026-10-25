@@ -31,5 +31,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - Daily kata: 14 kata (k-101 to k-114) with golden sets, a 14-day cycle from 2026-10-26 that loops back to day 1, a kata board per UTC day that closes at 00:00 UTC, and a streak of consecutive kata days.
 - Leaderboard page: today's kata board, overall ranking (highest belt, then solved count, then total best score) and per-challenge boards; `GET /api/rankings`.
 - Profile pages `/me` and `/u/:handle`: belt progress toward each belt, streak, best scores and sign out; `GET /api/profile/:handle`.
+- Brand assets from `bun run brand`: SVG mark, dark and light logos, app icon, PNG favicons and touch icons, web manifest, belt badges (dark and light), the 1200x630 share image and its HTML template, Open Graph tags.
+- Empty and error state components, a router-level error page, and the `/assets` review sheet.
 - Gallery review page `/gallery` and `GET /api/gallery`: target frames, belt, checks, golden set and inspiration per challenge and kata.
 - MIT license, contributing guide, code of conduct, security policy, PR and issue templates.

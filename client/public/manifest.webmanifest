@@ -1,0 +1,13 @@
+{
+  "name": "CSS Dojo",
+  "short_name": "CSS Dojo",
+  "description": "Rebuild small, real UI in HTML and CSS. Scored on look and behaviour.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0C0D10",
+  "theme_color": "#0C0D10",
+  "icons": [
+    { "src": "/brand/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/brand/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
