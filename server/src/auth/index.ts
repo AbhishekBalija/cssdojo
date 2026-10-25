@@ -54,7 +54,7 @@ export const auth = betterAuth({
     useSecureCookies: secure,
     // The client and API live on different onrender.com hosts in the split deploy, so
     // the session cookie has to be sent cross-site. Same-origin deploys keep Lax.
-    defaultCookieAttributes: crossSite && secure ? { sameSite: "none", secure: true, partitioned: true } : { sameSite: "lax" },
+    defaultCookieAttributes: crossSite && secure ? { sameSite: "none", secure: true } : { sameSite: "lax" },
   },
   telemetry: { enabled: false },
 });

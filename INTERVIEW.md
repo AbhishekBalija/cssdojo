@@ -66,5 +66,5 @@ A guest gets a random player id that the browser keeps and sends in an `x-guest-
 **Q: Why a test login, and why can it not leak to production?**
 OAuth cannot run in CI, so Playwright signs in through `POST /api/test-login`, backed by Better Auth's email and password flow. It exists only when `ENABLE_TEST_LOGIN=true`, and the server refuses to start with it on when `API_URL` is https.
 
-**Q: Why do cookies get `SameSite=None; Partitioned` in the split deploy?**
-`onrender.com` is on the public suffix list, so a client on one subdomain and the API on another are different sites. The session cookie must be sent cross-site, which needs `SameSite=None; Secure`. `Partitioned` (CHIPS) keeps it working in browsers that block third-party cookies. When the client is served by the API itself, the cookie stays `Lax`.
+**Q: Why is the API URL the main app link, not the static site?**
+`onrender.com` is on the public suffix list, so a client on one subdomain and the API on another are different sites. The session cookie would have to be sent cross-site (`SameSite=None; Secure`), which Safari and Firefox block by default. Partitioned cookies do not help either: the OAuth callback sets the cookie with the API as the top-level site, so it would never be sent from the client's site. The API container serves the built client too, so on the API URL everything is same-origin and the cookie stays `Lax`. The static site still works in browsers that allow third-party cookies.
