@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.generated/
+playwright-report/
+test-results/
+*.log
+.DS_Store
+coverage/
+*.tsbuildinfo
+
+# Every env file stays local. Only the placeholder template is committed.
+.env
+.env.*
+!.env.example
