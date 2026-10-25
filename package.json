@@ -1,0 +1,32 @@
+{
+  "name": "cssdojo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "CSS Dojo: practise CSS by rebuilding small, real UI pieces, scored on looks and behaviour.",
+  "license": "MIT",
+  "type": "module",
+  "workspaces": ["shared", "scorer", "server", "client"],
+  "scripts": {
+    "dev": "bun run --filter server dev & bun run --filter client dev",
+    "build": "bun run --filter client build",
+    "lint": "eslint .",
+    "typecheck": "tsc -p shared && tsc -p scorer && tsc -p server && tsc -p client",
+    "test": "vitest run",
+    "e2e": "playwright test",
+    "golden": "bun run scorer/src/golden.ts",
+    "targets": "bun run scorer/src/build-targets.ts",
+    "db:generate": "bun run --filter server db:generate",
+    "db:migrate": "bun run --filter server db:migrate",
+    "db:seed": "bun run --filter server db:seed",
+    "ci": "bun run lint && bun run typecheck && bun run test"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "1.63.0",
+    "@types/bun": "^1.4.4",
+    "eslint": "^10.13.0",
+    "typescript": "5.9",
+    "typescript-eslint": "^8.72.0",
+    "vitest": "^5.0.5"
+  }
+}
