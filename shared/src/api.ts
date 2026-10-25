@@ -90,3 +90,25 @@ export interface GalleryItem {
   golden: { name: string; min: number; max: number; reason: string }[];
   inspiration: { source: string; url: string; note: string }[];
 }
+
+/** Overall ranking: belts first, then challenges solved, then total best score. */
+export interface RankingRow {
+  rank: number;
+  handle: string;
+  image: string | null;
+  topBelt: Belt | null;
+  solved: number;
+  total: number;
+  me: boolean;
+}
+
+export interface ProfileView {
+  handle: string;
+  name: string;
+  image: string | null;
+  joined: string;
+  streak: number;
+  belts: Belt[];
+  solvedPerBelt: Record<Belt, number>;
+  bests: { challengeId: string; number: number; title: string; belt: Belt; board: string; score: number; solveMs: number; updatedAt: string }[];
+}
