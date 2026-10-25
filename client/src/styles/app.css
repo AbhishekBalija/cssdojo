@@ -297,3 +297,29 @@ kbd{font:500 9px/1 var(--font-mono);padding:3px 4px;border-radius:4px;border:1px
 .test-login{margin-top:12px;padding-top:16px;border-top:1px dashed var(--line-strong);display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--sub)}
 .test-login .row{display:flex;gap:8px}
 .test-login .input{flex:1}
+
+/* Leaderboard and profile pages */
+.page.narrow-lb{max-width:760px}
+.page .h2{font:600 16px/22px var(--font-ui);margin:28px 0 6px}
+.seg.tabs{display:inline-flex;gap:2px;padding:3px;border:1px solid var(--line);border-radius:var(--radius);margin:0 0 14px}
+.seg.tabs button{height:30px;padding:0 12px;border-radius:calc(var(--radius) - 2px);background:transparent;color:var(--sub);font:500 13px/1 var(--font-ui);cursor:pointer}
+.seg.tabs button.on{background:var(--hover);color:var(--fg)}
+.lb.page-lb{margin-top:10px}
+.lb.page-lb > div{grid-template-columns:40px 1fr auto auto}
+.lb.page-lb.overall > div{grid-template-columns:40px 1fr auto auto 64px}
+.lb.page-lb.bests > div{grid-template-columns:44px 1fr auto auto 56px}
+.lb.page-lb a{color:var(--fg);text-decoration:none}
+.lb.page-lb a:hover{text-decoration:underline}
+.lb .s.solved{color:var(--pass)}
+.profile-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.profile-head h1{margin:0}
+.profile-head .btn{margin-left:auto}
+.avatar{width:56px;height:56px;border-radius:999px;object-fit:cover}
+.avatar.ph{display:grid;place-items:center;background:var(--hover);font:600 22px/1 var(--font-ui)}
+.belt-track{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:10px}
+.belt-step{display:grid;gap:6px}
+.belt-step .bar{height:8px;border-radius:999px;background:var(--hover);overflow:hidden;border:1px solid var(--line)}
+.belt-step .bar i{display:block;height:100%}
+.belt-step .bl{font-size:12.5px}
+.belt-step.earned .bl{font-weight:600}
+@media (max-width:640px){.belt-track{grid-template-columns:1fr 1fr}}

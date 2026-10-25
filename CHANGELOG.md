@@ -29,5 +29,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - Challenges 013 to 030 (green, brown and black belts), each with a golden set and recorded inspiration.
 - Sign-in with Better Auth: GitHub and Google OAuth, unique public handles, a dev-only test login (`ENABLE_TEST_LOGIN`, refused on https deploys), and guest progress merged onto the account on first sign-in (best score wins, earliest open kept, belts re-checked).
 - Daily kata: 14 kata (k-101 to k-114) with golden sets, a 14-day cycle from 2026-10-26 that loops back to day 1, a kata board per UTC day that closes at 00:00 UTC, and a streak of consecutive kata days.
+- Leaderboard page: today's kata board, overall ranking (highest belt, then solved count, then total best score) and per-challenge boards; `GET /api/rankings`.
+- Profile pages `/me` and `/u/:handle`: belt progress toward each belt, streak, best scores and sign out; `GET /api/profile/:handle`.
 - Gallery review page `/gallery` and `GET /api/gallery`: target frames, belt, checks, golden set and inspiration per challenge and kata.
 - MIT license, contributing guide, code of conduct, security policy, PR and issue templates.
