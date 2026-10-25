@@ -4,3 +4,5 @@ export * from "./challenge";
 export * from "./score";
 export * from "./fonts";
 export * from "./sanitize";
+export * from "./api";
+export * from "./kata";
