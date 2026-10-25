@@ -16,4 +16,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - Scorer package: Playwright renderer (one shared Chromium, fresh JS-off context per Submit, only bundled fonts load, 5 s limit), visual metric (shape, colour and an edge penalty, one-device-pixel drift forgiven), outcome checks with hints, sanitizer, golden-set runner.
 - Postgres score queue (`FOR UPDATE SKIP LOCKED`) behind a `ScoreQueue` interface, worker loop, best-score and belt recording.
 - Bundled Onest, Martian Mono and Instrument Serif fonts (OFL).
+- `bun run targets`: renders each challenge's target frames, thumbnail and live-target canvas replay (Web Animations paused and scrubbed) into `.generated/targets`, served at `/static/targets`; runs during the Docker build.
+- Challenge folder tests: schema, golden count, hooks kept in the starter, kata days without gaps.
+- Challenge authoring guide `docs/guides/challenges.md`.
 - MIT license, contributing guide, code of conduct, security policy, PR and issue templates.
