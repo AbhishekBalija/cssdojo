@@ -6,6 +6,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 ## [Unreleased]
 
 ### Fixed
+- Fonts are bundled by Vite so the static site does not depend on the API for UI fonts.
 - Play screen no longer shrinks to its content width (a Tailwind `fixed` utility collided with our class name).
 
 ### Added
@@ -33,5 +34,6 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - Profile pages `/me` and `/u/:handle`: belt progress toward each belt, streak, best scores and sign out; `GET /api/profile/:handle`.
 - Brand assets from `bun run brand`: SVG mark, dark and light logos, app icon, PNG favicons and touch icons, web manifest, belt badges (dark and light), the 1200x630 share image and its HTML template, Open Graph tags.
 - Empty and error state components, a router-level error page, and the `/assets` review sheet.
+- Render deploy: `render.yaml` (Docker API service plus static client site), guides `docs/guides/render.md` and `docs/guides/oauth.md`.
 - Gallery review page `/gallery` and `GET /api/gallery`: target frames, belt, checks, golden set and inspiration per challenge and kata.
 - MIT license, contributing guide, code of conduct, security policy, PR and issue templates.

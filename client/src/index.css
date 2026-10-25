@@ -3,10 +3,10 @@
 @import "./styles/app.css";
 
 /* Bundled fonts, the same files the scorer renders with. */
-@font-face { font-family: "Onest"; src: url("/static/fonts/onest.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
-@font-face { font-family: "Martian Mono"; src: url("/static/fonts/martian-mono.woff2") format("woff2"); font-weight: 100 800; font-display: swap; }
-@font-face { font-family: "Instrument Serif"; src: url("/static/fonts/instrument-serif.woff2") format("woff2"); font-weight: 400; font-display: swap; }
-@font-face { font-family: "Instrument Serif"; src: url("/static/fonts/instrument-serif-italic.woff2") format("woff2"); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: "Onest"; src: url("../../scorer/fonts/onest.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
+@font-face { font-family: "Martian Mono"; src: url("../../scorer/fonts/martian-mono.woff2") format("woff2"); font-weight: 100 800; font-display: swap; }
+@font-face { font-family: "Instrument Serif"; src: url("../../scorer/fonts/instrument-serif.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Instrument Serif"; src: url("../../scorer/fonts/instrument-serif-italic.woff2") format("woff2"); font-weight: 400; font-style: italic; font-display: swap; }
 
 /* Map the approved design tokens (tokens.css) to Tailwind utilities. */
 @theme inline {
