@@ -1,0 +1,52 @@
+{
+  "id": "k-101-pill-button",
+  "number": 101,
+  "title": "Pill button",
+  "belt": "yellow",
+  "kind": "kata",
+  "kataDay": 1,
+  "brief": "A navy pill button that says Join. On hover it lifts and casts a hard shadow, and the keyboard focus ring sits off the edge.",
+  "frames": [
+    "rest",
+    "hover",
+    "focus"
+  ],
+  "hooks": {
+    "button": ".btn"
+  },
+  "states": {
+    "hover": "button",
+    "focus": "button"
+  },
+  "checks": [
+    "hooks-present",
+    "hover-changes",
+    "focus-visible",
+    "text-contrast-aa",
+    "target-size",
+    "semantic-control",
+    "real-text"
+  ],
+  "colors": [
+    "#F4D35E",
+    "#0D3B66",
+    "#082A4A"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "GitHub Primer button",
+      "url": "https://primer.style/components/button",
+      "note": "Took the offset focus ring and the idea that hover is a clear change; the pill shape, hard drop shadow and lift are ours."
+    },
+    {
+      "source": "Dribbble pill button shots",
+      "url": "https://dribbble.com/tags/pill-button",
+      "note": "Took the chunky pill proportion with a solid offset shadow in a darker tone of the fill."
+    }
+  ]
+}

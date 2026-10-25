@@ -1,0 +1,10 @@
+<div class="stage">
+  <span class="chip"><span class="tick"></span>Invoice sent</span>
+</div>
+<style>
+  body { margin: 0; }
+  .stage { height: 300px; display: grid; place-items: center; background: #22223B; }
+  .chip { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px 6px 6px; border-radius: 999px; background: #C9ADA7; color: #22223B; font: 600 14px/20px "Onest", sans-serif; }
+  .tick { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: #22223B; }
+  .tick::after { content: ""; width: 4px; height: 8px; margin-top: -2px; border: solid #C9ADA7; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+</style>

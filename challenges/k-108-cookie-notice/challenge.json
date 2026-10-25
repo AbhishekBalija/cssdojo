@@ -1,0 +1,54 @@
+{
+  "id": "k-108-cookie-notice",
+  "number": 108,
+  "title": "Cookie notice",
+  "belt": "yellow",
+  "kind": "kata",
+  "kataDay": 8,
+  "brief": "A small cookie banner with a rust Accept button that darkens on hover and a quiet outlined Decline button.",
+  "frames": [
+    "rest",
+    "hover"
+  ],
+  "hooks": {
+    "notice": ".notice",
+    "accept": ".accept",
+    "decline": ".decline"
+  },
+  "states": {
+    "hover": "accept"
+  },
+  "checks": [
+    "hooks-present",
+    "hover-changes",
+    "text-contrast-aa",
+    "target-size",
+    "semantic-control",
+    "real-text"
+  ],
+  "colors": [
+    "#F4EBDD",
+    "#FFFFFF",
+    "#3B2A1A",
+    "#B4491F",
+    "#8F3714",
+    "#D9C6A8"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "Carbon Design System notification",
+      "url": "https://carbondesignsystem.com/components/notification/usage/",
+      "note": "Took the idea of a compact message with a short action row; palette, radius and wording are ours."
+    },
+    {
+      "source": "Primer button variants",
+      "url": "https://primer.style/components/button",
+      "note": "Took the primary plus quiet secondary pairing with a darker primary on hover; colours and sizes are ours."
+    }
+  ]
+}

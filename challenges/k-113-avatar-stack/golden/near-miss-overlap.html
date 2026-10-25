@@ -1,0 +1,19 @@
+<!-- golden max=89.9 reason="no overlap between circles" -->
+<div class="stage">
+  <a class="stack" href="#reviewers">
+    <span class="av a1">MK</span><span class="av a2">JO</span><span class="av a3">TS</span><span class="av a4">AL</span><span class="more">+4</span>
+  </a>
+</div>
+<style>
+  body { margin: 0; }
+  .stage { height: 300px; display: grid; place-items: center; background: #F3EFE6; font-family: "Onest", sans-serif; }
+  .stack { display: inline-flex; align-items: center; padding: 6px; border-radius: 999px; text-decoration: none; }
+  .av, .more { display: grid; place-items: center; box-sizing: border-box; height: 44px; border: 3px solid #F3EFE6; border-radius: 999px; font: 600 14px/1 "Onest", sans-serif; color: #FFFFFF; margin-left: 0; transition: none; }
+  .av { width: 44px; }
+  .stack .av:first-child { margin-left: 0; }
+  .a1 { background: #2F5D62; } .a2 { background: #8A3B12; } .a3 { background: #4B3F9E; } .a4 { background: #9B2F5B; }
+  .more { min-width: 44px; padding: 0 10px; background: #FFFFFF; color: #2B2B2B; }
+  .stack:hover .av, .stack:hover .more { margin-left: -2px; }
+  .stack:hover .av:first-child { margin-left: 0; }
+  .stack:focus-visible { outline: 3px solid #4B3F9E; outline-offset: 2px; }
+</style>

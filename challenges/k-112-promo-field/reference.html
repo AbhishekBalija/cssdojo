@@ -1,0 +1,22 @@
+<div class="stage">
+  <div class="promo">
+    <label class="label" for="code">Promo code</label>
+    <div class="row">
+      <input class="code" id="code" type="text" placeholder="e.g. SPRING25">
+      <button class="apply">Apply</button>
+    </div>
+    <p class="helper">Codes are not case sensitive.</p>
+  </div>
+</div>
+<style>
+  body { margin: 0; }
+  .stage { height: 300px; display: grid; place-items: center; background: #F2EEE3; font-family: "Onest", sans-serif; }
+  .promo { width: 300px; color: #1F2A44; }
+  .label { display: block; margin-bottom: 6px; font: 600 14px/20px "Onest", sans-serif; }
+  .row { display: flex; gap: 8px; }
+  .code { flex: 1; min-width: 0; box-sizing: border-box; height: 44px; padding: 0 12px; background: #FFFFFF; color: #1F2A44; border: 1.5px solid #BFC4D4; border-radius: 8px; font: 500 15px/20px "Onest", sans-serif; }
+  .code::placeholder { color: #586079; }
+  .code:focus { outline: 3px solid #2F4BD8; outline-offset: 0; border-color: #2F4BD8; }
+  .apply { height: 44px; padding: 0 18px; background: #1F2A44; color: #FFFFFF; border: 0; border-radius: 8px; font: 600 15px/20px "Onest", sans-serif; cursor: pointer; }
+  .helper { margin: 6px 0 0; font: 400 13px/18px "Onest", sans-serif; color: #586079; }
+</style>

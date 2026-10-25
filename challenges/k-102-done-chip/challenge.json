@@ -1,0 +1,42 @@
+{
+  "id": "k-102-done-chip",
+  "number": 102,
+  "title": "Done, done",
+  "belt": "white",
+  "kind": "kata",
+  "kataDay": 2,
+  "brief": "A small completed-task chip: a round tick badge next to the words Invoice sent, in a soft rose pill on a deep purple stage.",
+  "frames": [
+    "rest"
+  ],
+  "hooks": {
+    "chip": ".chip"
+  },
+  "states": {},
+  "checks": [
+    "hooks-present",
+    "text-contrast-aa",
+    "real-text"
+  ],
+  "colors": [
+    "#22223B",
+    "#C9ADA7"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "Atlassian lozenge and tag",
+      "url": "https://atlassian.design/components/tag/examples",
+      "note": "Took the small pill with an icon and a short label; ours uses a drawn tick badge and a flat rose fill."
+    },
+    {
+      "source": "Dribbble chip UI shots",
+      "url": "https://dribbble.com/tags/chip-ui",
+      "note": "Took the compact proportion of a completed state; the palette is the dojo's own."
+    }
+  ]
+}

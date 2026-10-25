@@ -1,0 +1,20 @@
+<!-- golden max=89.9 reason="thumb 18px and no ring" -->
+<div class="stage">
+  <div class="card">
+    <div class="head"><span class="label">Warmth</span><span class="value">70%</span></div>
+    <div class="range"><div class="fill"></div><div class="thumb"></div></div>
+    <div class="scale"><span>0</span><span>50</span><span>100</span></div>
+  </div>
+</div>
+<style>
+  body { margin: 0; }
+  .stage { height: 300px; display: grid; place-items: center; background: #E07A5F; }
+  .card { box-sizing: border-box; width: 300px; padding: 20px 22px 16px; border-radius: 16px; background: #F4F1DE; color: #3D405B; font-family: "Onest", sans-serif; }
+  .head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 18px; }
+  .label { font: 600 15px/20px "Onest", sans-serif; }
+  .value { font: 700 22px/24px "Onest", sans-serif; }
+  .range { position: relative; height: 8px; border-radius: 4px; background: #3D405B; }
+  .fill { width: 70%; height: 8px; border-radius: 4px; background: #E07A5F; }
+  .thumb { position: absolute; left: 70%; top: -8px; box-sizing: border-box; width: 18px; height: 18px; margin-left: -9px; border-radius: 50%; border: 0; background: #F4F1DE; }
+  .scale { display: flex; justify-content: space-between; margin-top: 16px; font: 500 12px/16px "Onest", sans-serif; }
+</style>

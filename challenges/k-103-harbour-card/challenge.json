@@ -1,0 +1,54 @@
+{
+  "id": "k-103-harbour-card",
+  "number": 103,
+  "title": "Harbour card",
+  "belt": "brown",
+  "kind": "kata",
+  "kataDay": 3,
+  "brief": "A navy notice card with a wavy top edge, a serif headline and a pale link button that fills in on hover and shows a ring on focus.",
+  "frames": [
+    "rest",
+    "hover",
+    "focus"
+  ],
+  "hooks": {
+    "card": ".card",
+    "link": ".link"
+  },
+  "states": {
+    "hover": "link",
+    "focus": "link"
+  },
+  "checks": [
+    "hooks-present",
+    "hover-changes",
+    "focus-visible",
+    "text-contrast-aa",
+    "target-size",
+    "semantic-control",
+    "real-text"
+  ],
+  "colors": [
+    "#A8DADC",
+    "#1D3557",
+    "#F1FAEE"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest",
+      "Instrument Serif"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "Shopify Polaris card",
+      "url": "https://polaris.shopify.com/",
+      "note": "Took the stack of kicker, heading, body and action inside one card; the wave edge, serif headline and pale button are ours."
+    },
+    {
+      "source": "rareui.com",
+      "url": "https://www.rareui.com/",
+      "note": "Looked at how simple flat cards use one oversized serif headline for character."
+    }
+  ]
+}
