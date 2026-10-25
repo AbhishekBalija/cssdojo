@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { BELTS } from "./belts";
+import { BELTS, type Belt } from "./belts";
 import { MAX_CODE_BYTES } from "./challenge";
 import { ScoreResultSchema } from "./score";
 
@@ -73,4 +73,20 @@ export interface MeView {
   solvedPerBelt: Record<(typeof BELTS)[number], number>;
   testLogin: boolean;
   providers: { github: boolean; google: boolean };
+}
+
+/** One row of the gallery review page: everything needed to review a challenge at a glance. */
+export interface GalleryItem {
+  id: string;
+  number: number;
+  title: string;
+  belt: Belt;
+  kind: "challenge" | "kata";
+  kataDay: number | null;
+  brief: string;
+  background: string;
+  frames: string[];
+  checks: string[];
+  golden: { name: string; min: number; max: number; reason: string }[];
+  inspiration: { source: string; url: string; note: string }[];
 }

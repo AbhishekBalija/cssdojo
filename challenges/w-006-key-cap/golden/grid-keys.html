@@ -1,0 +1,26 @@
+<!-- golden min=99.5 max=100 reason="grid for the row, same look" -->
+<div class="stage">
+  <div class="keys"><kbd class="key">Ctrl</kbd><span class="plus">+</span><kbd class="key">K</kbd></div>
+  <p class="caption">Open the command palette</p>
+</div>
+<style>
+  body { margin: 0; }
+  .stage { height: 300px; display: grid; place-content: center; justify-items: center; gap: 20px; background: #E4E8F2; }
+  .keys { display: grid; grid-auto-flow: column; align-items: center; gap: 10px; }
+  .key {
+    display: grid;
+    place-items: center;
+    min-width: 52px;
+    height: 48px;
+    box-sizing: border-box;
+    padding: 0 14px;
+    background: #FFFFFF;
+    color: #2B2F42;
+    border: 1.5px solid #C5CAD8;
+    border-bottom-width: 5px;
+    border-radius: 10px;
+    font: 600 15px/1 "Martian Mono", monospace;
+  }
+  .plus { font: 500 18px/1 "Onest", sans-serif; color: #4D5470; }
+  .caption { margin: 0; font: 400 14px/20px "Onest", sans-serif; color: #4D5470; }
+</style>

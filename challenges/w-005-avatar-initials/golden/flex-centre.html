@@ -1,0 +1,31 @@
+<!-- golden min=99.5 max=100 reason="flex centring, same look" -->
+<div class="stage">
+  <span class="avatar">MR<span class="status"></span></span>
+</div>
+<style>
+  body { margin: 0; }
+  .stage { height: 300px; display: flex; align-items: center; justify-content: center; background: #DCE6F2; }
+  .avatar {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    background: #F2C14E;
+    color: #2B2A4C;
+    font: 600 30px/1 "Onest", sans-serif;
+    letter-spacing: 0.02em;
+    box-shadow: 0 0 0 5px #FFFFFF;
+  }
+  .status {
+    position: absolute;
+    right: 2px;
+    bottom: 2px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #2FA66A;
+    border: 3px solid #FFFFFF;
+  }
+</style>

@@ -1,0 +1,26 @@
+<!-- golden max=89.9 reason="border 1px instead of 2px" -->
+<div class="stage">
+  <div class="tag">
+    <div class="top"><span class="plan">Team plan</span><span class="save">Save 20%</span></div>
+    <div class="bottom"><span class="amount">$12</span><span class="per">per seat, billed monthly</span></div>
+  </div>
+</div>
+<style>
+  body { margin: 0; }
+  .stage { height: 300px; display: grid; place-items: center; background: #F4E7CF; }
+  .tag {
+    box-sizing: border-box;
+    width: 288px;
+    padding: 18px 22px 20px;
+    background: #FFF9EE;
+    border: 1px solid #2A1B0E;
+    border-radius: 16px;
+    font-family: "Onest", sans-serif;
+  }
+  .top { display: flex; align-items: center; justify-content: space-between; }
+  .plan { font: 600 12px/16px "Onest", sans-serif; letter-spacing: 0.08em; text-transform: uppercase; color: #8A4B12; }
+  .save { font: 600 12px/16px "Onest", sans-serif; color: #FFE9B8; background: #2A1B0E; border-radius: 999px; padding: 4px 10px; }
+  .bottom { display: flex; align-items: baseline; gap: 10px; margin-top: 10px; }
+  .amount { font: 400 56px/1 "Instrument Serif", serif; color: #2A1B0E; }
+  .per { font: 400 13px/18px "Onest", sans-serif; color: #6B4A2B; }
+</style>

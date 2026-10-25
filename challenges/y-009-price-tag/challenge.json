@@ -1,0 +1,48 @@
+{
+  "id": "y-009-price-tag",
+  "number": 9,
+  "title": "Price tag",
+  "belt": "yellow",
+  "kind": "challenge",
+  "brief": "A compact pricing tag: a plan name with a dark savings pill, a large serif price and a quiet billing note, inside a bordered card.",
+  "frames": [
+    "rest"
+  ],
+  "hooks": {
+    "tag": ".tag",
+    "amount": ".amount",
+    "save": ".save"
+  },
+  "states": {},
+  "checks": [
+    "hooks-present",
+    "text-contrast-aa",
+    "real-text"
+  ],
+  "colors": [
+    "#F4E7CF",
+    "#FFF9EE",
+    "#2A1B0E",
+    "#8A4B12",
+    "#6B4A2B",
+    "#FFE9B8"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest",
+      "Instrument Serif"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "Shopify Polaris Badge",
+      "url": "https://polaris.shopify.com/components/feedback-indicators/badge",
+      "note": "Took the small emphasised pill used to flag a promotion next to a heading; ours is a dark pill with warm cream text."
+    },
+    {
+      "source": "Material 3 chips",
+      "url": "https://m3.material.io/components/chips/overview",
+      "note": "Took the compact pill proportions; the large serif price and the heavy card border are our own."
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "id": "y-008-toast",
+  "number": 8,
+  "title": "Toast with undo",
+  "belt": "yellow",
+  "kind": "challenge",
+  "brief": "A dark confirmation toast with a mint check icon, a title, a short message and an Undo action that highlights on hover and focus.",
+  "frames": [
+    "rest",
+    "hover",
+    "focus"
+  ],
+  "hooks": {
+    "toast": ".toast",
+    "undo": ".undo",
+    "icon": ".icon"
+  },
+  "states": {
+    "hover": "undo",
+    "focus": "undo"
+  },
+  "checks": [
+    "hooks-present",
+    "hover-changes",
+    "focus-visible",
+    "text-contrast-aa",
+    "target-size",
+    "semantic-control",
+    "real-text"
+  ],
+  "colors": [
+    "#E8EDF2",
+    "#17324D",
+    "#8FE8C8",
+    "#C9D8E6",
+    "#FFFFFF"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "Carbon notification",
+      "url": "https://carbondesignsystem.com/components/notification/usage/",
+      "note": "Took the layout of a status icon, a title with supporting line and an inline action; we used a dark rounded card instead of the left-border bar."
+    },
+    {
+      "source": "Atlassian Flag",
+      "url": "https://atlassian.design/components/flag",
+      "note": "Took the idea of a short title and one action that sits in the same row; the colours and icon treatment are ours."
+    }
+  ]
+}

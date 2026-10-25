@@ -1,0 +1,19 @@
+<!-- golden max=89.9 reason="block 260px wide instead of 296px" -->
+<div class="stage">
+  <div class="progress">
+    <div class="row"><span class="label">Uploading assets</span><span class="percent">72%</span></div>
+    <div class="track" role="progressbar" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100" aria-label="Upload progress"><div class="fill"></div></div>
+    <p class="meta">18 of 25 files</p>
+  </div>
+</div>
+<style>
+  body { margin: 0; }
+  .stage { height: 300px; display: grid; place-items: center; background: #F2EEF8; }
+  .progress { width: 260px; font-family: "Onest", sans-serif; }
+  .row { display: flex; justify-content: space-between; align-items: baseline; }
+  .label { font: 600 15px/20px "Onest", sans-serif; color: #2E2250; }
+  .percent { font: 600 15px/20px "Onest", sans-serif; color: #5B4A8F; }
+  .track { margin-top: 10px; height: 10px; border-radius: 999px; background: #DDD3EF; overflow: hidden; }
+  .fill { width: 72%; height: 100%; border-radius: 999px; background: #6B4FD8; }
+  .meta { margin: 8px 0 0; font: 400 13px/18px "Onest", sans-serif; color: #6A5F85; }
+</style>

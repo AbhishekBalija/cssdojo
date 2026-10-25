@@ -1,0 +1,55 @@
+{
+  "id": "y-011-breadcrumbs",
+  "number": 11,
+  "title": "Breadcrumbs",
+  "belt": "yellow",
+  "kind": "challenge",
+  "brief": "A breadcrumb trail with three links and a current page. Links underline on hover and show a ring on focus; the current page is bold plain text.",
+  "frames": [
+    "rest",
+    "hover",
+    "focus"
+  ],
+  "hooks": {
+    "link": ".crumb",
+    "current": ".current",
+    "trail": ".trail"
+  },
+  "states": {
+    "hover": "link",
+    "focus": "link"
+  },
+  "checks": [
+    "hooks-present",
+    "hover-changes",
+    "focus-visible",
+    "text-contrast-aa",
+    "target-size",
+    "semantic-control",
+    "real-text"
+  ],
+  "colors": [
+    "#EFF1EA",
+    "#2F5D8A",
+    "#153A5E",
+    "#1D2A38",
+    "#8A97A3"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "Atlassian Breadcrumbs",
+      "url": "https://atlassian.design/components/breadcrumbs",
+      "note": "Took the pattern of linked ancestors followed by a non-link current page; we used chevron separators and a bold current item."
+    },
+    {
+      "source": "GitHub Primer Link",
+      "url": "https://primer.style/components/link",
+      "note": "Took the underline on hover idea and the clear focus outline; colours and spacing are ours."
+    }
+  ]
+}

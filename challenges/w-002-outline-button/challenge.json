@@ -1,0 +1,51 @@
+{
+  "id": "w-002-outline-button",
+  "number": 2,
+  "title": "Outline button",
+  "belt": "white",
+  "kind": "challenge",
+  "brief": "A secondary button with a green outline that fills in on hover and shows an offset ring when reached with the keyboard.",
+  "frames": [
+    "rest",
+    "hover",
+    "focus"
+  ],
+  "hooks": {
+    "button": ".btn"
+  },
+  "states": {
+    "hover": "button",
+    "focus": "button"
+  },
+  "checks": [
+    "hooks-present",
+    "hover-changes",
+    "focus-visible",
+    "text-contrast-aa",
+    "target-size",
+    "semantic-control",
+    "real-text"
+  ],
+  "colors": [
+    "#EAF1EC",
+    "#1F5C46",
+    "#FFFFFF"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "Carbon tertiary button",
+      "url": "https://carbondesignsystem.com/components/button/usage/",
+      "note": "Took the idea of an outlined button that inverts to a solid fill on hover; ours is rounded, green and uses a detached focus ring."
+    },
+    {
+      "source": "GitHub Primer link and button states",
+      "url": "https://primer.style/components/link",
+      "note": "Took the offset focus outline; palette and shape are our own."
+    }
+  ]
+}
