@@ -8,7 +8,8 @@
     "start": "bun src/index.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "bun run src/db/migrate.ts",
-    "db:seed": "bun run src/db/seed.ts"
+    "db:seed": "bun run src/db/seed.ts",
+    "worker": "bun src/worker.ts"
   },
   "dependencies": {
     "@cssdojo/scorer": "workspace:*",

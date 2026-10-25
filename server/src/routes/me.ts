@@ -10,7 +10,7 @@ import { solvedPerBelt } from "../progress";
 export const meRoutes = new Hono<{ Variables: PlayerVars }>();
 meRoutes.use("*", withPlayer);
 
-export async function kataStreak(playerId: string): Promise<number> {
+async function kataStreak(playerId: string): Promise<number> {
   const rows = await db.selectDistinct({ d: bestScores.kataDate }).from(bestScores).where(and(eq(bestScores.playerId, playerId), isNotNull(bestScores.kataDate)));
   return streakFrom(rows.map((r) => r.d).filter((d): d is string => !!d), utcDate());
 }
@@ -32,7 +32,7 @@ meRoutes.get("/me", async (c) => {
 });
 
 /** Signed-in players only: best score, ties broken by solve time. */
-export async function leaderboard(challengeId: string, board: string, playerId: string | null, limit = 50): Promise<LeaderboardRow[]> {
+async function leaderboard(challengeId: string, board: string, playerId: string | null, limit = 50): Promise<LeaderboardRow[]> {
   const rows = await db
     .select({ playerId: bestScores.playerId, score: bestScores.score, solveMs: bestScores.solveMs, handle: user.handle, name: user.name, image: user.image })
     .from(bestScores)
@@ -51,7 +51,7 @@ meRoutes.get("/leaderboard/:id", async (c) => {
 });
 
 /** Overall ranking of signed-in players: highest belt, then solved count, then total of library bests. */
-export async function rankings(playerId: string | null, limit = 100): Promise<RankingRow[]> {
+async function rankings(playerId: string | null, limit = 100): Promise<RankingRow[]> {
   const rows = await db.execute<{ player_id: string; handle: string | null; name: string; image: string | null; belts: Belt[] | null; solved: number; total: number }>(sql`
     select p.id as player_id, u.handle, u.name, u.image,
       (select array_agg(pb.belt::text) from player_belts pb where pb.player_id = p.id) as belts,

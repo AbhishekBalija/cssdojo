@@ -7,7 +7,7 @@ import { Header } from "@/components/Header";
 import { api, staticUrl } from "@/lib/api";
 import { pad3 } from "@/lib/belts";
 
-export function ChallengeCard({ c }: { c: ChallengeSummary }) {
+function ChallengeCard({ c }: { c: ChallengeSummary }) {
   return (
     <Link to="/c/$id" params={{ id: c.id }} className="card" data-testid="challenge-card">
       <img className="thumb" src={staticUrl(`/targets/${c.id}/thumb.png`)} alt={`Target: ${c.title}`} loading="lazy" width={400} height={300} style={{ background: c.background }} />

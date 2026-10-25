@@ -4,7 +4,7 @@ Practise CSS by rebuilding small, real UI pieces: buttons, cards, inputs, toggle
 
 Belts run white to black. A daily kata resets at 00:00 UTC.
 
-> Status: 0.1.0, MVP in progress.
+> Status: 0.1.0 MVP. Live preview: https://cssdojo-api.onrender.com (free plan, first load after idle takes about a minute).
 
 ## Quick start
 
@@ -30,6 +30,7 @@ bun run dev                 # API :8787, client :5173
 | `bun run golden` | Golden-set scoring test (needs Chromium) |
 | `bun run e2e` | Playwright end-to-end against a running app |
 | `bun run targets` | Render target images and replay frames for every challenge |
+| `bun run brand` | Regenerate brand assets into `client/public/brand` |
 
 ## Layout
 
@@ -41,6 +42,14 @@ scorer/   Playwright renderer, visual metric, outcome checks, job queue worker
 challenges/  one folder per challenge (and kata/)
 docs/     requirements, architecture, ADRs, guides
 ```
+
+## Docs
+
+- [Architecture](docs/architecture/README.md) and [decision records](docs/adr)
+- [Writing a challenge](docs/guides/challenges.md)
+- [OAuth setup](docs/guides/oauth.md) and [deploying to Render](docs/guides/render.md)
+- [Interview notes](INTERVIEW.md): the concepts behind each part, as questions and answers
+- Review pages in the app: `/gallery` (every challenge and kata) and `/assets` (brand assets)
 
 ## Contributing
 
