@@ -7,8 +7,10 @@ export const CHALLENGES_DIR = process.env.CHALLENGES_DIR ?? path.resolve(import.
 export interface GoldenAnswer {
   name: string;
   code: string;
-  /** Highest total score this wrong answer may get. */
+  /** Highest total score this answer may get. */
   max: number;
+  /** Lowest score it must get (for "same result, other technique" answers). */
+  min: number;
   reason: string;
 }
 
@@ -21,7 +23,7 @@ export interface Challenge {
   golden: GoldenAnswer[];
 }
 
-const GOLDEN_HEADER = /^<!--\s*golden\s+max=(\d+(?:\.\d+)?)\s+reason="([^"]+)"\s*-->/;
+const GOLDEN_HEADER = /^<!--\s*golden\s+(?:min=(\d+(?:\.\d+)?)\s+)?max=(\d+(?:\.\d+)?)\s+reason="([^"]+)"\s*-->/;
 
 async function readOptional(file: string): Promise<string> {
   try {
@@ -47,7 +49,7 @@ export async function loadChallenge(dir: string): Promise<Challenge> {
     const code = await readFile(path.join(goldenDir, f), "utf8");
     const m = GOLDEN_HEADER.exec(code);
     if (!m) throw new Error(`${meta.id}/golden/${f} needs a first line like <!-- golden max=85 reason="..." -->`);
-    golden.push({ name: f.replace(/\.html$/, ""), code: code.slice(m[0].length).trimStart(), max: Number(m[1]), reason: m[2] ?? "" });
+    golden.push({ name: f.replace(/\.html$/, ""), code: code.slice(m[0].length).trimStart(), min: Number(m[1] ?? 0), max: Number(m[2]), reason: m[3] ?? "" });
   }
 
   return {

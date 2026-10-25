@@ -1,0 +1,17 @@
+{
+  "id": "w-001-primary-button",
+  "number": 1,
+  "title": "Primary button",
+  "belt": "white",
+  "kind": "challenge",
+  "brief": "A call-to-action button that darkens on hover and shows a clear ring when you reach it with the keyboard.",
+  "frames": ["rest", "hover", "focus"],
+  "hooks": { "button": ".btn" },
+  "states": { "hover": "button", "focus": "button" },
+  "checks": ["hooks-present", "hover-changes", "focus-visible", "text-contrast-aa", "semantic-control"],
+  "colors": ["#F1F2F4", "#5F4AE6", "#4E3AD0", "#FFFFFF"],
+  "allow": { "fonts": ["Onest"] },
+  "inspiration": [
+    { "source": "GitHub Primer primary button", "url": "https://primer.style/components/button", "note": "Took the idea of a darker hover and an offset focus ring; colour, size and type are ours." }
+  ]
+}
