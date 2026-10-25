@@ -57,3 +57,14 @@ Concepts used in CSS Dojo, from basic to advanced, with why and how they were bu
 ### A promise-chain mutex
 **What:** `tail = tail.then(task)` runs tasks one after another.
 **Why:** the free host has 512 MB, so only one page renders at a time.
+
+## Auth
+
+**Q: How does a guest's progress survive signing in?**
+A guest gets a random player id that the browser keeps and sends in an `x-guest-id` header. After the first sign-in the client calls `POST /api/me/merge` once. In one transaction the server moves the guest's submissions, opens and best scores to the user's player. Where both have a best for the same board, the higher score wins (then the faster solve), and the earlier first open is kept so solve times stay honest. Belts are re-checked after, since combined solves can cross a threshold.
+
+**Q: Why a test login, and why can it not leak to production?**
+OAuth cannot run in CI, so Playwright signs in through `POST /api/test-login`, backed by Better Auth's email and password flow. It exists only when `ENABLE_TEST_LOGIN=true`, and the server refuses to start with it on when `API_URL` is https.
+
+**Q: Why is the API URL the main app link, not the static site?**
+`onrender.com` is on the public suffix list, so a client on one subdomain and the API on another are different sites. The session cookie would have to be sent cross-site (`SameSite=None; Secure`), which Safari and Firefox block by default. Partitioned cookies do not help either: the OAuth callback sets the cookie with the API as the top-level site, so it would never be sent from the client's site. The API container serves the built client too, so on the API URL everything is same-origin and the cookie stays `Lax`. The static site still works in browsers that allow third-party cookies.

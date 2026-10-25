@@ -2,12 +2,13 @@ import { Link } from "@tanstack/react-router";
 import { Moon, Sun } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { applyTheme, currentTheme } from "@/lib/theme";
-import { useMe } from "@/lib/me";
+import { useGuestMerge, useMe } from "@/lib/me";
 import { Logo } from "./Logo";
 
 export function Header({ children }: { children?: ReactNode }) {
   const [theme, setTheme] = useState(currentTheme());
   const me = useMe();
+  useGuestMerge();
   const user = me.data?.user ?? null;
   const toggle = () => {
     const next = theme === "dark" ? "light" : "dark";

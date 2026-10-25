@@ -7,6 +7,7 @@ import { Privacy, Terms } from "@/pages/Legal";
 import { Placeholder } from "@/pages/Placeholder";
 import { NotFound } from "@/pages/NotFound";
 import { Play } from "@/pages/Play";
+import { SignIn } from "@/pages/SignIn";
 
 // Learning note: TanStack Router builds a typed route tree, so <Link to="/c/$id">
 // only compiles when the route and its params exist.
@@ -32,7 +33,7 @@ const play = createRoute({ getParentRoute: () => root, path: "/c/$id", component
 const kata = createRoute({ getParentRoute: () => root, path: "/kata", component: Kata });
 const leaderboard = createRoute({ getParentRoute: () => root, path: "/leaderboard", component: () => <Placeholder title="Leaderboard" /> });
 const me = createRoute({ getParentRoute: () => root, path: "/me", component: () => <Placeholder title="Profile" /> });
-const signin = createRoute({ getParentRoute: () => root, path: "/signin", component: () => <Placeholder title="Sign in" /> });
+const signin = createRoute({ getParentRoute: () => root, path: "/signin", component: SignIn });
 const gallery = createRoute({ getParentRoute: () => root, path: "/gallery", component: Gallery });
 const privacy = createRoute({ getParentRoute: () => root, path: "/privacy", component: Privacy });
 const terms = createRoute({ getParentRoute: () => root, path: "/terms", component: Terms });

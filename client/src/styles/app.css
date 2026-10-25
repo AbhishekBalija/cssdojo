@@ -289,3 +289,11 @@ kbd{font:500 9px/1 var(--font-mono);padding:3px 4px;border-radius:4px;border:1px
 .gallery-golden td:first-child{font-family:var(--font-mono)}
 .gallery-insp{margin:8px 0 0;padding-left:18px;font-size:13px}
 @media (max-width:900px){.gallery-row{grid-template-columns:1fr}.gallery-frames{overflow-x:auto}}
+
+/* Sign in */
+.page.narrow{max-width:560px}
+.signin-box{display:flex;flex-direction:column;gap:10px;margin:8px 0 24px}
+.btn.wide{width:100%;justify-content:center;height:40px}
+.test-login{margin-top:12px;padding-top:16px;border-top:1px dashed var(--line-strong);display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--sub)}
+.test-login .row{display:flex;gap:8px}
+.test-login .input{flex:1}
