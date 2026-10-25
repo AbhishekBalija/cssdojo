@@ -1,0 +1,18 @@
+<!-- golden min=90 max=100 reason="half-pixel nudge should still solve" -->
+<div class="stage">
+  <button class="btn">Get started</button>
+</div>
+<style>
+  body { margin: 0; }
+  .stage { height: 300px; display: grid; place-items: center; background: #F1F2F4; }
+  .btn {
+    font: 600 15px/20px "Onest", sans-serif;
+    color: #FFFFFF;
+    background: #5F4AE6;
+    border: 0;
+    border-radius: 8px;
+    padding: 12px 20px; translate: 0.5px 0;
+  }
+  .btn:hover { background: #4E3AD0; }
+  .btn:focus-visible { outline: 2px solid #5F4AE6; outline-offset: 2px; }
+</style>
