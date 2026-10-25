@@ -1,0 +1,59 @@
+{
+  "id": "b-021-tabs",
+  "number": 21,
+  "title": "Underline tabs",
+  "belt": "brown",
+  "kind": "challenge",
+  "brief": "A tab bar in a white card with a raspberry underline on the active tab, a tinted hover on the others, an inset focus ring, and a short panel below.",
+  "frames": [
+    "rest",
+    "hover",
+    "focus"
+  ],
+  "hooks": {
+    "tablist": ".tabs",
+    "active": ".tab-activity",
+    "other": ".tab-settings",
+    "panel": ".tab-panel"
+  },
+  "states": {
+    "hover": "other",
+    "focus": "other"
+  },
+  "checks": [
+    "hooks-present",
+    "hover-changes",
+    "focus-visible",
+    "text-contrast-aa",
+    "target-size",
+    "semantic-control",
+    "real-text"
+  ],
+  "colors": [
+    "#F7E8EC",
+    "#FFFFFF",
+    "#B4235A",
+    "#2D1B24",
+    "#6B4A58",
+    "#F8DEE7",
+    "#FBE9EF",
+    "#E3B4C4"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "Carbon tabs",
+      "url": "https://carbondesignsystem.com/components/tabs/usage/",
+      "note": "Took the idea of a bottom rule with a thicker coloured line under the active tab; ours uses rounded line caps and a card."
+    },
+    {
+      "source": "Radix Tabs",
+      "url": "https://www.radix-ui.com/primitives/docs/components/tabs",
+      "note": "Took the tab list plus content panel structure; palette, hover underline preview and focus ring are ours."
+    }
+  ]
+}

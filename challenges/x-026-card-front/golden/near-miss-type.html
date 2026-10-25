@@ -1,0 +1,28 @@
+<!-- golden max=89.9 reason="number set in the sans font" -->
+<div class="stage">
+  <div class="card">
+    <div class="top"><div class="chip"></div><div class="wave"></div></div>
+    <p class="num">4417 2090 5531 0826</p>
+    <div class="bottom">
+      <div><p class="lab">Card holder</p><p class="val">Amara Okonkwo</p></div>
+      <div><p class="lab">Expires</p><p class="val">09/29</p></div>
+    </div>
+  </div>
+  <button class="btn">Copy number</button>
+</div>
+<style>
+  body { margin: 0; }
+  .stage { height: 300px; display: flex; align-items: center; justify-content: center; background: #F0EAD6; }
+  .stage { flex-direction: column; gap: 14px; }
+  .card { box-sizing: border-box; width: 300px; height: 172px; padding: 18px 22px; border-radius: 16px; background: #264653; color: #F4F1DE; font-family: "Onest", sans-serif; }
+  .top { display: flex; justify-content: space-between; align-items: center; }
+  .chip { width: 40px; height: 30px; border-radius: 6px; background: linear-gradient(#264653, #264653) 50% 0 / 2px 100% no-repeat, linear-gradient(#264653, #264653) 0 50% / 100% 2px no-repeat, #E9C46A; }
+  .wave { width: 14px; height: 14px; border: 3px solid #A9C1C8; border-left-color: transparent; border-bottom-color: transparent; border-radius: 50%; transform: rotate(45deg); box-shadow: 6px -6px 0 -1px #264653, 5px -5px 0 0 #A9C1C8; }
+  .num { margin: 22px 0 16px; font: 500 16px/20px "Onest", sans-serif; letter-spacing: 0.02em; }
+  .bottom { display: flex; justify-content: space-between; }
+  .lab { margin: 0 0 3px; font: 500 12px/14px "Onest", sans-serif; color: #A9C1C8; }
+  .val { margin: 0; font: 600 14px/18px "Onest", sans-serif; }
+  .btn { font: 600 13px/16px "Onest", sans-serif; color: #264653; background: #E9C46A; border: 0; border-radius: 999px; padding: 9px 18px; cursor: pointer; }
+  .btn:hover { background: #E76F51; color: #1A2E36; }
+  .btn:focus-visible { background: #F4F1DE; outline: 3px solid #264653; outline-offset: 4px; }
+</style>

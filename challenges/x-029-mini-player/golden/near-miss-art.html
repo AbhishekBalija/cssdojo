@@ -1,0 +1,35 @@
+<!-- golden max=89.9 reason="art tile radius 4px and no sun dot" -->
+<div class="stage">
+  <div class="player">
+    <div class="art"></div>
+    <div class="info">
+      <p class="track">Midnight Ferry</p>
+      <p class="artist">Lowtide Orchestra</p>
+    </div>
+    <div class="bar"><div class="fill"></div></div>
+    <div class="times"><span>1:24</span><span>3:30</span></div>
+    <div class="controls">
+      <button class="skip" aria-label="Previous track"><svg width="18" height="18" viewBox="0 0 18 18"><path d="M4 3v12M15 3L7 9l8 6z" fill="#1C1F3A" stroke="#1C1F3A" stroke-width="2" stroke-linejoin="round"/></svg></button>
+      <button class="play" aria-label="Play"><svg width="20" height="20" viewBox="0 0 20 20"><path d="M6 3l11 7-11 7z" fill="currentColor"/></svg></button>
+      <button class="skip" aria-label="Next track"><svg width="18" height="18" viewBox="0 0 18 18"><path d="M14 3v12M3 3l8 6-8 6z" fill="#1C1F3A" stroke="#1C1F3A" stroke-width="2" stroke-linejoin="round"/></svg></button>
+    </div>
+  </div>
+</div>
+<style>
+  body { margin: 0; }
+  .stage { height: 300px; display: grid; place-items: center; background: #1C1F3A; }
+  .player { display: grid; grid-template-columns: 64px 1fr; grid-template-areas: "art info" "bar bar" "times times" "ctl ctl"; column-gap: 14px; box-sizing: border-box; width: 320px; padding: 18px; border-radius: 20px; background: #F5EFE6; color: #1C1F3A; font-family: "Onest", sans-serif; }
+  .art { grid-area: art; width: 64px; height: 64px; border-radius: 4px; background: linear-gradient(160deg, #FF6B4A 0 55%, #1C1F3A 55%); }
+  .info { grid-area: info; align-self: center; }
+  .track { margin: 0; font: 700 17px/22px "Onest", sans-serif; }
+  .artist { margin: 0; font: 400 13px/18px "Onest", sans-serif; color: #4A4D6B; }
+  .bar { grid-area: bar; position: relative; height: 6px; margin-top: 18px; border-radius: 3px; background: #E1D8C8; }
+  .fill { position: relative; width: 40%; height: 6px; border-radius: 3px; background: #1C1F3A; }
+  .fill::after { content: ""; position: absolute; right: -6px; top: -3px; width: 12px; height: 12px; border-radius: 50%; background: #FF6B4A; }
+  .times { grid-area: times; display: flex; justify-content: space-between; margin-top: 8px; font: 500 12px/16px "Martian Mono", monospace; color: #4A4D6B; }
+  .controls { grid-area: ctl; display: flex; align-items: center; justify-content: center; gap: 18px; margin-top: 10px; }
+  .skip { display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 50%; background: none; cursor: pointer; }
+  .play { display: grid; place-items: center; width: 52px; height: 52px; padding: 0 0 0 3px; border: 0; border-radius: 50%; background: #1C1F3A; color: #F5EFE6; cursor: pointer; }
+  .play:hover { background: #FF6B4A; color: #1C1F3A; transform: scale(1.2); }
+  .play:focus-visible { background: #FF6B4A; color: #1C1F3A; transform: scale(1.2); outline: 3px solid #1C1F3A; outline-offset: 4px; }
+</style>

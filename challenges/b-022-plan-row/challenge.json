@@ -1,0 +1,59 @@
+{
+  "id": "b-022-plan-row",
+  "number": 22,
+  "title": "Plan row",
+  "belt": "brown",
+  "kind": "challenge",
+  "brief": "A pricing plan as a dark row: plan name with a Most popular badge, a seat note, the monthly price and a Choose button. The row lights its border on hover, the button shows a ring on focus.",
+  "frames": [
+    "rest",
+    "hover",
+    "focus"
+  ],
+  "hooks": {
+    "row": ".plan",
+    "name": ".plan-name",
+    "badge": ".plan-badge",
+    "price": ".plan-price",
+    "choose": ".plan-select"
+  },
+  "states": {
+    "hover": "row",
+    "focus": "choose"
+  },
+  "checks": [
+    "hooks-present",
+    "hover-changes",
+    "focus-visible",
+    "text-contrast-aa",
+    "target-size",
+    "semantic-control",
+    "real-text"
+  ],
+  "colors": [
+    "#1E1B2E",
+    "#2A2640",
+    "#433D66",
+    "#F4F1FF",
+    "#B9B3DB",
+    "#F7C948",
+    "#322D52"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "Vercel pricing",
+      "url": "https://vercel.com/pricing",
+      "note": "Took the dark surface with one warm accent and a compact plan summary; ours is a single horizontal row, not a column of tiers."
+    },
+    {
+      "source": "Atlassian lozenge",
+      "url": "https://atlassian.design/components/lozenge/",
+      "note": "Took the small bold status badge idea for Most popular; yellow fill, row layout and hover border are ours."
+    }
+  ]
+}

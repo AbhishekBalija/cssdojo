@@ -23,5 +23,6 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - API: challenge list and detail, open, submit (rate limited, 50 KB cap), long-poll for results, attempts, progress, nudge after 3 Submits, `/me`, leaderboard, today's kata.
 - Privacy and terms pages.
 - Challenges 002 to 012 (white and yellow belts), each with a golden set and recorded inspiration.
+- Challenges 013 to 030 (green, brown and black belts), each with a golden set and recorded inspiration.
 - Gallery review page `/gallery` and `GET /api/gallery`: target frames, belt, checks, golden set and inspiration per challenge and kata.
 - MIT license, contributing guide, code of conduct, security policy, PR and issue templates.

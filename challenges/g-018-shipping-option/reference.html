@@ -1,0 +1,30 @@
+<div class="stage">
+  <div class="ship-list">
+    <label class="ship">
+      <input class="ship-radio" type="radio" name="ship" checked>
+      <span class="ship-text"><span class="ship-name">Standard delivery</span><span class="ship-eta">3 to 5 business days</span></span>
+      <span class="ship-price">$4.90</span>
+    </label>
+    <label class="ship">
+      <input class="ship-radio" type="radio" name="ship">
+      <span class="ship-text"><span class="ship-name">Express delivery</span><span class="ship-eta">Next business day</span></span>
+      <span class="ship-price">$12.00</span>
+    </label>
+  </div>
+</div>
+<style>
+  body { margin: 0; }
+  .stage { height: 300px; display: grid; place-items: center; background: #FCEBDD; }
+  .ship-list { display: grid; gap: 10px; width: 340px; }
+  .ship { display: flex; align-items: center; gap: 14px; padding: 14px 16px; background: #FFFFFF; border: 2px solid #E7D3C4; border-radius: 12px; cursor: pointer; }
+  .ship:has(.ship-radio:checked) { border-color: #C2410C; }
+  .ship:hover { background: #FFF1E6; }
+  .ship-radio { appearance: none; -webkit-appearance: none; flex: none; margin: 0; width: 24px; height: 24px; border: 2px solid #9A6B50; border-radius: 50%; background: #FFFFFF; }
+  .ship-radio:checked { border-color: #C2410C; background: #C2410C; box-shadow: inset 0 0 0 4px #FFFFFF; }
+  .ship:has(.ship-radio:focus-visible) { border-color: #3A2418; background: #FFF1E6; }
+  .ship-radio:focus-visible { outline: 2px solid #3A2418; outline-offset: 3px; }
+  .ship-text { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+  .ship-name { font: 600 15px/20px "Onest", sans-serif; color: #3A2418; }
+  .ship-eta { font: 400 13px/18px "Onest", sans-serif; color: #7A5A47; }
+  .ship-price { font: 600 15px/20px "Onest", sans-serif; color: #3A2418; }
+</style>

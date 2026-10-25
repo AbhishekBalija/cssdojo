@@ -1,0 +1,17 @@
+<!-- golden max=89.9 reason="gaps 4px too large" -->
+<div class="stage">
+  <div class="field">
+    <label class="field-label" for="email">Work email</label>
+    <input class="field-input" id="email" type="email" value="maya@northwind.io">
+    <p class="field-help">We'll send invoices and receipts here.</p>
+  </div>
+</div>
+<style>
+  body { margin: 0; }
+  .stage { height: 300px; display: grid; place-items: center; background: #F6F1E7; }
+  .field { width: 300px; }
+  .field-label { display: block; margin: 0 0 10px; font: 600 14px/20px "Onest", sans-serif; color: #2B2A33; }
+  .field-input { display: block; box-sizing: border-box; width: 100%; height: 44px; padding: 0 14px; background: #FFFFFF; border: 1.5px solid #B9B2A2; border-radius: 10px; font: 400 15px/20px "Onest", sans-serif; color: #2B2A33; outline: none; }
+  .field-input:focus-visible { border-color: #3B5BDB; outline: 2px solid #3B5BDB; outline-offset: 2px; }
+  .field-help { margin: 10px 0 0; font: 400 13px/18px "Onest", sans-serif; color: #6A6455; }
+</style>

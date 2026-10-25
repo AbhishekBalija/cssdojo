@@ -1,0 +1,31 @@
+<!-- golden max=89.9 reason="stub 20px too wide so the tear line misses the notches, solid line" -->
+<div class="stage">
+  <div class="ticket">
+    <div class="main">
+      <p class="kicker">Admit one</p>
+      <h1 class="title">Harbour Lights Film Night</h1>
+      <p class="meta">Sat 14 Mar, doors 19:30</p>
+    </div>
+    <div class="stub">
+      <p class="seat">Row F<br>Seat 12</p>
+      <button class="btn">Add to wallet</button>
+    </div>
+  </div>
+</div>
+<style>
+  body { margin: 0; }
+  .stage { height: 300px; display: grid; place-items: center; background: #1B2A41; }
+  .ticket { position: relative; display: grid; grid-template-columns: 220px 140px; width: 360px; height: 140px; background: #F6E7C1; color: #1B2A41; border-radius: 10px; font-family: "Onest", sans-serif; }
+  .ticket::before, .ticket::after { content: ""; position: absolute; left: 230px; width: 20px; height: 20px; border-radius: 50%; background: #1B2A41; }
+  .ticket::before { top: -10px; }
+  .ticket::after { bottom: -10px; }
+  .main { padding: 22px 20px 0 22px; }
+  .kicker { margin: 0 0 8px; font: 700 12px/16px "Onest", sans-serif; letter-spacing: 0.14em; text-transform: uppercase; color: #B8381A; }
+  .title { margin: 0 0 12px; font: 400 28px/30px "Instrument Serif", serif; }
+  .meta { margin: 0; font: 500 13px/18px "Onest", sans-serif; }
+  .stub { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; border-left: 2px solid #1B2A41; margin: 0; }
+  .seat { margin: 0; text-align: center; font: 700 14px/18px "Onest", sans-serif; }
+  .btn { font: 600 12px/16px "Onest", sans-serif; color: #F6E7C1; background: #1B2A41; border: 0; border-radius: 6px; padding: 8px 10px; cursor: pointer; }
+  .btn:hover { background: #2F4A73; transform: translateY(-2px); }
+  .btn:focus-visible { background: #2F4A73; outline: 3px solid #1B2A41; outline-offset: 4px; }
+</style>
