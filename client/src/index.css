@@ -1,5 +1,12 @@
 @import "tailwindcss";
 @import "./tokens.css";
+@import "./styles/app.css";
+
+/* Bundled fonts, the same files the scorer renders with. */
+@font-face { font-family: "Onest"; src: url("/static/fonts/onest.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
+@font-face { font-family: "Martian Mono"; src: url("/static/fonts/martian-mono.woff2") format("woff2"); font-weight: 100 800; font-display: swap; }
+@font-face { font-family: "Instrument Serif"; src: url("/static/fonts/instrument-serif.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Instrument Serif"; src: url("/static/fonts/instrument-serif-italic.woff2") format("woff2"); font-weight: 400; font-style: italic; font-display: swap; }
 
 /* Map the approved design tokens (tokens.css) to Tailwind utilities. */
 @theme inline {
@@ -20,5 +27,9 @@
   --font-art: var(--font-art);
 }
 
-html, body, #root { height: 100%; }
+* { box-sizing: border-box; }
+html, body, #root { min-height: 100%; }
 body { margin: 0; background: var(--bg); color: var(--fg); font: 14px/1.5 var(--font-ui); }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }

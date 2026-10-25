@@ -19,4 +19,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - `bun run targets`: renders each challenge's target frames, thumbnail and live-target canvas replay (Web Animations paused and scrubbed) into `.generated/targets`, served at `/static/targets`; runs during the Docker build.
 - Challenge folder tests: schema, golden count, hooks kept in the starter, kata days without gaps.
 - Challenge authoring guide `docs/guides/challenges.md`.
+- Play screen: React 19 client with TanStack Router and Query, CodeMirror 6 editor, output, target and diff views, live-target replay, outcome checks with hints, score tiles, attempts, solutions after 90, leaderboard dialog, phone pane switcher and a "best on desktop" note.
+- API: challenge list and detail, open, submit (rate limited, 50 KB cap), long-poll for results, attempts, progress, nudge after 3 Submits, `/me`, leaderboard, today's kata.
+- Privacy and terms pages.
 - MIT license, contributing guide, code of conduct, security policy, PR and issue templates.
