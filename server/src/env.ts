@@ -1,3 +1,4 @@
+import path from "node:path";
 import { z } from "zod";
 
 // All configuration comes from environment variables, validated once at start.
@@ -16,7 +17,9 @@ const EnvSchema = z.object({
   GOOGLE_CLIENT_SECRET: z.string().optional(),
   ENABLE_TEST_LOGIN: z.enum(["true", "false"]).default("false"),
   RUN_SCORER_IN_PROCESS: z.enum(["true", "false"]).default("true"),
-  CLIENT_DIST: z.string().default("../client/dist"),
+  CLIENT_DIST: z.string().default(path.resolve(import.meta.dirname, "../../client/dist")),
+  TARGETS_DIR: z.string().default(path.resolve(import.meta.dirname, "../../.generated/targets")),
+  FONTS_DIR: z.string().default(path.resolve(import.meta.dirname, "../../scorer/fonts")),
 });
 
 export type Env = z.infer<typeof EnvSchema>;

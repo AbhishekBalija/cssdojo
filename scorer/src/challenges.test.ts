@@ -1,0 +1,27 @@
+import { describe, expect, it } from "vitest";
+import { loadAllChallenges } from "./challenges";
+
+describe("challenge folders", async () => {
+  const all = await loadAllChallenges();
+
+  it("all validate against the schema", () => {
+    expect(all.length).toBeGreaterThan(0);
+  });
+
+  it.each(all.map((c) => [c.meta.id, c] as const))("%s ships at least three golden answers and an inspiration source", (_id, c) => {
+    expect(c.golden.length).toBeGreaterThanOrEqual(3);
+    expect(c.meta.inspiration.length).toBeGreaterThan(0);
+  });
+
+  it.each(all.map((c) => [c.meta.id, c] as const))("%s starter keeps every hook selector", (_id, c) => {
+    for (const sel of Object.values(c.meta.hooks)) {
+      const cls = /^\.([a-z0-9_-]+)$/i.exec(sel)?.[1];
+      if (cls) expect(c.starter).toContain(cls);
+    }
+  });
+
+  it("kata days are 1..n without gaps", () => {
+    const days = all.filter((c) => c.meta.kind === "kata").map((c) => c.meta.kataDay ?? 0).sort((a, b) => a - b);
+    days.forEach((d, i) => expect(d).toBe(i + 1));
+  });
+});

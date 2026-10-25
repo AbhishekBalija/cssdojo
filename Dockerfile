@@ -21,7 +21,7 @@ RUN --mount=type=secret,id=ca,required=false \
 
 FROM deps AS build
 COPY . .
-RUN bun run build
+RUN bun run build && bun run targets
 
 FROM base AS runtime
 ENV NODE_ENV=production PORT=8787 CLIENT_DIST=/app/client/dist
