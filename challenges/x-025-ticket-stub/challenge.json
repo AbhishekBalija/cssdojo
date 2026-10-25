@@ -1,0 +1,54 @@
+{
+  "id": "x-025-ticket-stub",
+  "number": 25,
+  "title": "Ticket stub",
+  "belt": "black",
+  "kind": "challenge",
+  "brief": "A cinema ticket with round notches where the stub tears off along a dashed perforation, and an Add to wallet button on the stub.",
+  "frames": [
+    "rest",
+    "hover",
+    "focus"
+  ],
+  "hooks": {
+    "ticket": ".ticket",
+    "button": ".btn"
+  },
+  "states": {
+    "hover": "button",
+    "focus": "button"
+  },
+  "checks": [
+    "hooks-present",
+    "hover-changes",
+    "focus-visible",
+    "text-contrast-aa",
+    "target-size",
+    "semantic-control",
+    "real-text"
+  ],
+  "colors": [
+    "#1B2A41",
+    "#F6E7C1",
+    "#B8381A",
+    "#2F4A73"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest",
+      "Instrument Serif"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "Dribbble ticket UI shots",
+      "url": "https://dribbble.com/tags/ticket-ui",
+      "note": "Took the notch where the stub meets the main body and the dashed tear line; the colours, copy and button are ours."
+    },
+    {
+      "source": "rareui.com",
+      "url": "https://www.rareui.com/",
+      "note": "Looked at how small flat cards keep one accent colour; we limited the ticket to ink, cream and one rust kicker."
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "id": "g-015-file-chip",
+  "number": 15,
+  "title": "File chip",
+  "belt": "green",
+  "kind": "challenge",
+  "brief": "An uploaded-file chip: a coloured file-type tile, the file name with its size, and a small remove button. The chip tints and its border turns teal on hover, and keyboard focus on the button adds a halo around the chip.",
+  "frames": [
+    "rest",
+    "hover",
+    "focus"
+  ],
+  "hooks": {
+    "chip": ".chip",
+    "type": ".chip-type",
+    "name": ".chip-name",
+    "size": ".chip-size",
+    "remove": ".chip-remove"
+  },
+  "states": {
+    "hover": "chip",
+    "focus": "remove"
+  },
+  "checks": [
+    "hooks-present",
+    "hover-changes",
+    "focus-visible",
+    "text-contrast-aa",
+    "target-size",
+    "semantic-control",
+    "real-text"
+  ],
+  "colors": [
+    "#E8F0F2",
+    "#FFFFFF",
+    "#C2410C",
+    "#12303A",
+    "#4E6A74",
+    "#FDE4E1",
+    "#B42318",
+    "#0E7490"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest",
+      "Martian Mono"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "Carbon file uploader",
+      "url": "https://carbondesignsystem.com/components/file-uploader/usage/",
+      "note": "Took the file row with name, status and a remove control; ours is a compact pill chip with a type tile."
+    },
+    {
+      "source": "Atlassian tag",
+      "url": "https://atlassian.design/components/tag/",
+      "note": "Took the removable tag idea with a tinted hover on the close button; colours, tile and mono type label are ours."
+    }
+  ]
+}

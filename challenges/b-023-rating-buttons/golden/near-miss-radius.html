@@ -1,0 +1,26 @@
+<!-- golden max=89.9 reason="radius 4px" -->
+<div class="stage">
+  <div class="rate">
+    <p class="rate-q">Would you recommend us?</p>
+    <div class="rate-btns" role="group" aria-label="Rating from 1 to 5">
+      <button class="rate-btn rate-1" aria-pressed="false">1</button>
+      <button class="rate-btn rate-2" aria-pressed="false">2</button>
+      <button class="rate-btn rate-3" aria-pressed="false">3</button>
+      <button class="rate-btn rate-4" aria-pressed="true">4</button>
+      <button class="rate-btn rate-5" aria-pressed="false">5</button>
+    </div>
+    <div class="rate-ends"><span>Not likely</span><span>Very likely</span></div>
+  </div>
+</div>
+<style>
+  body { margin: 0; }
+  .stage { height: 300px; display: grid; place-items: center; background: #FFF1B8; }
+  .rate { width: 320px; }
+  .rate-q { margin: 0 0 14px; font: 600 17px/24px "Onest", sans-serif; color: #2B2400; }
+  .rate-btns { display: flex; justify-content: space-between; }
+  .rate-btn { width: 52px; height: 52px; padding: 0; border: 2px solid #2B2400; border-radius: 4px; background: #FFFFFF; color: #2B2400; font: 700 18px/1 "Onest", sans-serif; cursor: pointer; }
+  .rate-btn[aria-pressed="true"] { background: #2B2400; color: #FFF1B8; }
+  .rate-btn:hover:not([aria-pressed="true"]) { background: #FFE27A; }
+  .rate-btn:focus-visible { background: #FFD43B; outline: 3px solid #D9480F; outline-offset: 3px; }
+  .rate-ends { display: flex; justify-content: space-between; margin-top: 10px; font: 500 13px/18px "Onest", sans-serif; color: #5C4F00; }
+</style>

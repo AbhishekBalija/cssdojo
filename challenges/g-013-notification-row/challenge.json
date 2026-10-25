@@ -1,0 +1,49 @@
+{
+  "id": "g-013-notification-row",
+  "number": 13,
+  "title": "Notification row",
+  "belt": "green",
+  "kind": "challenge",
+  "brief": "An inbox notification: round initials avatar, a bold name with the action, a quieter line with project and time, and an unread dot on the right.",
+  "frames": [
+    "rest"
+  ],
+  "hooks": {
+    "row": ".note",
+    "avatar": ".note-icon",
+    "title": ".note-title",
+    "time": ".note-time",
+    "unread": ".note-dot"
+  },
+  "states": {},
+  "checks": [
+    "hooks-present",
+    "text-contrast-aa",
+    "real-text"
+  ],
+  "colors": [
+    "#EEF1EA",
+    "#FFFFFF",
+    "#2F7A4F",
+    "#1F2A24",
+    "#546359",
+    "#E0693B"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "Carbon notification",
+      "url": "https://carbondesignsystem.com/components/notification/usage/",
+      "note": "Took the idea of a coloured edge stripe on a notification; ours is an inbox row with an avatar and soft card."
+    },
+    {
+      "source": "Atlassian flag",
+      "url": "https://atlassian.design/components/flag/",
+      "note": "Took the two-level text (bold title, quiet detail line); added the unread dot and initials avatar."
+    }
+  ]
+}

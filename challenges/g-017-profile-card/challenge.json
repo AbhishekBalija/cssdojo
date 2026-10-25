@@ -1,0 +1,51 @@
+{
+  "id": "g-017-profile-card",
+  "number": 17,
+  "title": "Profile card",
+  "belt": "green",
+  "kind": "challenge",
+  "brief": "A centred profile card: initials avatar, name, role line, a two-figure stat row and a full-width Follow button.",
+  "frames": [
+    "rest"
+  ],
+  "hooks": {
+    "card": ".profile",
+    "avatar": ".profile-avatar",
+    "name": ".profile-name",
+    "role": ".profile-role",
+    "stats": ".profile-stats",
+    "follow": ".profile-follow"
+  },
+  "states": {},
+  "checks": [
+    "hooks-present",
+    "text-contrast-aa",
+    "target-size",
+    "semantic-control",
+    "real-text"
+  ],
+  "colors": [
+    "#E7E4F5",
+    "#FFFFFF",
+    "#5B3FD6",
+    "#1E1B33",
+    "#5E5A78"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "Atlassian profile card",
+      "url": "https://atlassian.design/components/avatar",
+      "note": "Took the avatar over name and role stack with a single action; ours is centred with a stats row and a different palette."
+    },
+    {
+      "source": "Primer avatar",
+      "url": "https://primer.style/product/components/avatar/",
+      "note": "Took the round avatar sizing idea; the initials fallback and purple fill are ours."
+    }
+  ]
+}

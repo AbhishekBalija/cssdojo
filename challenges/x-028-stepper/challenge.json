@@ -1,0 +1,56 @@
+{
+  "id": "x-028-stepper",
+  "number": 28,
+  "title": "Checkout stepper",
+  "belt": "black",
+  "kind": "challenge",
+  "brief": "A three step progress row: Cart is done with a tick, Delivery is current, Payment is next and reacts to hover and focus. Connectors join the circles.",
+  "frames": [
+    "rest",
+    "hover",
+    "focus"
+  ],
+  "hooks": {
+    "stepper": ".stepper",
+    "done": ".step-done",
+    "current": ".step-current",
+    "next": ".step-next"
+  },
+  "states": {
+    "hover": "next",
+    "focus": "next"
+  },
+  "checks": [
+    "hooks-present",
+    "hover-changes",
+    "focus-visible",
+    "text-contrast-aa",
+    "target-size",
+    "semantic-control",
+    "real-text"
+  ],
+  "colors": [
+    "#FFF4E0",
+    "#0B6E4F",
+    "#5E5646",
+    "#8A7F66",
+    "#E1F0E8"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "Carbon progress indicator",
+      "url": "https://carbondesignsystem.com/components/progress-indicator/usage/",
+      "note": "Took the done, current and upcoming step states joined by a line; ours uses filled circles, a drawn tick and a dashed connector for the upcoming part."
+    },
+    {
+      "source": "Dribbble stepper UI",
+      "url": "https://dribbble.com/tags/stepper",
+      "note": "Took the labels under the circles; palette and sizes are ours."
+    }
+  ]
+}

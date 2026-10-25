@@ -1,0 +1,25 @@
+<!-- golden max=89.9 reason="tick replaced by plain colour fill" -->
+<div class="stage">
+  <div class="stepper">
+    <button class="step step-done"><span class="dot"></span><span class="label">Cart</span></button>
+    <button class="step step-current"><span class="dot">2</span><span class="label">Delivery</span></button>
+    <button class="step step-next"><span class="dot">3</span><span class="label">Payment</span></button>
+  </div>
+</div>
+<style>
+  body { margin: 0; }
+  .stage { height: 300px; display: grid; place-items: center; background: #FFF4E0; }
+  .stepper { display: flex; width: 330px; }
+  .step { position: relative; display: flex; flex-direction: column; align-items: center; gap: 10px; width: 110px; padding: 6px 0 4px; border: 0; border-radius: 10px; background: none; cursor: pointer; font-family: "Onest", sans-serif; }
+  .step + .step::before { content: ""; position: absolute; top: 20px; right: 50%; width: 110px; margin-right: 16px; height: 0; border-top: 3px dashed #8A7F66; }
+  .step-current::before { border-top: 3px solid #0B6E4F !important; }
+  .dot { position: relative; z-index: 1; display: grid; place-items: center; box-sizing: border-box; width: 32px; height: 32px; border-radius: 50%; border: 2px solid #8A7F66; background: #FFF4E0; color: #5E5646; font: 700 14px/1 "Onest", sans-serif; }
+  .step-done .dot { background: #3E8E75; border-color: #0B6E4F; }
+  .step-done .dot::after { content: ""; width: 0; height: 0; margin-top: -3px; border: solid #FFFFFF; border-width: 0 3px 3px 0; transform: rotate(45deg); }
+  .step-current .dot { border-color: #0B6E4F; color: #0B6E4F; box-shadow: 0 0 0 4px #E1F0E8; }
+  .label { font: 600 13px/18px "Onest", sans-serif; color: #5E5646; }
+  .step-current .label, .step-done .label { color: #0B3D2D; }
+  .step-next:hover .dot { background: #E1F0E8; border-color: #0B6E4F; color: #0B6E4F; }
+  .step-next:hover .label { color: #0B3D2D; }
+  .step-next:focus-visible { outline: 3px solid #0B6E4F; outline-offset: 4px; }
+</style>

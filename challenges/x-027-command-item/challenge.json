@@ -1,0 +1,56 @@
+{
+  "id": "x-027-command-item",
+  "number": 27,
+  "title": "Command item",
+  "belt": "black",
+  "kind": "challenge",
+  "brief": "A selected row from a command palette: icon tile, title, helper line and keyboard shortcut caps, on a layered soft shadow.",
+  "frames": [
+    "rest",
+    "hover",
+    "focus"
+  ],
+  "hooks": {
+    "item": ".item",
+    "keys": ".keys"
+  },
+  "states": {
+    "hover": "item",
+    "focus": "item"
+  },
+  "checks": [
+    "hooks-present",
+    "hover-changes",
+    "focus-visible",
+    "text-contrast-aa",
+    "target-size",
+    "semantic-control",
+    "real-text"
+  ],
+  "colors": [
+    "#DAD7EC",
+    "#FFFFFF",
+    "#25213D",
+    "#5B47D6",
+    "#5F5B7A",
+    "#EFEBFF"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest",
+      "Martian Mono"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "cmdk command menu",
+      "url": "https://github.com/dip/cmdk",
+      "note": "Took the row with a leading icon and trailing shortcut keys; the layered shadow, keycap bevel and accent bar on hover are our own."
+    },
+    {
+      "source": "21st.dev keyboard component",
+      "url": "https://21st.dev/@intentui/components/keyboard.md",
+      "note": "Took the idea of a bevelled keycap with a thicker bottom edge; sizes and mono type are ours."
+    }
+  ]
+}

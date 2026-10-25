@@ -1,0 +1,50 @@
+{
+  "id": "g-016-stat-card",
+  "number": 16,
+  "title": "Stat card",
+  "belt": "green",
+  "kind": "challenge",
+  "brief": "A dashboard stat: small caps label, a large serif value, and a green trend pill with an up arrow next to a quiet comparison note.",
+  "frames": [
+    "rest"
+  ],
+  "hooks": {
+    "card": ".stat",
+    "label": ".stat-label",
+    "value": ".stat-value",
+    "trend": ".stat-trend",
+    "note": ".stat-note"
+  },
+  "states": {},
+  "checks": [
+    "hooks-present",
+    "text-contrast-aa",
+    "real-text"
+  ],
+  "colors": [
+    "#F2E9DA",
+    "#FFFDF8",
+    "#2A2118",
+    "#6B5E4A",
+    "#DDF3E4",
+    "#14693A"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest",
+      "Instrument Serif"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "Material 3 cards",
+      "url": "https://m3.material.io/components/cards/overview",
+      "note": "Took the idea of a quiet filled card holding one headline figure; ours uses a serif value and warm paper tones."
+    },
+    {
+      "source": "Shopify Polaris",
+      "url": "https://polaris.shopify.com/",
+      "note": "Took the label, big number, trend badge hierarchy of admin metric cards; the pill, arrow and type are our own."
+    }
+  ]
+}

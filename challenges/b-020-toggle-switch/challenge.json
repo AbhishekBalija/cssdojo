@@ -1,0 +1,58 @@
+{
+  "id": "b-020-toggle-switch",
+  "number": 20,
+  "title": "Toggle switch",
+  "belt": "brown",
+  "kind": "challenge",
+  "brief": "A settings row with a title, a helper line and an on-state switch built from a labelled checkbox. The track darkens on hover and the switch gets a ring on keyboard focus.",
+  "frames": [
+    "rest",
+    "hover",
+    "focus"
+  ],
+  "hooks": {
+    "row": ".toggle",
+    "switch": ".toggle-input",
+    "title": ".toggle-title",
+    "sub": ".toggle-sub"
+  },
+  "states": {
+    "hover": "row",
+    "focus": "switch"
+  },
+  "checks": [
+    "hooks-present",
+    "hover-changes",
+    "focus-visible",
+    "text-contrast-aa",
+    "target-size",
+    "semantic-control",
+    "real-text"
+  ],
+  "colors": [
+    "#DCE8F5",
+    "#FFFFFF",
+    "#3730A3",
+    "#2B2580",
+    "#1B1A3D",
+    "#565880",
+    "#B4BCCB"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "Radix Switch",
+      "url": "https://www.radix-ui.com/primitives/docs/components/switch",
+      "note": "Took the label plus switch pairing with a thumb that slides in a track; ours is a native checkbox restyled, with the helper line under the title."
+    },
+    {
+      "source": "Material 3 switch",
+      "url": "https://m3.material.io/components/switch/overview",
+      "note": "Took the darker track on hover and the visible focus ring on the track; the indigo palette and row card are ours."
+    }
+  ]
+}

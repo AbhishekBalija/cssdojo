@@ -1,0 +1,59 @@
+{
+  "id": "b-024-accordion-header",
+  "number": 24,
+  "title": "Accordion header",
+  "belt": "brown",
+  "kind": "challenge",
+  "brief": "An open accordion item: a full-width header button with a title and a round chevron badge pointing up, followed by the answer text. The header tints on hover and shows an inset ring on focus.",
+  "frames": [
+    "rest",
+    "hover",
+    "focus"
+  ],
+  "hooks": {
+    "item": ".acc",
+    "header": ".acc-header",
+    "chevron": ".acc-chevron",
+    "panel": ".acc-panel"
+  },
+  "states": {
+    "hover": "header",
+    "focus": "header"
+  },
+  "checks": [
+    "hooks-present",
+    "hover-changes",
+    "focus-visible",
+    "text-contrast-aa",
+    "target-size",
+    "semantic-control",
+    "real-text"
+  ],
+  "colors": [
+    "#F4E4DA",
+    "#FFFFFF",
+    "#3B1F14",
+    "#5A3A2C",
+    "#B5441F",
+    "#FBE9E1",
+    "#F2C4AE",
+    "#F9DFD2"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "Radix Accordion",
+      "url": "https://www.radix-ui.com/primitives/docs/components/accordion",
+      "note": "Took the header trigger with a rotated chevron when open; ours puts the chevron in a tinted round badge and shows the open panel."
+    },
+    {
+      "source": "Carbon accordion",
+      "url": "https://carbondesignsystem.com/components/accordion/usage/",
+      "note": "Took the full-width header row with a hover fill; the terracotta palette, card shape and inset focus ring are ours."
+    }
+  ]
+}

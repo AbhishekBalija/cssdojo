@@ -1,0 +1,59 @@
+{
+  "id": "g-018-shipping-option",
+  "number": 18,
+  "title": "Shipping option",
+  "belt": "green",
+  "kind": "challenge",
+  "brief": "Two selectable shipping rows at checkout. The chosen row has an orange border and radio dot, the row tints on hover, and the radio shows a ring on keyboard focus.",
+  "frames": [
+    "rest",
+    "hover",
+    "focus"
+  ],
+  "hooks": {
+    "row": ".ship",
+    "radio": ".ship-radio",
+    "name": ".ship-name",
+    "eta": ".ship-eta",
+    "price": ".ship-price"
+  },
+  "states": {
+    "hover": "row",
+    "focus": "radio"
+  },
+  "checks": [
+    "hooks-present",
+    "hover-changes",
+    "focus-visible",
+    "text-contrast-aa",
+    "target-size",
+    "semantic-control",
+    "real-text"
+  ],
+  "colors": [
+    "#FCEBDD",
+    "#FFFFFF",
+    "#C2410C",
+    "#3A2418",
+    "#7A5A47",
+    "#E7D3C4",
+    "#FFF1E6"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "Shopify Polaris choice list",
+      "url": "https://polaris.shopify.com/components/selection-and-input/choice-list",
+      "note": "Took the idea of radio choices with a supporting description line; ours are full-width cards with a price column."
+    },
+    {
+      "source": "Atlassian radio",
+      "url": "https://atlassian.design/components/radio/",
+      "note": "Took the labelled radio with a filled dot and a visible focus ring; the orange palette and row layout are ours."
+    }
+  ]
+}
