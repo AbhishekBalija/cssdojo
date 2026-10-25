@@ -1,0 +1,20 @@
+<!-- golden max=89.9 reason="missing hover state" -->
+<div class="stage">
+  <nav aria-label="Breadcrumb">
+    <ol class="trail">
+      <li><a class="crumb" href="#">Home</a></li>
+      <li><a class="crumb" href="#">Projects</a></li>
+      <li><a class="crumb" href="#">Harbor redesign</a></li>
+      <li><span class="current" aria-current="page">Brand colours</span></li>
+    </ol>
+  </nav>
+</div>
+<style>
+  body { margin: 0; }
+  .stage { height: 300px; display: grid; place-items: center; background: #EFF1EA; }
+  .trail { list-style: none; margin: 0; padding: 0; display: flex; align-items: center; font: 400 14px/20px "Onest", sans-serif; }
+  .trail li + li::before { content: "\203A"; margin: 0 2px; color: #8A97A3; font-size: 18px; }
+  .crumb { display: inline-block; padding: 4px 5px; border-radius: 6px; color: #2F5D8A; text-decoration: none; }
+  .crumb:focus-visible { outline: 3px solid #2F5D8A; outline-offset: 3px; }
+  .current { display: inline-block; padding: 4px 5px; font-weight: 600; color: #1D2A38; }
+</style>

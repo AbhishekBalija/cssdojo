@@ -1,0 +1,52 @@
+{
+  "id": "w-004-text-link",
+  "number": 4,
+  "title": "Text link",
+  "belt": "white",
+  "kind": "challenge",
+  "brief": "A sentence with an inline link. The link is underlined, deepens and thickens its underline on hover, and shows a ring on keyboard focus.",
+  "frames": [
+    "rest",
+    "hover",
+    "focus"
+  ],
+  "hooks": {
+    "link": ".link",
+    "copy": ".copy"
+  },
+  "states": {
+    "hover": "link",
+    "focus": "link"
+  },
+  "checks": [
+    "hooks-present",
+    "hover-changes",
+    "focus-visible",
+    "text-contrast-aa",
+    "semantic-control",
+    "real-text"
+  ],
+  "colors": [
+    "#FBF6EC",
+    "#3A3A33",
+    "#B4350F",
+    "#7A1F05"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "GitHub Primer Link",
+      "url": "https://primer.style/components/link",
+      "note": "Took the idea of an underline that is always present for inline links and a clear focus outline; the colours and thickness change on hover are ours."
+    },
+    {
+      "source": "Atlassian Link",
+      "url": "https://atlassian.design/components/link",
+      "note": "Took the darker hover colour; kept the surrounding sentence as part of the target."
+    }
+  ]
+}

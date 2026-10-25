@@ -1,0 +1,45 @@
+{
+  "id": "w-005-avatar-initials",
+  "number": 5,
+  "title": "Avatar with initials",
+  "belt": "white",
+  "kind": "challenge",
+  "brief": "A round avatar showing two initials on a warm yellow disc, with a white ring and a small green online dot at the corner.",
+  "frames": [
+    "rest"
+  ],
+  "hooks": {
+    "avatar": ".avatar",
+    "status": ".status"
+  },
+  "states": {},
+  "checks": [
+    "hooks-present",
+    "text-contrast-aa",
+    "real-text"
+  ],
+  "colors": [
+    "#DCE6F2",
+    "#F2C14E",
+    "#2B2A4C",
+    "#2FA66A",
+    "#FFFFFF"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "Radix Themes Avatar",
+      "url": "https://www.radix-ui.com/themes/docs/components/avatar",
+      "note": "Took the initials fallback on a solid disc; we added our own ring and presence dot with new colours."
+    },
+    {
+      "source": "Material 3 badges",
+      "url": "https://m3.material.io/components/badges/overview",
+      "note": "Took the small marker pinned to a corner of a larger shape; ours is a status dot with a white cut-out border."
+    }
+  ]
+}

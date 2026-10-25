@@ -10,6 +10,7 @@ import {
   utcDate,
   type ChallengeProgress,
   type ChallengeSummary,
+  type GalleryItem,
   type KataToday,
   type ScoreResult,
   type SubmissionView,
@@ -37,6 +38,25 @@ function backgroundOf(colors: string[]): string {
 function boardIsOpen(board: string): boolean {
   return board === "library" || board === `kata:${utcDate()}`;
 }
+
+/** Review page data: every challenge and kata with its golden set and inspiration. */
+api.get("/gallery", (c) => {
+  const out: GalleryItem[] = listChallenges().map((ch) => ({
+    id: ch.meta.id,
+    number: ch.meta.number,
+    title: ch.meta.title,
+    belt: ch.meta.belt,
+    kind: ch.meta.kind,
+    kataDay: ch.meta.kataDay ?? null,
+    brief: ch.meta.brief,
+    background: backgroundOf(ch.meta.colors),
+    frames: [...ch.meta.frames],
+    checks: [...ch.meta.checks],
+    golden: ch.golden.map((g) => ({ name: g.name, min: g.min, max: g.max, reason: g.reason })),
+    inspiration: ch.meta.inspiration.map((i) => ({ source: i.source, url: i.url, note: i.note })),
+  }));
+  return c.json(out);
+});
 
 api.get("/challenges", async (c) => {
   const playerId = c.get("playerId");

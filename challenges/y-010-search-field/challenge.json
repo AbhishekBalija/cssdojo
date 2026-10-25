@@ -1,0 +1,53 @@
+{
+  "id": "y-010-search-field",
+  "number": 10,
+  "title": "Search field",
+  "belt": "yellow",
+  "kind": "challenge",
+  "brief": "A labelled search input with a magnifier icon inside, a placeholder, and a clear teal ring when it has keyboard focus.",
+  "frames": [
+    "rest",
+    "focus"
+  ],
+  "hooks": {
+    "field": ".field",
+    "label": ".label",
+    "icon": ".icon"
+  },
+  "states": {
+    "focus": "field"
+  },
+  "checks": [
+    "hooks-present",
+    "focus-visible",
+    "text-contrast-aa",
+    "target-size",
+    "semantic-control",
+    "real-text"
+  ],
+  "colors": [
+    "#E6EEEE",
+    "#FFFFFF",
+    "#B2C0C2",
+    "#0B6B6B",
+    "#14282B",
+    "#566569"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "Carbon search",
+      "url": "https://carbondesignsystem.com/components/search/usage/",
+      "note": "Took the leading magnifier inside the field and the visible label above it; ours is a rounded white field with a detached teal ring."
+    },
+    {
+      "source": "GitHub Primer link and focus patterns",
+      "url": "https://primer.style/components/link",
+      "note": "Took the offset focus outline approach; colours and proportions are ours."
+    }
+  ]
+}

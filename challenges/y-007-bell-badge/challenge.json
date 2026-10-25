@@ -1,0 +1,55 @@
+{
+  "id": "y-007-bell-badge",
+  "number": 7,
+  "title": "Bell with count badge",
+  "belt": "yellow",
+  "kind": "challenge",
+  "brief": "A notifications button holding an inline SVG bell, with a red count badge pinned to its top-right corner. It lightens on hover and rings on focus.",
+  "frames": [
+    "rest",
+    "hover",
+    "focus"
+  ],
+  "hooks": {
+    "button": ".bell",
+    "badge": ".count",
+    "icon": ".bell svg"
+  },
+  "states": {
+    "hover": "button",
+    "focus": "button"
+  },
+  "checks": [
+    "hooks-present",
+    "hover-changes",
+    "focus-visible",
+    "text-contrast-aa",
+    "target-size",
+    "semantic-control",
+    "real-text"
+  ],
+  "colors": [
+    "#F3EFE8",
+    "#FFFFFF",
+    "#E1D9CB",
+    "#3B3355",
+    "#C8323A"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "Material 3 badges",
+      "url": "https://m3.material.io/components/badges/overview",
+      "note": "Took the count badge pinned to the corner of an icon button; ours is a cream tile with a cut-out ring around the badge."
+    },
+    {
+      "source": "Atlassian Badge",
+      "url": "https://atlassian.design/components/badge",
+      "note": "Took the idea of a compact numeric count with strong contrast; the shape and colours are ours."
+    }
+  ]
+}

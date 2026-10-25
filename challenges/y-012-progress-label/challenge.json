@@ -1,0 +1,48 @@
+{
+  "id": "y-012-progress-label",
+  "number": 12,
+  "title": "Progress with label",
+  "belt": "yellow",
+  "kind": "challenge",
+  "brief": "An upload progress block: a bold label with a percentage on the right, a rounded track with a violet fill at 72%, and a small file count underneath.",
+  "frames": [
+    "rest"
+  ],
+  "hooks": {
+    "bar": ".track",
+    "fill": ".fill",
+    "label": ".label",
+    "percent": ".percent"
+  },
+  "states": {},
+  "checks": [
+    "hooks-present",
+    "text-contrast-aa",
+    "real-text"
+  ],
+  "colors": [
+    "#F2EEF8",
+    "#2E2250",
+    "#5B4A8F",
+    "#DDD3EF",
+    "#6B4FD8",
+    "#6A5F85"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "Shopify Polaris Progress bar",
+      "url": "https://polaris.shopify.com/components/feedback-indicators/progress-bar",
+      "note": "Took the thin rounded track with a filled portion; we added a label row with the percentage and a caption beneath."
+    },
+    {
+      "source": "Atlassian Progress bar",
+      "url": "https://atlassian.design/components/progress-bar",
+      "note": "Took the idea of pairing the bar with text that states the value; layout and colours are ours."
+    }
+  ]
+}

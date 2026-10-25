@@ -1,0 +1,41 @@
+<!-- golden max=89.9 reason="tile radius 2px instead of 14px" -->
+<div class="stage">
+  <button class="bell" aria-label="Notifications, 3 unread">
+    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#3B3355" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    <span class="count">3</span>
+  </button>
+</div>
+<style>
+  body { margin: 0; }
+  .stage { height: 300px; display: grid; place-items: center; background: #F3EFE8; }
+  .bell {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    padding: 0;
+    background: #FFFFFF;
+    border: 1.5px solid #E1D9CB;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .count {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    box-sizing: border-box;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    display: grid;
+    place-items: center;
+    background: #C8323A;
+    color: #FFFFFF;
+    border: 2px solid #F3EFE8;
+    border-radius: 999px;
+    font: 700 12px/1 "Onest", sans-serif;
+  }
+  .bell:hover { background: #EFE6D3; border-color: #CDBFA5; }
+  .bell:focus-visible { outline: 2px solid #3B3355; outline-offset: 4px; }
+</style>
