@@ -16,7 +16,7 @@ export interface PlayerVars {
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 export const GUEST_HEADER = "x-guest-id";
 
-export async function playerForUser(userId: string): Promise<string> {
+async function playerForUser(userId: string): Promise<string> {
   const [row] = await db.select({ id: players.id }).from(players).where(eq(players.userId, userId));
   if (row) return row.id;
   const [created] = await db.insert(players).values({ userId }).onConflictDoNothing().returning({ id: players.id });

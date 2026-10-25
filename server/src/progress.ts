@@ -6,11 +6,7 @@ import { bestScores, challengeOpens, challenges, playerBelts, submissions } from
 /** "library" or "kata:YYYY-MM-DD". */
 export type Board = string;
 
-export function kataBoard(date: string): Board {
-  return `kata:${date}`;
-}
-
-export function boardKataDate(board: Board): string | null {
+function boardKataDate(board: Board): string | null {
   return board.startsWith("kata:") ? board.slice(5) : null;
 }
 

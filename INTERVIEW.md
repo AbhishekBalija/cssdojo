@@ -68,3 +68,14 @@ OAuth cannot run in CI, so Playwright signs in through `POST /api/test-login`, b
 
 **Q: Why is the API URL the main app link, not the static site?**
 `onrender.com` is on the public suffix list, so a client on one subdomain and the API on another are different sites. The session cookie would have to be sent cross-site (`SameSite=None; Secure`), which Safari and Firefox block by default. Partitioned cookies do not help either: the OAuth callback sets the cookie with the API as the top-level site, so it would never be sent from the client's site. The API container serves the built client too, so on the API URL everything is same-origin and the cookie stays `Lax`. The static site still works in browsers that allow third-party cookies.
+
+## Deploy and maintenance
+
+**Q: How do migrations run in production?**
+At container start, before the server listens: `server/src/start.ts` runs Drizzle's migrator, then seeds challenges and the kata schedule idempotently (upserts). A failed migration stops the start, so Render keeps the previous deploy serving.
+
+**Q: How would you scale the scorer?**
+The queue is already in Postgres with `SKIP LOCKED`, so a second process running `bun run --filter @cssdojo/server worker` (with `RUN_SCORER_IN_PROCESS=false` on the API) takes jobs without code changes. Each worker holds one Chromium and renders one Submit at a time.
+
+**Q: How do you keep dead code out?**
+`bunx fallow dead-code` lists unused files, exports and dependencies. It runs clean on 0.1.0.

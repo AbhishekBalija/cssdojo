@@ -4,7 +4,7 @@ import { storage } from "./storage";
 // server hands out and the browser keeps; it is how guest progress is merged on sign-in.
 
 const GUEST_KEY = "dojo-guest-id";
-export const API_BASE = (import.meta.env.VITE_API_URL as string | undefined) ?? "";
+const API_BASE = (import.meta.env.VITE_API_URL as string | undefined) ?? "";
 
 export class ApiError extends Error {
   readonly status: number;
