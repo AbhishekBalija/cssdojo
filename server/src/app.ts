@@ -2,13 +2,22 @@ import { Hono } from "hono";
 import { serveStatic } from "hono/bun";
 import { APP_VERSION } from "@cssdojo/shared";
 import { env } from "./env";
+import { cors } from "hono/cors";
 import { api } from "./routes/api";
+import { authRoutes } from "./routes/auth";
 import { meRoutes } from "./routes/me";
 
 export const app = new Hono();
 
 app.get("/api/health", (c) => c.json({ ok: true, version: APP_VERSION }));
 
+// The split deploy serves the client from another origin, so the API allows it with credentials.
+app.use(
+  "/api/*",
+  cors({ origin: [env.CLIENT_URL, env.API_URL], credentials: true, allowHeaders: ["content-type", "x-guest-id"], exposeHeaders: ["x-guest-id"] }),
+);
+
+app.route("/api", authRoutes);
 app.route("/api", api);
 app.route("/api", meRoutes);
 

@@ -24,5 +24,6 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - Privacy and terms pages.
 - Challenges 002 to 012 (white and yellow belts), each with a golden set and recorded inspiration.
 - Challenges 013 to 030 (green, brown and black belts), each with a golden set and recorded inspiration.
+- Sign-in with Better Auth: GitHub and Google OAuth, unique public handles, a dev-only test login (`ENABLE_TEST_LOGIN`, refused on https deploys), and guest progress merged onto the account on first sign-in (best score wins, earliest open kept, belts re-checked).
 - Gallery review page `/gallery` and `GET /api/gallery`: target frames, belt, checks, golden set and inspiration per challenge and kata.
 - MIT license, contributing guide, code of conduct, security policy, PR and issue templates.
