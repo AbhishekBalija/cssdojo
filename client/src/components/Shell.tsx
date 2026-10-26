@@ -3,7 +3,7 @@ import { Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { BELTS, type Belt, type EventView, type MeView, type NotificationView } from "@cssdojo/shared";
 import { useEffect, useRef, useState } from "react";
 import { api } from "@/lib/api";
-import { shortDate, useEvents, useNotifications } from "@/lib/dojo";
+import { shortDate, useEvents, useNotifications, useSettings } from "@/lib/dojo";
 import { useGuestMerge, useMe } from "@/lib/me";
 import { loadTasks, onTasks, TASKS, type Tasks } from "@/lib/tasks";
 import { storage } from "@/lib/storage";
@@ -163,6 +163,14 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
             <path d="M4 21a8 8 0 0 1 16 0" />
           </svg>
           Profile
+        </Link>
+        <Link to="/settings" className="d-nav">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+            <path d="M4 7h10M18 7h2M4 17h4M12 17h8" />
+            <circle cx="16" cy="7" r="2" />
+            <circle cx="10" cy="17" r="2" />
+          </svg>
+          Settings
         </Link>
       </div>
       <div style={{ flexGrow: 1 }} />
@@ -388,8 +396,10 @@ function Announcer() {
     const t = setInterval(() => setI((x) => (x + 1) % items.length), 6000);
     return () => clearInterval(t);
   }, [paused, items.length]);
+  const signedIn = !!useMe().data?.user;
+  const settings = useSettings(signedIn);
   const e = items[i % Math.max(1, items.length)];
-  if (!e) return <span />;
+  if (!e || settings.data?.notify.live === false) return <span />;
   return (
     <a className="d-ann" href={e.href ?? "/leaderboard"} aria-live="polite" title="Pauses on hover. Opens the board." onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
       <span className="lv">LIVE</span>

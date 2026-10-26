@@ -245,9 +245,16 @@ function ProfileBody({ p, own }: { p: ProfileView; own: boolean }) {
               {total ? ` of ${total}` : ""} solved <i className="dot">·</i> <span style={{ color: "var(--sub)" }}>since {shortDate(p.joined)}</span>
             </span>
           </span>
-          <button type="button" className="d-btn sec" onClick={share}>
-            Share
-          </button>
+          <span style={{ display: "flex", gap: 8 }}>
+            {own ? (
+              <Link to="/settings" className="d-btn sec">
+                Settings
+              </Link>
+            ) : null}
+            <button type="button" className="d-btn sec" onClick={share}>
+              Share
+            </button>
+          </span>
         </div>
         <BigBelt belt={cloth} have={have} />
         <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
@@ -347,6 +354,22 @@ function ProfileBody({ p, own }: { p: ProfileView; own: boolean }) {
           <p className="note">No solves yet.</p>
         )}
       </Card>
+      {p.packs.length ? (
+        <Card icon={I.trophy} title="Battle Pack finishes">
+          <div className="d-finishes">
+            {p.packs.map((x) => (
+              <Link key={x.number} to="/packs/$n" params={{ n: String(x.number) }} className="r">
+                <span className="d-mono k">{String(x.number).padStart(2, "0")}</span>
+                <span className="t">{x.title}</span>
+                {x.live ? <span className="d-chip new">LIVE</span> : null}
+                <span className="d-mono v">
+                  #{x.rank} <span style={{ color: "var(--sub)" }}>of {fmt(x.players)}</span>
+                </span>
+              </Link>
+            ))}
+          </div>
+        </Card>
+      ) : null}
       <Badges views={p.badges} own={own} />
     </div>
   );

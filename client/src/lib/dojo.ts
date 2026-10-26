@@ -74,8 +74,8 @@ export function useSolutions(id: string) {
   return useQuery({ queryKey: ["solutions", id], queryFn: () => optional<SolutionsView>(`/challenges/${id}/solutions`), retry: false });
 }
 
-export function useSettings() {
-  return useQuery({ queryKey: ["settings"], queryFn: () => optional<SettingsView>("/settings"), retry: false });
+export function useSettings(enabled = true) {
+  return useQuery({ queryKey: ["settings"], queryFn: () => optional<SettingsView>("/settings"), retry: false, enabled });
 }
 
 /** "Battle Pack 05". */
