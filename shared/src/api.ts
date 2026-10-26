@@ -55,6 +55,23 @@ export interface ChallengeProgress {
   locked: boolean;
 }
 
+/** The streak tag in the header. `week` runs Monday to Sunday (UTC). */
+export interface StreakDetail {
+  current: number;
+  best: number;
+  playedToday: boolean;
+  week: ("done" | "today" | "missed" | "future")[];
+}
+
+/** GET /kata/days?month=YYYY-MM: the kata calendar. */
+export interface KataMonth {
+  month: string;
+  days: { date: string; challengeId: string; number: number; title: string; myScore: number | null; attempted: boolean }[];
+  /** When yesterday's board closed and tomorrow's kata opens. */
+  yesterdayClosedAt: string;
+  tomorrowOpensAt: string;
+}
+
 export interface KataToday {
   date: string;
   day: number;
@@ -81,7 +98,10 @@ export interface MeView {
   /** All-time points, place on the Wall and unread bell items. Zero/null for guests who have not played. */
   points: number;
   wallRank: number | null;
+  /** Signed-in players on the Wall, for "12 / 214". */
+  wallPlayers: number;
   unread: number;
+  streakDetail: StreakDetail;
   testLogin: boolean;
   providers: { github: boolean; google: boolean };
 }
