@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 import { Moon, Sun } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { applyTheme, currentTheme } from "@/lib/theme";
@@ -10,6 +10,7 @@ export function Header({ children }: { children?: ReactNode }) {
   const me = useMe();
   useGuestMerge();
   const user = me.data?.user ?? null;
+  const here = useRouterState({ select: (st) => st.location.href });
   const toggle = () => {
     const next = theme === "dark" ? "light" : "dark";
     applyTheme(next);
@@ -40,7 +41,7 @@ export function Header({ children }: { children?: ReactNode }) {
             {user.handle ?? user.name}
           </Link>
         ) : (
-          <Link to="/signin" className="btn signin">
+          <Link to="/signin" search={here === "/" || here.startsWith("/signin") ? {} : { next: here }} className="btn signin">
             Sign in
           </Link>
         )}

@@ -48,7 +48,15 @@ function UserRoute() {
   return <PublicProfile key={handle} handle={handle} />;
 }
 const userPage = createRoute({ getParentRoute: () => root, path: "/u/$handle", component: UserRoute });
-const signin = createRoute({ getParentRoute: () => root, path: "/signin", component: SignIn });
+const signin = createRoute({
+  getParentRoute: () => root,
+  path: "/signin",
+  validateSearch: (s: Record<string, unknown>): { next?: string; error?: string } => ({
+    next: typeof s.next === "string" ? s.next : undefined,
+    error: typeof s.error === "string" || typeof s.error === "number" ? String(s.error) : undefined,
+  }),
+  component: SignIn,
+});
 const gallery = createRoute({ getParentRoute: () => root, path: "/gallery", component: Gallery });
 const assets = createRoute({ getParentRoute: () => root, path: "/assets", component: Assets });
 const privacy = createRoute({ getParentRoute: () => root, path: "/privacy", component: Privacy });

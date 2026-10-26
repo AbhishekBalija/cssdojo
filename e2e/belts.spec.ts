@@ -10,7 +10,7 @@ test("five white solves earn the white belt, shown on the profile and leaderboar
   await page.goto("/signin");
   await page.getByTestId("test-login").locator("input").fill(name);
   await page.getByTestId("test-login").getByRole("button", { name: "Sign in" }).click();
-  await expect(page).toHaveURL(/\/me$/);
+  await expect(page).toHaveURL(/^https?:\/\/[^/]+\/$/);
 
   for (const id of WHITE) {
     const code = readFileSync(path.join(import.meta.dirname, "../challenges", id, "reference.html"), "utf8");
