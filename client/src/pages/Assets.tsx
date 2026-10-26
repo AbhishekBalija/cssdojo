@@ -3,7 +3,7 @@ import { Belt } from "@/components/Belt";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { Logo } from "@/components/Logo";
-import { EmptyState, ErrorState } from "@/components/States";
+import { EmptyState, ErrorState, LostState } from "@/components/States";
 
 const SVGS = ["logo-dark.svg", "logo-light.svg", "mark.svg", "mark-light.svg", "app-icon.svg"];
 const PNGS = ["icon-32.png", "apple-touch-icon.png", "icon-192.png", "icon-512.png"];
@@ -84,10 +84,7 @@ export function Assets() {
             <ErrorState onRetry={() => undefined} />
           </Spec>
           <Spec title="404" note="see any unknown URL">
-            <div className="empty-state">
-              <span className="lbl">404</span>
-              <h2>This mat is empty</h2>
-            </div>
+            <LostState />
           </Spec>
         </div>
       </main>

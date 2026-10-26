@@ -406,3 +406,13 @@ html[data-ligatures] .cm-content{font-variant-ligatures:normal}
 .d-warn{margin:0;padding:10px 14px;border:1px solid color-mix(in srgb,var(--warn) 45%,var(--line));border-radius:10px;background:color-mix(in srgb,var(--warn) 8%,transparent);font-size:13px;text-align:left}
 .d-gatefoot{margin:0;font-size:12px;color:var(--sub);text-align:center}
 .d-gatefoot a{color:var(--accent)}
+
+/* Empty and error states */
+.d-state{display:flex;flex-direction:column;align-items:center;gap:6px;width:100%;padding:44px 28px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,var(--d-card-a),var(--d-card-b));text-align:center}
+.d-state .ic{display:grid;place-items:center;width:64px;height:64px;margin-bottom:12px;border:1px dashed var(--line-strong);border-radius:16px;background:var(--d-card-b);color:var(--sub)}
+.d-state.error .ic{border-style:solid;border-color:color-mix(in srgb,var(--fail) 45%,var(--line));color:var(--fail)}
+.d-state .lb{font:600 11px/14px var(--font-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--sub)}
+.d-state.error .lb{color:var(--fail)}
+.d-state h2{margin:4px 0 0;font:600 17px/24px var(--font-ui);color:var(--fg)}
+.d-state p{margin:4px 0 0;max-width:360px;font-size:13.5px;line-height:21px;color:var(--sub)}
+.d-state>.d-btn,.d-state>a,.d-state>button,.d-state>.d-bigclock{margin-top:14px}

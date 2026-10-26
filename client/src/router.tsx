@@ -1,7 +1,6 @@
 import { createRootRoute, createRoute, createRouter, Outlet, useParams } from "@tanstack/react-router";
 import { Toaster } from "@/components/Toaster";
-import { Header } from "@/components/Header";
-import { ErrorState } from "@/components/States";
+import { ErrorState, StatePage } from "@/components/States";
 import { Assets } from "@/pages/Assets";
 import { Gallery } from "@/pages/Gallery";
 import { AppShell } from "@/components/Shell";
@@ -30,10 +29,9 @@ const root = createRootRoute({
   ),
   notFoundComponent: NotFound,
   errorComponent: ({ error, reset }) => (
-    <div className="app">
-      <Header />
+    <StatePage>
       <ErrorState message={error instanceof Error ? error.message : undefined} onRetry={reset} />
-    </div>
+    </StatePage>
   ),
 });
 
