@@ -6,6 +6,7 @@ import { cors } from "hono/cors";
 import { api } from "./routes/api";
 import { authRoutes } from "./routes/auth";
 import { meRoutes } from "./routes/me";
+import { rankingRoutes } from "./routes/ranking";
 
 export const app = new Hono();
 
@@ -20,6 +21,7 @@ app.use(
 app.route("/api", authRoutes);
 app.route("/api", api);
 app.route("/api", meRoutes);
+app.route("/api", rankingRoutes);
 
 // Rendered targets (PNG frames, thumbnails, replay JSON) and the bundled fonts.
 // They are public files, and the preview iframe has an opaque ("null") origin, so
