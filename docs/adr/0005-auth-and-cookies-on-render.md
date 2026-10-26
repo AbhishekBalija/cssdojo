@@ -13,3 +13,6 @@ GitHub and Google sign-in with sessions in our own Postgres. The brief deploys a
 
 ## Consequences
 - A custom domain with both on one site (for example `app.` and `api.` under one domain) would make the static site fully work later.
+
+## Update, 2026-10-26: client on Vercel
+The client moved to Vercel and proxies `/api` and `/static` to Render (see `docs/guides/vercel.md`). One origin again, so `SameSite=Lax` cookies work everywhere. Better Auth's base URL is the new `AUTH_URL` (the Vercel origin), and `PAGES_REDIRECT_TO_CLIENT` sends page requests on the Render host to Vercel.

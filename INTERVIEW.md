@@ -74,6 +74,11 @@ OAuth cannot run in CI, so Playwright signs in through `POST /api/test-login`, b
 
 ## Deploy and maintenance
 
+### Same origin through a proxy
+**What:** Vercel serves the static client and rewrites `/api/*` to the API on Render. The browser only ever sees one origin.
+**Why:** two `onrender.com` hosts are different sites (it is on the public suffix list), so the session cookie was third-party and Safari and Firefox dropped it. Through the proxy it is first-party.
+**Gotcha:** OAuth must call back to the proxy's origin, not the API's, or the cookie lands on the wrong site. That is why Better Auth's base URL (`AUTH_URL`) is the Vercel origin.
+
 **Q: How do migrations run in production?**
 At container start, before the server listens: `server/src/start.ts` runs Drizzle's migrator, then seeds challenges and the kata schedule idempotently (upserts). A failed migration stops the start, so Render keeps the previous deploy serving.
 
