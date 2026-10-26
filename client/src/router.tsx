@@ -4,8 +4,12 @@ import { Header } from "@/components/Header";
 import { ErrorState } from "@/components/States";
 import { Assets } from "@/pages/Assets";
 import { Gallery } from "@/pages/Gallery";
+import { AppShell } from "@/components/Shell";
 import { Home } from "@/pages/Home";
-import { Leaderboard } from "@/pages/Leaderboard";
+import { KataPage } from "@/pages/KataPage";
+import { Packs } from "@/pages/Packs";
+import { PackPage } from "@/pages/PackPage";
+import { ChallengeBoardPage, PackBoardPage, StreakBoardPage, WallBoard } from "@/pages/Leaderboards";
 import { Kata } from "@/pages/Kata";
 import { Privacy, Terms } from "@/pages/Legal";
 import { NotFound } from "@/pages/NotFound";
@@ -32,7 +36,12 @@ const root = createRootRoute({
   ),
 });
 
-const home = createRoute({ getParentRoute: () => root, path: "/", component: Home });
+// Every page but the play screen sits in the shell: sidebar, header, streak tag and bell.
+const shell = createRoute({ getParentRoute: () => root, id: "shell", component: AppShell });
+const home = createRoute({ getParentRoute: () => shell, path: "/", component: Home });
+const kata = createRoute({ getParentRoute: () => shell, path: "/kata", component: KataPage });
+const packs = createRoute({ getParentRoute: () => shell, path: "/packs", component: Packs });
+const pack = createRoute({ getParentRoute: () => shell, path: "/packs/$n", component: PackPage });
 
 function PlayRoute() {
   const { id } = useParams({ from: "/c/$id" });
@@ -40,8 +49,21 @@ function PlayRoute() {
 }
 const play = createRoute({ getParentRoute: () => root, path: "/c/$id", component: PlayRoute });
 
-const kata = createRoute({ getParentRoute: () => root, path: "/kata", component: Kata });
-const leaderboard = createRoute({ getParentRoute: () => root, path: "/leaderboard", component: Leaderboard });
+const kataPlay = createRoute({ getParentRoute: () => root, path: "/kata/play", component: Kata });
+const leaderboard = createRoute({ getParentRoute: () => shell, path: "/leaderboard", component: WallBoard });
+const lbPacks = createRoute({
+  getParentRoute: () => shell,
+  path: "/leaderboard/packs",
+  validateSearch: (s: Record<string, unknown>): { n?: number } => ({ n: Number.isInteger(Number(s.n)) && Number(s.n) > 0 ? Number(s.n) : undefined }),
+  component: PackBoardPage,
+});
+const lbChallenges = createRoute({
+  getParentRoute: () => shell,
+  path: "/leaderboard/challenges",
+  validateSearch: (s: Record<string, unknown>): { id?: string } => ({ id: typeof s.id === "string" ? s.id : undefined }),
+  component: ChallengeBoardPage,
+});
+const lbStreaks = createRoute({ getParentRoute: () => shell, path: "/leaderboard/streaks", component: StreakBoardPage });
 const me = createRoute({ getParentRoute: () => root, path: "/me", component: MyProfile });
 function UserRoute() {
   const { handle } = useParams({ from: "/u/$handle" });
@@ -62,7 +84,7 @@ const assets = createRoute({ getParentRoute: () => root, path: "/assets", compon
 const privacy = createRoute({ getParentRoute: () => root, path: "/privacy", component: Privacy });
 const terms = createRoute({ getParentRoute: () => root, path: "/terms", component: Terms });
 
-export const routeTree = root.addChildren([home, play, kata, leaderboard, me, userPage, signin, gallery, assets, privacy, terms]);
+export const routeTree = root.addChildren([shell.addChildren([home, kata, packs, pack, leaderboard, lbPacks, lbChallenges, lbStreaks]), play, kataPlay, me, userPage, signin, gallery, assets, privacy, terms]);
 export const router = createRouter({ routeTree, defaultPreload: "intent" });
 
 declare module "@tanstack/react-router" {
