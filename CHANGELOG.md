@@ -13,6 +13,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - 18 badges, a notification bell ("passed you" at most once per board per hour), public live moves, notification settings and handle change (once per 30 days).
 - API routes: `/packs`, `/boards/wall|pack|challenge|streaks`, `/events`, `/notifications`, `/kata/days`, `/settings`. `/me`, `/profile`, challenge progress and Submit results carry points, rank and badges.
 - Migration `0001_ranking`: new tables and columns, plus a backfill of streak days from past kata bests.
+- Front screens from the approved mockup (v49): the dojo shell (sidebar, LIVE line, streak tag, bell, toasts), Home, the Daily kata page with its calendar, Battle Packs and the pack page, the Wall and the pack, challenge and streak boards, profile and public profile with badges, Settings, Sign in, and empty, error and 404 states.
+- Play screen: a slim header with the pack, belt, a target picker and Prev / Next; CSS completions and folded markup in the editor; a result card after a new best or first solve; a belt earned card; a Solutions page that asks before locking your points.
+- Interaction polish (`motion/approved-polish.md`): stacked toasts, rolling digits, gliding tabs, page and theme fades, a streak tag that swings only when it grows, mismatch (hold D), onion skin (hold G), a measuring crosshair, states playback, hover frames on tiles, full-screen confetti on a first solve, an optional solve sound and a quiet "Saved" label.
+- Settings: handle, notifications, theme, reduce motion, sound and editor ligatures.
 
 ### Removed
 - Unused exports and the unused `codemirror` meta package (found by `bunx fallow`).
