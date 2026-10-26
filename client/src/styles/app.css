@@ -196,6 +196,8 @@ kbd{font:500 9px/1 var(--font-mono);padding:3px 4px;border-radius:4px;border:1px
 .colorchip i{width:18px;height:18px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}
 .colorchip:hover{border-color:var(--line-strong)}
 .colorchip.copied{color:var(--pass)}
+.fontchip{padding-left:8px}
+.fontchip b{font-size:14px;font-weight:600;line-height:1}
 .checks{display:grid;gap:6px}
 .check{display:grid;grid-template-columns:18px minmax(0,1fr) auto;gap:4px 10px;align-items:center;padding:9px 11px;border:1px solid var(--line);border-radius:var(--radius);background:var(--panel);font:400 11.5px/1.3 var(--font-mono)}
 .check i{width:18px;height:18px;border-radius:50%;display:grid;place-items:center;font:600 10px/1 var(--font-ui);font-style:normal}

@@ -10,7 +10,7 @@ test("today's kata scores on its own board and starts a streak", async ({ page }
   const today = (await (await page.request.get("/api/kata/today")).json()) as { date: string; challengeId: string };
   await page.goto("/kata");
   await page.getByTestId("submit").click();
-  await expect(page.getByTestId("last-score")).toContainText(/\d+\.\d/, { timeout: 30_000 });
+  await expect(page.getByTestId("last-score")).toContainText(/\d+(\.\d)?%/, { timeout: 30_000 });
 
   const attempts = (await (await page.request.get(`/api/challenges/${today.challengeId}/attempts`)).json()) as unknown[];
   expect(attempts.length).toBeGreaterThan(0);

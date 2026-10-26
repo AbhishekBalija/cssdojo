@@ -58,6 +58,7 @@ export function CodeEditor({ value, onChange, onReady, onSubmit }: { value: stri
           syntaxHighlighting(dojoHighlight),
           dojoTheme,
           EditorState.tabSize.of(2),
+          EditorView.lineWrapping,
           keymap.of([
             { key: "Mod-Enter", run: () => (submitRef.current?.(), true) },
             indentWithTab,

@@ -8,7 +8,7 @@ import type { Box, DomSnapshot, RenderOutput } from "./render";
 // what is wrong, never how to fix it.
 
 export const CHECK_LABELS: Record<CheckId, string> = {
-  "hooks-present": "Required parts are there",
+  "hooks-present": "Parts are where the target has them",
   "hover-changes": "Responds to hover",
   "focus-visible": "Keyboard focus is visible",
   "text-contrast-aa": "Text is easy to read",
@@ -36,6 +36,48 @@ function fail(id: CheckId, hint: string): CheckResult {
 
 export function missingHooks(snapshot: DomSnapshot): string[] {
   return snapshot.hooks.filter((h) => !h.found || !h.visible).map((h) => h.name);
+}
+
+// ---------- placement ----------
+
+/** Share of the two boxes that overlap (intersection over union), 0 to 1. */
+export function overlap(a: Box, b: Box): number {
+  const ix = Math.max(0, Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x));
+  const iy = Math.max(0, Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y));
+  const inter = ix * iy;
+  const union = a.w * a.h + b.w * b.h - inter;
+  return union > 0 ? inter / union : 0;
+}
+
+// A part counts as placed when it shares at least half its area with the target's
+// part, or when it is close by and within half to double the size. That forgives
+// near misses (a dot 4px too big, a card 40px too narrow) while an unstyled
+// starter element sitting in the top-left corner never counts.
+const PLACED_OVERLAP = 0.5;
+
+function center(b: Box): [number, number] {
+  return [b.x + b.w / 2, b.y + b.h / 2];
+}
+
+export function isPlaced(mine: Box, ref: Box): boolean {
+  if (overlap(mine, ref) >= PLACED_OVERLAP) return true;
+  const [mx, my] = center(mine);
+  const [rx, ry] = center(ref);
+  const near = Math.hypot(mx - rx, my - ry) <= Math.max(12, 0.5 * Math.max(ref.w, ref.h));
+  const ratio = (a: number, b: number) => (b > 0 ? a / b : a > 0 ? Infinity : 1);
+  const sized = [ratio(mine.w, ref.w), ratio(mine.h, ref.h)].every((r) => r >= 0.5 && r <= 2);
+  return near && sized;
+}
+
+/** Hooks whose box is not roughly where (and roughly the size) the target has it. */
+export function misplacedHooks(answer: DomSnapshot, target: DomSnapshot): string[] {
+  return target.hooks
+    .filter((ref) => {
+      if (!ref.box) return false;
+      const mine = answer.hooks.find((h) => h.name === ref.name);
+      return !mine?.box || !isPlaced(mine.box, ref.box);
+    })
+    .map((ref) => ref.name);
 }
 
 // ---------- colour helpers ----------
@@ -177,10 +219,22 @@ function realText(ctx: CheckContext): CheckResult {
 }
 
 export function runChecks(ids: readonly CheckId[], ctx: CheckContext): CheckResult[] {
+  // Checks only earn points once the parts are built where the target has them.
+  // Without this gate, untouched starter code passed every check, because a native
+  // button already has a hover tint and a focus ring.
+  const misplaced = misplacedHooks(ctx.answer.snapshot, ctx.target.snapshot);
+  if (misplaced.length > 0) {
+    const names = misplaced.map((m) => `"${m}"`).join(", ");
+    return ids.map((id) =>
+      id === "hooks-present"
+        ? fail(id, `${names} ${misplaced.length === 1 ? "isn't" : "aren't"} where the target has ${misplaced.length === 1 ? "it" : "them"}, or the size is far off.`)
+        : fail(id, "Not checked yet: build the parts where the target has them first."),
+    );
+  }
   return ids.map((id) => {
     switch (id) {
       case "hooks-present":
-        return pass(id); // Missing hooks stop scoring before checks run.
+        return pass(id); // Missing hooks stop scoring before checks run; misplaced ones are caught above.
       case "hover-changes":
         return hoverChanges(ctx);
       case "focus-visible":

@@ -15,16 +15,16 @@
 <style>
   body { margin: 0; }
   .stage { height: 300px; display: grid; place-items: center; background: #F7E8EC; }
-  .tabs-card { width: 340px; background: #FFFFFF; border-radius: 16px; overflow: hidden; box-shadow: 0 1px 3px rgba(80, 20, 50, 0.14); }
+  .tabs-card { width: 340px; background: #FFFFFF; border-radius: 16px; overflow: hidden; box-shadow: 0 1px 4px rgba(80, 20, 50, 0.14); }
   .tabs { display: flex; padding: 0 12px; border-bottom: 1px solid #EBD6DE; }
   .tab { position: relative; height: 48px; padding: 0 22px; border: 0; background: transparent; color: #6B4A58; font: 600 14px/20px "Onest", sans-serif; cursor: pointer; }
-  .tab::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px; border-radius: 3px 3px 0 0; background: transparent; }
+  .tab::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px; border-radius: 2px 2px 0 0; background: transparent; }
   .tab[aria-selected="true"] { color: #B4235A; }
   .tab[aria-selected="true"]::after { background: #B4235A; }
   .tab:hover:not([aria-selected="true"]) { color: #2D1B24; background: #F8DEE7; }
   .tab:hover:not([aria-selected="true"])::after { background: #E3B4C4; }
   .tab:focus-visible { background: #FBE9EF; outline: 2px solid #B4235A; outline-offset: -4px; }
-  .tab-panel { padding: 18px 24px 22px; }
-  .tab-panel-title { margin: 0; font: 600 15px/22px "Onest", sans-serif; color: #2D1B24; }
+  .tab-panel { padding: 20px 24px 24px; }
+  .tab-panel-title { margin: 0; font: 600 14px/24px "Onest", sans-serif; color: #2D1B24; }
   .tab-panel-text { margin: 2px 0 0; font: 400 14px/20px "Onest", sans-serif; color: #6B4A58; }
 </style>

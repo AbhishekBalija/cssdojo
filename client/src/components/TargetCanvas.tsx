@@ -58,7 +58,10 @@ export function TargetCanvas({ challengeId, title, forced }: { challengeId: stri
       const P = isFocus() ? seqs.focusPress : seqs.press;
       let im: HTMLImageElement | undefined;
       if (pi > 0 && P.length) im = P[Math.min(pi, P.length - 1)];
-      else if (hi > 0 || isFocus()) im = H[Math.min(hi, H.length - 1)];
+      else if (hi > 0) im = H[Math.min(hi, H.length - 1)];
+      // Focused but not hovered: the plain focus frame. (focusHover starts with the
+      // pointer already on it, so using it here showed the hover fill as focus.)
+      else if (isFocus()) im = seqs.focus[seqs.focus.length - 1];
       else im = seqs.rest[0];
       if (im?.complete && im.naturalWidth) cx.drawImage(im, 0, 0, 800, 600);
     }
@@ -129,6 +132,18 @@ export function TargetCanvas({ challengeId, title, forced }: { challengeId: stri
       draw();
     };
     const onKeyDown = (e: KeyboardEvent) => {
+      // The code editor keeps Tab for indenting, so a keyboard user can rarely Tab
+      // into the target from the page. Instead, the first Tab after clicking the
+      // target shows its keyboard focus state; the next Tab moves on as usual.
+      if (e.key === "Tab" && !e.shiftKey && !focused && seqs.focus.length > 0) {
+        e.preventDefault();
+        kb = true;
+        focused = true;
+        pressed = false;
+        kick();
+        draw();
+        return;
+      }
       if (focused && (e.key === " " || e.key === "Enter")) {
         e.preventDefault();
         pressed = true;

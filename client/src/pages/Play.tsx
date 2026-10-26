@@ -21,7 +21,7 @@ import { toast } from "@/lib/toast";
 // brand/play-final-2026-10-25.html. Scores come from the server scorer.
 
 const CHECK_LABELS: Record<string, string> = {
-  "hooks-present": "Required parts are there",
+  "hooks-present": "Parts are where the target has them",
   "hover-changes": "Responds to hover",
   "focus-visible": "Keyboard focus is visible",
   "text-contrast-aa": "Text is easy to read",
@@ -114,7 +114,8 @@ export function Play({ challengeId, board, kataLabel }: { challengeId: string; b
   };
 
   const submit = useCallback(async () => {
-    if (submitting) return;
+    // The starter arrives with the challenge; an early click would submit nothing.
+    if (submitting || !code.trim()) return;
     setSubmitting(true);
     try {
       const { id } = await api<{ id: string }>("/submissions", { method: "POST", json: { challengeId, code, board } });
@@ -383,7 +384,7 @@ export function Play({ challengeId, board, kataLabel }: { challengeId: string; b
             <CodeEditor value={code} onChange={onChange} onSubmit={() => void submit()} onReady={(h) => (editor.current = h)} />
           </div>
           <div className="ed-foot">
-            <button className="btn primary" type="button" onClick={() => void submit()} disabled={submitting} data-testid="submit">
+            <button className="btn primary" type="button" onClick={() => void submit()} disabled={submitting || !code.trim()} data-testid="submit">
               {submitting ? "Scoring…" : "Submit"} <kbd>Ctrl</kbd>
               <kbd>⏎</kbd>
             </button>
@@ -501,7 +502,11 @@ export function Play({ challengeId, board, kataLabel }: { challengeId: string; b
               {c ? <TargetCanvas challengeId={c.id} title={c.title} forced={state} /> : <div className="frame" />}
               <span className="livetag">
                 <i />
-                {c && c.frames.length > 1 ? "Live target. Hover it, click it, press Tab." : "Target. Match it pixel for pixel."}
+                {c && c.frames.includes("focus")
+                  ? "Hover it. Click it, then Tab for focus."
+                  : c && c.frames.length > 1
+                    ? "Live target. Hover it to see the change."
+                    : "Target. Match it pixel for pixel."}
               </span>
               {c ? (
                 <div className="t-title">
@@ -520,6 +525,16 @@ export function Play({ challengeId, board, kataLabel }: { challengeId: string; b
                   <div className="chips">
                     {c.colors.map((hex) => (
                       <ColorChip key={hex} hex={hex} />
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+              {c && c.fonts.length > 0 ? (
+                <div className="sec">
+                  <span className="lbl">Fonts · loaded for you</span>
+                  <div className="chips">
+                    {c.fonts.map((f) => (
+                      <FontChip key={f} family={f} />
                     ))}
                   </div>
                 </div>
@@ -654,6 +669,23 @@ function ColorChip({ hex }: { hex: string }) {
     <button className={`colorchip${copied ? " copied" : ""}`} type="button" onClick={() => navigator.clipboard.writeText(hex).then(done, done)}>
       <i style={{ background: hex }} />
       {copied ? "Copied" : hex}
+    </button>
+  );
+}
+
+/** Shows a font in its own face; a click copies a ready font-family value. */
+function FontChip({ family }: { family: string }) {
+  const [copied, setCopied] = useState(false);
+  const fallback = family === "Martian Mono" ? "monospace" : family === "Instrument Serif" ? "serif" : "sans-serif";
+  const value = `"${family}", ${fallback}`;
+  const done = () => {
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1300);
+  };
+  return (
+    <button className={`colorchip fontchip${copied ? " copied" : ""}`} type="button" title={`Copy font-family: ${value}`} onClick={() => navigator.clipboard.writeText(value).then(done, done)}>
+      <b style={{ fontFamily: value }}>Aa</b>
+      {copied ? "Copied" : family}
     </button>
   );
 }

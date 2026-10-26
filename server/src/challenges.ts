@@ -33,6 +33,7 @@ export function toPublic(c: Challenge): PublicChallenge {
     hooks: m.hooks,
     checks: m.checks,
     colors: m.colors,
+    fonts: m.allow.fonts,
     starter: c.starter,
     inspiration: m.inspiration,
   };

@@ -12,7 +12,7 @@
 ## Scoring
 - Rendered server-side in pinned Chromium at 2x, JavaScript and network off, bundled fonts only.
 - Frames: rest, plus hover and focus when the challenge needs them. 400 x 300.
-- Visual per frame = 100 x S^2 x (1 - meanDeltaE / 20) over the component region. Total = 0.7 visual + 0.3 checks.
+- Visual per frame = 100 x S^2 x C^2 with C = 1 - meanDeltaE / 12 over the component region. Total = 0.7 visual + 0.3 checks.
 - Checks judge the result, never the technique.
 - Limits: 50 KB code, 5 s render, 30 submits per hour for guests and 120 for signed-in players.
 

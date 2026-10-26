@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { loadAllChallenges } from "./challenges";
+import { offScaleValues } from "./value-scale";
 
 describe("challenge folders", async () => {
   const all = await loadAllChallenges();
@@ -18,6 +19,11 @@ describe("challenge folders", async () => {
       const cls = /^\.([a-z0-9_-]+)$/i.exec(sel)?.[1];
       if (cls) expect(c.starter).toContain(cls);
     }
+  });
+
+  it.each(all.map((c) => [c.meta.id, c] as const))("%s reference and starter use only values on the scale", (_id, c) => {
+    expect(offScaleValues(c.reference)).toEqual([]);
+    expect(offScaleValues(c.starter)).toEqual([]);
   });
 
   it("kata days are 1..n without gaps", () => {

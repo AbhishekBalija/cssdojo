@@ -10,6 +10,11 @@ const EnvSchema = z.object({
   DATABASE_URL: z.string().url().optional(),
   API_URL: z.string().url().default("http://localhost:8787"),
   CLIENT_URL: z.string().url().default("http://localhost:5173"),
+  // Origin browsers use for sign-in when the client proxies /api to us (Vercel).
+  // OAuth callbacks and cookies live there. Defaults to API_URL.
+  AUTH_URL: z.string().url().optional(),
+  // "true" sends page requests on this host to CLIENT_URL, so the API host is not a second app.
+  PAGES_REDIRECT_TO_CLIENT: z.enum(["true", "false"]).default("false"),
   BETTER_AUTH_SECRET: z.string().min(16).optional(),
   GITHUB_CLIENT_ID: z.string().optional(),
   GITHUB_CLIENT_SECRET: z.string().optional(),
@@ -25,3 +30,8 @@ const EnvSchema = z.object({
 export type Env = z.infer<typeof EnvSchema>;
 
 export const env: Env = EnvSchema.parse(process.env);
+
+/** Public origin for sign-in: the client's proxy when there is one, else the API. */
+export const authUrl = env.AUTH_URL ?? env.API_URL;
+/** Every origin a browser may call the API from. */
+export const allowedOrigins = [...new Set([env.CLIENT_URL, env.API_URL, authUrl].map((u) => new URL(u).origin))];
