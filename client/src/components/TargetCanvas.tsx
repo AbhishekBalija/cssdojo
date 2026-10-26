@@ -129,6 +129,18 @@ export function TargetCanvas({ challengeId, title, forced }: { challengeId: stri
       draw();
     };
     const onKeyDown = (e: KeyboardEvent) => {
+      // The code editor keeps Tab for indenting, so a keyboard user can rarely Tab
+      // into the target from the page. Instead, the first Tab after clicking the
+      // target shows its keyboard focus state; the next Tab moves on as usual.
+      if (e.key === "Tab" && !e.shiftKey && !focused && seqs.focus.length > 0) {
+        e.preventDefault();
+        kb = true;
+        focused = true;
+        pressed = false;
+        kick();
+        draw();
+        return;
+      }
       if (focused && (e.key === " " || e.key === "Enter")) {
         e.preventDefault();
         pressed = true;

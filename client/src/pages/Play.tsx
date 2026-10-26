@@ -501,7 +501,11 @@ export function Play({ challengeId, board, kataLabel }: { challengeId: string; b
               {c ? <TargetCanvas challengeId={c.id} title={c.title} forced={state} /> : <div className="frame" />}
               <span className="livetag">
                 <i />
-                {c && c.frames.length > 1 ? "Live target. Hover it, click it, press Tab." : "Target. Match it pixel for pixel."}
+                {c && c.frames.includes("focus")
+                  ? "Hover it. Click it, then Tab for focus."
+                  : c && c.frames.length > 1
+                    ? "Live target. Hover it to see the change."
+                    : "Target. Match it pixel for pixel."}
               </span>
               {c ? (
                 <div className="t-title">
