@@ -37,7 +37,7 @@ export const SubmissionViewSchema = z.object({
   createdAt: z.string(),
   newBest: z.boolean().optional(),
   beltsEarned: z.array(z.enum(BELTS)).optional(),
-  /** Points, Wall moves, pack progress and badges from this Submit. Library board only. */
+  /** Points, Wall moves, pack progress, badges and streak from this Submit. */
   ranking: z.custom<SubmitRanking>().optional(),
 });
 export type SubmissionView = z.infer<typeof SubmissionViewSchema>;
@@ -152,6 +152,8 @@ export interface ProfileView {
   kata: { date: string; score: number | null }[];
   /** Share of your scored Submits that passed each check (0 to 1). */
   checks: { id: string; label: string; passRate: number }[];
+  /** Battle Packs played (opened ones only), newest first, with your place on each. */
+  packs: { number: number; title: string; rank: number; players: number; live: boolean }[];
 }
 
 // ---------- Ranking: points, Battle Packs, the Wall, badges, notifications, live moves ----------
@@ -213,7 +215,7 @@ export interface PackBoardRow {
   me: boolean;
 }
 
-/** GET /wall: the all-time ranking by points. */
+/** GET /boards/wall: the all-time ranking by points. */
 export interface WallView {
   players: number;
   rows: WallRow[];
@@ -235,7 +237,7 @@ export interface WallRow {
   me: boolean;
 }
 
-/** GET /leaderboard/:challengeId (library board): best score, ties to whoever got there first. */
+/** GET /boards/challenge/:id (library board): best score, ties to whoever got there first. */
 export interface ChallengeBoardRow {
   rank: number;
   player: PlayerTag;
@@ -247,7 +249,7 @@ export interface ChallengeBoardRow {
   me: boolean;
 }
 
-/** GET /streaks: days in a row with a kata Submit that changed the starter. */
+/** GET /boards/streaks: days in a row with a kata Submit that changed the starter. */
 export interface StreakRow {
   rank: number;
   player: PlayerTag;
@@ -269,7 +271,7 @@ export interface NotificationView {
   kind: "passed" | "badge" | "belt" | "pack-open" | "pack-soon";
   title: string;
   body: string;
-  /** Where clicking it goes, a client route like "/play/b-016-stat-card". */
+  /** Where clicking it goes, a client route like "/c/b-016-stat-card". */
   href: string | null;
   createdAt: string;
   read: boolean;
@@ -303,7 +305,8 @@ export interface SubmitRanking {
   /** Points gained by this Submit (0 when not a new best or locked). */
   gained: number;
   locked: boolean;
-  wall: { before: number; after: number; rankBefore: number | null; rankAfter: number | null; passed: string[] };
+  /** Null on kata boards, which give no points. `passed` holds the handles you passed. */
+  wall: { before: number; after: number; rankBefore: number | null; rankAfter: number | null; passed: string[] } | null;
   pack: { number: number; title: string; solved: number } | null;
   badgesEarned: string[];
   /** True when this Submit kept or started today's streak. */
@@ -318,12 +321,38 @@ export interface SolutionsView {
   locked: boolean;
   /** Your best when you opened solutions, and the points frozen with it. */
   frozen: { score: number; points: number } | null;
+  /** Our reference answer, null until you open solutions. */
+  reference: string | null;
   top: { rank: number; player: PlayerTag; score: number; chars: number; code: string }[];
 }
 
 export interface SettingsView {
+  /** How you signed in, and the email of that account, for "Signed in with". */
+  provider: "github" | "google" | null;
+  providerAccount: string | null;
   handle: string | null;
   /** When the handle can next be changed (once every 30 days). */
   handleChangeableAt: string | null;
   notify: { passed: boolean; packOpen: boolean; badge: boolean; live: boolean };
 }
+
+/** Lowercase letters, digits and single dashes, 2 to 20 long, like handles made at sign-up. */
+export const HandleSchema = z
+  .string()
+  .min(2)
+  .max(20)
+  .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Use lowercase letters, digits and dashes");
+
+/** A handle can be changed once every 30 days. */
+export const HANDLE_CHANGE_DAYS = 30;
+
+export const SettingsPatchSchema = z.object({
+  handle: HandleSchema.optional(),
+  notify: z.object({ passed: z.boolean(), packOpen: z.boolean(), badge: z.boolean(), live: z.boolean() }).partial().optional(),
+});
+export type SettingsPatch = z.infer<typeof SettingsPatchSchema>;
+
+export const PackNotifySchema = z.object({ on: z.boolean() });
+
+/** No ids marks every notification read. */
+export const ReadNotificationsSchema = z.object({ ids: z.array(z.string().uuid()).max(100).optional() });
