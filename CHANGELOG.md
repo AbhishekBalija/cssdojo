@@ -5,6 +5,15 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+### Added
+- Ranking (rules in `docs/requirements/ranking.md`): points per Battle Pack challenge by belt (white 200 up to black 1000, `max * ((score - 50) / 50)^2`), the Wall (all-time points), ties to whoever got there first.
+- Battle Packs: 5 packs of 6 challenges in `challenges/packs.json`. Upcoming packs hide their challenges, live packs run 28 days, finished packs keep frozen final standings and stay playable.
+- Opening solutions locks your points on that challenge (`POST /api/challenges/:id/solutions/open`), then shows the top five answers and our reference. Solutions no longer need a 90.
+- Streak days: a Submit on today's kata that changed the starter code.
+- 18 badges, a notification bell ("passed you" at most once per board per hour), public live moves, notification settings and handle change (once per 30 days).
+- API routes: `/packs`, `/boards/wall|pack|challenge|streaks`, `/events`, `/notifications`, `/kata/days`, `/settings`. `/me`, `/profile`, challenge progress and Submit results carry points, rank and badges.
+- Migration `0001_ranking`: new tables and columns, plus a backfill of streak days from past kata bests.
+
 ### Removed
 - Unused exports and the unused `codemirror` meta package (found by `bunx fallow`).
 
@@ -14,6 +23,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - Scoring is fairer on colour: inside the shape, a wrong colour is scored by the colour term only, not counted again as missing shape. A right-shaped answer with the wrong focus fill now scores about 86. Colour cost is `C^2` with `C = 1 - deltaE / 12`.
 
 ### Fixed
+- The player middleware ran once per route group, so a guest's first POST could create several guest rows. It now runs once per request.
+- A Submit more than 24 days after first opening a challenge overflowed the solve-time column and failed to record.
 - Scoring: untouched starter code no longer passes the outcome checks. Checks only count once every required part is placed roughly like the target (starter on #001 went from 32.9 with 5/5 checks to 2.9 with 0/5). Golden set now caps starter answers at 15.
 - Live target: clicking it and pressing Tab now shows its keyboard focus state. Before, the code editor kept Tab for indenting, so the focus state was unreachable from the keyboard.
 - Live target: the focus state showed the hover fill (it drew the first focus-plus-hover frame). It now shows the real focus frame, in the live target and the :focus preview.

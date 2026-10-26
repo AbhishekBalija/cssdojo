@@ -38,6 +38,19 @@ Concepts used in CSS Dojo, from basic to advanced, with why and how they were bu
 **What:** `score_jobs` rows are claimed with `SELECT ... FOR UPDATE SKIP LOCKED`.
 **Why:** no Redis needed yet. `SKIP LOCKED` lets several workers pull from the same table without taking the same job, and a crashed worker's lock is released with its transaction.
 
+### Rankings computed on read
+**What:** the Wall, pack and challenge boards are one grouped query over `best_scores` per request; each best stores its own `points`. Finished packs are frozen once into `pack_results`.
+**Why:** at hundreds of players a `GROUP BY` is cheaper than keeping a ranking table in sync. The cache can come later without changing the API.
+**Interview angle:** "who passed whom" is a diff of two sorted lists taken before and after the write (`diffBoard`), which is pure and unit tested.
+
+### Jobs without a scheduler
+**What:** pack countdown jobs (opens soon, opened, final standings) run from busy routes at most once a minute. Each job claims a flag column with `UPDATE ... WHERE flag IS NULL RETURNING`.
+**Why:** no cron service on the free host. The conditional update makes each job run exactly once even with two processes.
+
+### Tests against a real database
+**What:** `ranking.db.test.ts` runs only when `TEST_DATABASE_URL` names a database with "test" in it.
+**Why:** points, locks and pack finals are SQL; mocking the database would test the mock. The name guard stops it emptying a real database.
+
 ## Scoring
 
 ### Comparing screenshots fairly
