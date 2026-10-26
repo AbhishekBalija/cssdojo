@@ -21,7 +21,7 @@ function topBelt(belts: Belt[]): Belt | null {
 }
 
 /** The long cloth belt across the profile card; stripes count solves toward the next belt. */
-function BigBelt({ belt, have }: { belt: Belt; have: number }) {
+export function BigBelt({ belt, have }: { belt: Belt; have: number }) {
   const c = CLOTH[belt];
   const id = useId();
   return (
@@ -92,9 +92,9 @@ function KataChart({ kata }: { kata: ProfileView["kata"] }) {
   );
 }
 
-const GROUP_COLOR: Record<BadgeGroup, string> = { belts: "#F2C94C", packs: "#A99CFF", challenges: "#F2C94C", streaks: "#5ED39A", practice: "#A99CFF", dojo: "#A99CFF" };
+export const GROUP_COLOR: Record<BadgeGroup, string> = { belts: "#F2C94C", packs: "#A99CFF", challenges: "#F2C94C", streaks: "#5ED39A", practice: "#A99CFF", dojo: "#A99CFF" };
 
-function BadgeIcon({ b }: { b: BadgeDef }) {
+export function BadgeIcon({ b }: { b: BadgeDef }) {
   const p = { width: 22, height: 22, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round" as const, strokeLinejoin: "round" as const, "aria-hidden": true };
   if (b.group === "belts")
     return (

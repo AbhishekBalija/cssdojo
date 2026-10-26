@@ -15,6 +15,7 @@ import { NotFound } from "@/pages/NotFound";
 import { Play } from "@/pages/Play";
 import { MyProfile, PublicProfile } from "@/pages/Profile";
 import { Settings } from "@/pages/Settings";
+import { Solutions } from "@/pages/Solutions";
 import { SignIn } from "@/pages/SignIn";
 
 // Learning note: TanStack Router builds a typed route tree, so <Link to="/c/$id">
@@ -64,6 +65,11 @@ const lbChallenges = createRoute({
 });
 const lbStreaks = createRoute({ getParentRoute: () => shell, path: "/leaderboard/streaks", component: StreakBoardPage });
 const me = createRoute({ getParentRoute: () => shell, path: "/me", component: MyProfile });
+function SolutionsRoute() {
+  const { id } = useParams({ from: "/shell/c/$id/solutions" });
+  return <Solutions key={id} id={id} />;
+}
+const solutions = createRoute({ getParentRoute: () => shell, path: "/c/$id/solutions", component: SolutionsRoute });
 const settings = createRoute({ getParentRoute: () => shell, path: "/settings", component: Settings });
 function UserRoute() {
   const { handle } = useParams({ from: "/shell/u/$handle" });
@@ -84,7 +90,7 @@ const assets = createRoute({ getParentRoute: () => root, path: "/assets", compon
 const privacy = createRoute({ getParentRoute: () => root, path: "/privacy", component: Privacy });
 const terms = createRoute({ getParentRoute: () => root, path: "/terms", component: Terms });
 
-export const routeTree = root.addChildren([shell.addChildren([home, kata, packs, pack, leaderboard, lbPacks, lbChallenges, lbStreaks, me, settings, userPage]), play, kataPlay, signin, gallery, assets, privacy, terms]);
+export const routeTree = root.addChildren([shell.addChildren([home, kata, packs, pack, leaderboard, lbPacks, lbChallenges, lbStreaks, me, settings, userPage, solutions]), play, kataPlay, signin, gallery, assets, privacy, terms]);
 export const router = createRouter({ routeTree, defaultPreload: "intent" });
 
 declare module "@tanstack/react-router" {

@@ -1,20 +1,24 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Link, useNavigate } from "@tanstack/react-router";
-import { BarChart3, ChevronDown, Copy, History, Settings, TextQuote, X } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { BarChart3, Copy, History, Settings, TextQuote, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { SOLVED_AT, type ChallengeProgress, type ChallengeSummary, type CheckResult, type LeaderboardRow, type PublicChallenge, type ScoreResult, type SubmissionView } from "@cssdojo/shared";
+import { SOLVED_AT, type Belt as BeltName, type ChallengeProgress, type CheckResult, type LeaderboardRow, type PublicChallenge, type ScoreResult, type SubmissionView } from "@cssdojo/shared";
 import { Belt } from "@/components/Belt";
 import { CodeEditor, type CodeEditorHandle } from "@/components/CodeEditor";
 import { Dialog } from "@/components/Dialog";
-import { Header } from "@/components/Header";
 import { OutputFrame, type PreviewState } from "@/components/OutputFrame";
+import { PlayHeader, usePackOf } from "@/components/PlayHeader";
+import { BeltEarned, ResultCard } from "@/components/ResultCard";
+import { EmptyState, StatePage } from "@/components/States";
 import { TargetCanvas } from "@/components/TargetCanvas";
 import { ApiError, api } from "@/lib/api";
 import { pad3 } from "@/lib/belts";
 import { confetti } from "@/lib/confetti";
 import { formatCode, formatDuration, untilReset } from "@/lib/format";
 import { useMe } from "@/lib/me";
+import { playSolveSound } from "@/lib/sound";
 import { storage } from "@/lib/storage";
+import { markTask } from "@/lib/tasks";
 import { toast } from "@/lib/toast";
 
 // The play screen: editor | your output | target, as approved in
@@ -30,33 +34,18 @@ const CHECK_LABELS: Record<string, string> = {
   "real-text": "Text is real text",
 };
 
-const TASKS = [
-  ["slide", "Compare with the target", "Hover your output to slide over the target."],
-  ["check", "Pass a technique check", "Make the hover or focus behaviour match."],
-  ["submit", "Submit your first kata", "Press Submit or Ctrl+Enter."],
-  ["signin", "Sign in to save your streak", "Guests can play. Signing in keeps your progress."],
-] as const;
-type TaskKey = (typeof TASKS)[number][0];
-
 interface Attempt extends SubmissionView {
   code: string;
 }
 
-function loadTasks(): Partial<Record<TaskKey, boolean>> {
-  try {
-    return JSON.parse(storage.get("dojo-tasks") ?? "{}") as Partial<Record<TaskKey, boolean>>;
-  } catch {
-    return {};
-  }
-}
+type Moment = { kind: "result"; view: SubmissionView; result: Extract<ScoreResult, { status: "scored" }>; chars: number };
 
 export function Play({ challengeId, board, kataLabel }: { challengeId: string; board: string; kataLabel?: string }) {
   const qc = useQueryClient();
-  const navigate = useNavigate();
   const me = useMe();
   const challenge = useQuery({ queryKey: ["challenge", challengeId], queryFn: () => api<PublicChallenge>(`/challenges/${challengeId}`) });
   const progress = useQuery({ queryKey: ["progress", challengeId], queryFn: () => api<ChallengeProgress>(`/challenges/${challengeId}/progress`) });
-  const list = useQuery({ queryKey: ["challenges"], queryFn: () => api<ChallengeSummary[]>("/challenges") });
+  const pack = usePackOf(challengeId);
 
   const codeKey = `dojo-code:${challengeId}:${board}`;
   const [code, setCode] = useState<string>(() => storage.get(codeKey) ?? "");
@@ -67,11 +56,12 @@ export function Play({ challengeId, board, kataLabel }: { challengeId: string; b
   const [result, setResult] = useState<ScoreResult | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [openHints, setOpenHints] = useState<Record<string, boolean>>({});
-  const [dlg, setDlg] = useState<null | "keys" | "lb" | "hist" | "solution">(null);
-  const [pop, setPop] = useState<null | "pick" | "start" | "gear">(null);
+  const [dlg, setDlg] = useState<null | "keys" | "lb" | "hist">(null);
+  const [pop, setPop] = useState<null | "gear">(null);
+  const [moment, setMoment] = useState<null | { kind: "belt"; belt: BeltName; then: Moment | null } | Moment>(null);
+  const [saved, setSaved] = useState(false);
   const [tipHidden, setTipHidden] = useState(storage.get("dojo-mode-hidden") === "1");
   const [fontSize, setFontSize] = useState(storage.get("dojo-fs") ?? "12.5");
-  const [tasks, setTasks] = useState(loadTasks);
   const [resetIn, setResetIn] = useState(untilReset());
   const [pane, setPane] = useState<"editor" | "output" | "target">("editor");
 
@@ -99,18 +89,24 @@ export function Play({ challengeId, board, kataLabel }: { challengeId: string; b
     if (me.data?.user) task("signin");
   }, [me.data?.user]);
 
-  const task = useCallback((k: TaskKey) => {
-    setTasks((prev) => {
-      if (prev[k]) return prev;
-      const next = { ...prev, [k]: true };
-      storage.set("dojo-tasks", JSON.stringify(next));
-      return next;
-    });
-  }, []);
+  const task = useCallback((k: Parameters<typeof markTask>[0]) => void markTask(k), []);
 
+  // The quiet "Saved" label: in one second after the last keystroke, out two seconds later.
+  const savedTimer = useRef<{ show?: ReturnType<typeof setTimeout>; hide?: ReturnType<typeof setTimeout> }>({});
+  useEffect(() => () => {
+    clearTimeout(savedTimer.current.show);
+    clearTimeout(savedTimer.current.hide);
+  }, []);
   const onChange = (v: string) => {
     setCode(v);
     storage.set(codeKey, v);
+    setSaved(false);
+    clearTimeout(savedTimer.current.show);
+    clearTimeout(savedTimer.current.hide);
+    savedTimer.current.show = setTimeout(() => {
+      setSaved(true);
+      savedTimer.current.hide = setTimeout(() => setSaved(false), 2000);
+    }, 1000);
   };
 
   const submit = useCallback(async () => {
@@ -134,15 +130,18 @@ export function Play({ challengeId, board, kataLabel }: { challengeId: string; b
       }
       if (r.checks.some((ch) => ch.pass && ch.id !== "hooks-present")) task("check");
       const prevBest = progress.data?.best ?? null;
-      if (view.newBest && r.score >= SOLVED_AT && (prevBest === null || prevBest < SOLVED_AT)) {
+      const firstSolve = r.score >= SOLVED_AT && (prevBest === null || prevBest < SOLVED_AT);
+      if (firstSolve) {
         confetti();
-        toast(`Solved with ${r.score}. Solutions are unlocked.`);
-      } else if (view.newBest) {
-        if (r.score >= SOLVED_AT) confetti();
-        toast(`New high score: ${r.score}`);
-      } else toast(`You scored ${r.score} with a ${r.visual}% match`);
-      if (view.beltsEarned?.length) toast(`You earned the ${view.beltsEarned.join(", ")} belt`);
+        playSolveSound();
+      }
+      const gained = view.ranking?.gained ?? 0;
+      toast(view.newBest ? `New best: ${r.score}${gained > 0 ? ` · +${gained} pts` : ""}` : `Scored ${r.score} with a ${r.visual}% match`);
       if (r.warnings.length) toast(r.warnings[0] ?? "");
+      // A new best or a first solve opens the result card; a belt opens its own card first.
+      const card: Moment | null = view.newBest || firstSolve ? { kind: "result", view, result: r, chars: code.length } : null;
+      const belt = view.beltsEarned?.[0];
+      setMoment(belt ? { kind: "belt", belt, then: card } : card);
       void qc.invalidateQueries({ queryKey: ["progress", challengeId] });
       void qc.invalidateQueries({ queryKey: ["challenges"] });
       void qc.invalidateQueries({ queryKey: ["me"] });
@@ -154,6 +153,10 @@ export function Play({ challengeId, board, kataLabel }: { challengeId: string; b
       setSubmitting(false);
     }
   }, [submitting, challengeId, code, board, task, progress.data?.best, qc]);
+
+  const siblings = pack?.challenges ?? [];
+  const at = siblings.findIndex((x) => x.id === challengeId);
+  const nextTarget = at >= 0 ? siblings.slice(at + 1).concat(siblings.slice(0, at)).find((x) => x.best === null || x.best < SOLVED_AT) : undefined;
 
   // Shortcuts from the approved list.
   useEffect(() => {
@@ -214,87 +217,30 @@ export function Play({ challengeId, board, kataLabel }: { challengeId: string; b
     return (c?.checks ?? []).map((id) => ({ id, label: CHECK_LABELS[id] ?? id, pass: false, pending: true }));
   }, [result, c]);
 
-  const doneCount = TASKS.filter(([k]) => tasks[k]).length;
   const high = progress.data?.best ?? null;
   const last = result?.status === "scored" ? result : null;
   const lbTitle = c ? `${pad3(c.number)} ${c.title}${kataLabel ? ` · ${kataLabel}` : ""}` : "";
 
   if (challenge.isError) {
     return (
-      <div className="app">
-        <Header />
-        <div className="empty-state">
-          <h2>That challenge does not exist</h2>
-          <p>It may have been renamed.</p>
-          <Link to="/" className="btn primary">
-            Browse challenges
-          </Link>
-        </div>
-      </div>
+      <StatePage>
+        <EmptyState
+          title="That challenge isn't here"
+          action={
+            <Link to="/packs" className="d-btn sec">
+              All Battle Packs
+            </Link>
+          }
+        >
+          It may have been renamed.
+        </EmptyState>
+      </StatePage>
     );
   }
 
   return (
     <div className="app app-locked" style={{ ["--editor-fs" as string]: `${fontSize}px` }}>
-      <Header>
-        <div className="crumbs">
-          <button className="pick" type="button" aria-haspopup="true" aria-expanded={pop === "pick"} onClick={() => setPop(pop === "pick" ? null : "pick")}>
-            {c ? `${pad3(c.number)} ${c.title}` : "Loading"}
-            <ChevronDown size={12} strokeWidth={2.4} />
-          </button>
-        </div>
-        <button className="start" type="button" aria-haspopup="true" aria-expanded={pop === "start"} onClick={() => setPop(pop === "start" ? null : "start")}>
-          <span className="ring" style={{ ["--p" as string]: doneCount * 25 }} />
-          <span className="t">Get started</span> <span>{doneCount}/4</span>
-        </button>
-        {pop === "pick" ? (
-          <div className="pop" style={{ left: 150 }}>
-            <div className="ph">
-              <span className="lbl">Challenges</span>
-            </div>
-            <div style={{ maxHeight: 360, overflow: "auto" }}>
-              {(list.data ?? []).filter((x) => x.kind === "challenge" || x.id === challengeId).map((x) => (
-                <button
-                  key={x.id}
-                  className="tgt-item"
-                  type="button"
-                  aria-current={x.id === challengeId}
-                  onClick={() => {
-                    setPop(null);
-                    void navigate({ to: "/c/$id", params: { id: x.id } });
-                  }}
-                >
-                  <span className="th" style={{ background: x.background }} />
-                  <span className="nm">
-                    <b>{x.title}</b>
-                    <span>
-                      {pad3(x.number)} · {x.belt} belt
-                    </span>
-                  </span>
-                  <span className="sc">{x.best ?? "–"}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-        ) : null}
-        {pop === "start" ? (
-          <div className="pop" style={{ right: 16 }}>
-            <div className="ph">
-              <b>Get started</b>
-              <span className="note">Four small steps to learn the dojo.</span>
-            </div>
-            {TASKS.map(([k, b, s]) => (
-              <div key={k} className={`task${tasks[k] ? " done" : ""}`}>
-                <i>✓</i>
-                <div>
-                  <b>{b}</b>
-                  <span>{s}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : null}
-      </Header>
+      <PlayHeader c={c} challengeId={challengeId} kataLabel={kataLabel} />
       <div className="desk-note">The editor works best on a desktop. You can browse and read here.</div>
 
       <main className="play-main">
@@ -408,7 +354,9 @@ export function Play({ challengeId, board, kataLabel }: { challengeId: string; b
                 Copy
               </button>
             </span>
-            <span className="meta">Autosaved</span>
+            <span className={`meta d-saved${saved ? " on" : ""}`} aria-live="polite">
+              {saved ? "Saved" : ""}
+            </span>
           </div>
         </section>
 
@@ -473,11 +421,10 @@ export function Play({ challengeId, board, kataLabel }: { challengeId: string; b
                   <span className="v" data-testid="high-score">
                     {high ?? "–"}
                   </span>
-                  {progress.data?.solved ? (
-                    <button className="share" type="button" onClick={() => setDlg("solution")}>
-                      See a solution
-                    </button>
-                  ) : null}
+                  {progress.data?.locked ? <span className="d-chip" style={{ alignSelf: "flex-start" }}>LOCKED</span> : null}
+                  <Link to="/c/$id/solutions" params={{ id: challengeId }} className="share">
+                    Solutions
+                  </Link>
                 </div>
               </div>
               <div className="row2">
@@ -654,7 +601,10 @@ export function Play({ challengeId, board, kataLabel }: { challengeId: string; b
           }}
         />
       ) : null}
-      {dlg === "solution" ? <SolutionDialog challengeId={challengeId} onClose={() => setDlg(null)} /> : null}
+      {moment?.kind === "belt" ? <BeltEarned belt={moment.belt} pack={pack} onClose={() => setMoment(moment.then)} /> : null}
+      {moment?.kind === "result" && c ? (
+        <ResultCard c={c} r={moment.result} ranking={moment.view.ranking} newBest={!!moment.view.newBest} chars={moment.chars} pack={pack} next={nextTarget} onClose={() => setMoment(null)} />
+      ) : null}
     </div>
   );
 }
@@ -733,16 +683,6 @@ function AttemptsDialog({ challengeId, title, onClose, onLoad }: { challengeId: 
         {q.data && q.data.length === 0 ? <div className="empty-note">No attempts yet. Submit once and it shows up here.</div> : null}
       </div>
       <span className="note">Load any attempt back into the editor.</span>
-    </Dialog>
-  );
-}
-
-function SolutionDialog({ challengeId, onClose }: { challengeId: string; onClose: () => void }) {
-  const q = useQuery({ queryKey: ["solution", challengeId], queryFn: () => api<{ reference: string }>(`/challenges/${challengeId}/solutions`) });
-  return (
-    <Dialog open title="Our solution" onClose={onClose}>
-      <span className="note">One way to build it. Yours may be just as good.</span>
-      <pre style={{ margin: 0, maxHeight: 360, overflow: "auto", font: "400 12px/1.7 var(--font-mono)", background: "var(--bg)", padding: 12, borderRadius: 8, border: "1px solid var(--line)" }}>{q.data?.reference ?? "Loading"}</pre>
     </Dialog>
   );
 }

@@ -160,7 +160,7 @@ function Notifications({ s }: { s: SettingsView }) {
 
 function Display() {
   const [theme, setTheme] = useState<Theme>(currentTheme());
-  const [prefs, setPrefs] = useState<Record<Pref, boolean>>({ motion: getPref("motion"), ligatures: getPref("ligatures") });
+  const [prefs, setPrefs] = useState<Record<Pref, boolean>>({ motion: getPref("motion"), ligatures: getPref("ligatures"), sound: getPref("sound") });
   const flip = (p: Pref, on: boolean) => {
     setPref(p, on);
     setPrefs((x) => ({ ...x, [p]: on }));
@@ -187,6 +187,9 @@ function Display() {
       </Row>
       <Row title="Reduce motion" sub="Your system setting always applies. On also stops flips and slides here.">
         <Switch on={prefs.motion} label="Reduce motion" onChange={(on) => flip("motion", on)} />
+      </Row>
+      <Row title="Sound" sub="Two wooden clacks when you solve at 90 or more.">
+        <Switch on={prefs.sound} label="Sound" onChange={(on) => flip("sound", on)} />
       </Row>
       <Row title="Editor font ligatures" sub="Join pairs like => and != in the editor.">
         <Switch on={prefs.ligatures} label="Editor font ligatures" onChange={(on) => flip("ligatures", on)} />
