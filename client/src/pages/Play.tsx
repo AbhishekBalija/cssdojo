@@ -21,7 +21,7 @@ import { toast } from "@/lib/toast";
 // brand/play-final-2026-10-25.html. Scores come from the server scorer.
 
 const CHECK_LABELS: Record<string, string> = {
-  "hooks-present": "Required parts are there",
+  "hooks-present": "Parts are where the target has them",
   "hover-changes": "Responds to hover",
   "focus-visible": "Keyboard focus is visible",
   "text-contrast-aa": "Text is easy to read",
