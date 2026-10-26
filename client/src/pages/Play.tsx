@@ -528,6 +528,16 @@ export function Play({ challengeId, board, kataLabel }: { challengeId: string; b
                   </div>
                 </div>
               ) : null}
+              {c && c.fonts.length > 0 ? (
+                <div className="sec">
+                  <span className="lbl">Fonts · loaded for you</span>
+                  <div className="chips">
+                    {c.fonts.map((f) => (
+                      <FontChip key={f} family={f} />
+                    ))}
+                  </div>
+                </div>
+              ) : null}
               <div className="sec">
                 <span className="lbl">Outcome checks</span>
                 <div className="checks" data-testid="checks">
@@ -658,6 +668,23 @@ function ColorChip({ hex }: { hex: string }) {
     <button className={`colorchip${copied ? " copied" : ""}`} type="button" onClick={() => navigator.clipboard.writeText(hex).then(done, done)}>
       <i style={{ background: hex }} />
       {copied ? "Copied" : hex}
+    </button>
+  );
+}
+
+/** Shows a font in its own face; a click copies a ready font-family value. */
+function FontChip({ family }: { family: string }) {
+  const [copied, setCopied] = useState(false);
+  const fallback = family === "Martian Mono" ? "monospace" : family === "Instrument Serif" ? "serif" : "sans-serif";
+  const value = `"${family}", ${fallback}`;
+  const done = () => {
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1300);
+  };
+  return (
+    <button className={`colorchip fontchip${copied ? " copied" : ""}`} type="button" title={`Copy font-family: ${value}`} onClick={() => navigator.clipboard.writeText(value).then(done, done)}>
+      <b style={{ fontFamily: value }}>Aa</b>
+      {copied ? "Copied" : family}
     </button>
   );
 }

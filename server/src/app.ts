@@ -22,6 +22,10 @@ app.route("/api", api);
 app.route("/api", meRoutes);
 
 // Rendered targets (PNG frames, thumbnails, replay JSON) and the bundled fonts.
+// They are public files, and the preview iframe has an opaque ("null") origin, so
+// any origin may read them. Without this, fonts failed to load in the preview on
+// the split static-site deploy.
+app.use("/static/*", cors({ origin: "*" }));
 app.use("/static/targets/*", serveStatic({ root: env.TARGETS_DIR, rewriteRequestPath: (p) => p.replace(/^\/static\/targets/, "") }));
 app.use("/static/fonts/*", serveStatic({ root: env.FONTS_DIR, rewriteRequestPath: (p) => p.replace(/^\/static\/fonts/, "") }));
 

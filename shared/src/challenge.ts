@@ -76,6 +76,8 @@ export const PublicChallengeSchema = z.object({
   hooks: z.record(z.string(), z.string()),
   checks: z.array(z.enum(CHECK_IDS)),
   colors: z.array(z.string()),
+  /** Fonts the target uses. They are bundled and already loaded in the preview. */
+  fonts: z.array(z.string()),
   starter: z.string(),
   inspiration: z.array(InspirationSchema),
 });

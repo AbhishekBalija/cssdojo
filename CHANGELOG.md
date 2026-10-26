@@ -9,10 +9,13 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - Unused exports and the unused `codemirror` meta package (found by `bunx fallow`).
 
 ### Fixed
+- Live target: the focus state showed the hover fill (it drew the first focus-plus-hover frame). It now shows the real focus frame, in the live target and the :focus preview.
+- Preview fonts failed to load on the split static-site deploy (no CORS on `/static/*`).
 - Fonts are bundled by Vite so the static site does not depend on the API for UI fonts.
 - Play screen no longer shrinks to its content width (a Tailwind `fixed` utility collided with our class name).
 
 ### Added
+- Play screen lists the fonts a target uses, next to its colours. A click copies a ready `font-family` value.
 - Bun workspace with `client`, `server`, `shared` and `scorer` packages, all at 0.1.0.
 - TypeScript strict mode, ESLint, Vitest and Playwright setup.
 - Dockerfile (pinned Playwright Chromium) and `docker-compose.yml` with local Postgres.

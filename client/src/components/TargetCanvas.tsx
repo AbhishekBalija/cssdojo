@@ -58,7 +58,10 @@ export function TargetCanvas({ challengeId, title, forced }: { challengeId: stri
       const P = isFocus() ? seqs.focusPress : seqs.press;
       let im: HTMLImageElement | undefined;
       if (pi > 0 && P.length) im = P[Math.min(pi, P.length - 1)];
-      else if (hi > 0 || isFocus()) im = H[Math.min(hi, H.length - 1)];
+      else if (hi > 0) im = H[Math.min(hi, H.length - 1)];
+      // Focused but not hovered: the plain focus frame. (focusHover starts with the
+      // pointer already on it, so using it here showed the hover fill as focus.)
+      else if (isFocus()) im = seqs.focus[seqs.focus.length - 1];
       else im = seqs.rest[0];
       if (im?.complete && im.naturalWidth) cx.drawImage(im, 0, 0, 800, 600);
     }
