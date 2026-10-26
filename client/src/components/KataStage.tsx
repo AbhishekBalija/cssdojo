@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { SOLVED_AT, type ChallengeSummary, type KataMonth, type KataToday } from "@cssdojo/shared";
 import { api, staticUrl } from "@/lib/api";
-import { monthKey, useKataMonth } from "@/lib/dojo";
+import { monthKey, shortDate, useKataMonth } from "@/lib/dojo";
 import { Countdown, Hang, I } from "./Craft";
 
 // Yesterday, today (hanging from the lit rod) and tomorrow's locked tile.
@@ -19,7 +19,7 @@ export function useChallenges() {
 /** "FRI 6 NOV" for a YYYY-MM-DD date (UTC). */
 export function dayLabel(date: string, withDow = true): string {
   const d = new Date(`${date}T00:00:00Z`);
-  const dm = d.toLocaleDateString("en-GB", { day: "numeric", month: "short", timeZone: "UTC" });
+  const dm = shortDate(`${date}T00:00:00Z`);
   return (withDow ? `${d.toLocaleDateString("en-GB", { weekday: "short", timeZone: "UTC" })} ${dm}` : dm).toUpperCase();
 }
 

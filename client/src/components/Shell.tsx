@@ -3,7 +3,7 @@ import { Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { BELTS, type Belt, type EventView, type MeView, type NotificationView } from "@cssdojo/shared";
 import { useEffect, useRef, useState } from "react";
 import { api } from "@/lib/api";
-import { useEvents, useNotifications } from "@/lib/dojo";
+import { shortDate, useEvents, useNotifications } from "@/lib/dojo";
 import { useGuestMerge, useMe } from "@/lib/me";
 import { loadTasks, onTasks, TASKS, type Tasks } from "@/lib/tasks";
 import { storage } from "@/lib/storage";
@@ -19,7 +19,7 @@ export function ago(iso: string, now = Date.now()): string {
   if (s < 3600) return `${Math.floor(s / 60)}m`;
   if (s < 86400) return `${Math.floor(s / 3600)}h`;
   if (s < 172800) return "yesterday";
-  return new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", timeZone: "UTC" });
+  return shortDate(iso);
 }
 
 export function initials(name: string): string {

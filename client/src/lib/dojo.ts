@@ -87,3 +87,11 @@ export function packName(n: number): string {
 export function monthKey(d: Date): string {
   return d.toISOString().slice(0, 7);
 }
+
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+/** "26 Oct" (UTC). */
+export function shortDate(iso: string): string {
+  const d = new Date(iso);
+  return `${d.getUTCDate()} ${MONTHS[d.getUTCMonth()] ?? ""}`;
+}

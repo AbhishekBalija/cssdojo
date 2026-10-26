@@ -5,7 +5,7 @@ import { avatarColor, beltLine as packBeltLine } from "@/components/PackCard";
 import { ago } from "@/components/Shell";
 import { EmptyState } from "@/components/States";
 import { staticUrl } from "@/lib/api";
-import { packName, usePack } from "@/lib/dojo";
+import { packName, shortDate, usePack } from "@/lib/dojo";
 import { useMe } from "@/lib/me";
 
 const n3 = (n: number) => `#${String(n).padStart(3, "0")}`;
@@ -137,7 +137,7 @@ export function PackPage() {
   const line = packBeltLine(belt, solved, me.data?.belts ?? []);
   const earned = line.done;
   const beltLine = line.text;
-  const endDate = new Date(p.endsAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", timeZone: "UTC" }).toUpperCase();
+  const endDate = shortDate(p.endsAt).toUpperCase();
   const myRow = p.board.find((r) => r.me);
   const top = live ? p.board.slice(0, 5) : p.board.slice(3, 5);
   return (
