@@ -71,7 +71,7 @@ export async function recordScore(db: Db, submissionId: string): Promise<ScoreOu
   const ranked = library && !!handle;
   const pointsBefore = await totalPoints(db, s.playerId);
   const wallBefore = ranked && pack ? await standings(db) : [];
-  const packBefore = ranked && pack ? await standings(db, pack.number) : [];
+  const packBefore = ranked && pack && stateOf(pack) === "live" ? await standings(db, pack.number) : [];
   const chBefore = ranked ? await challengeStandings(db, s.challengeId) : [];
 
   const [prev] = await db
@@ -102,9 +102,12 @@ export async function recordScore(db: Db, submissionId: string): Promise<ScoreOu
       const wallAfter = await standings(db);
       wallMove = diffBoard(wallBefore, wallAfter, s.playerId);
       await announceMove(db, { key: "wall", name: "the Wall", href: "/leaderboard" }, s.playerId, handle, wallMove, wallAfter);
-      const packAfter = await standings(db, pack.number);
-      const board = { key: `pack:${pack.number}`, name: packLabel(pack.number), href: `/packs/${pack.number}`, live: stateOf(pack) === "live" };
-      await announceMove(db, board, s.playerId, handle, diffBoard(packBefore, packAfter, s.playerId), packAfter);
+      // A finished pack shows frozen final standings, so moves there are not news.
+      if (stateOf(pack) === "live") {
+        const packAfter = await standings(db, pack.number);
+        const board = { key: `pack:${pack.number}`, name: packLabel(pack.number), href: `/packs/${pack.number}`, live: true };
+        await announceMove(db, board, s.playerId, handle, diffBoard(packBefore, packAfter, s.playerId), packAfter);
+      }
       const tags = await playerTags(db, wallMove.passed);
       passed = wallMove.passed.map((id) => tags.get(id)?.handle).filter((h): h is string => !!h);
     }

@@ -13,6 +13,8 @@ export async function seed(): Promise<{ challenges: number; kata: number; packs:
   for (const p of listPacks()) {
     const missing = p.challenges.filter((id) => !known.has(id));
     if (missing.length) throw new Error(`packs.json: pack ${p.number} names unknown challenges ${missing.join(", ")}`);
+    const offBelt = all.filter((c) => p.challenges.includes(c.meta.id) && c.meta.belt !== p.belt).map((c) => c.meta.id);
+    if (offBelt.length) throw new Error(`packs.json: pack ${p.number} is ${p.belt} but has ${offBelt.join(", ")}`);
     await db
       .insert(packs)
       .values({ number: p.number, title: p.title, description: p.description, belt: p.belt, opensAt: p.opens, endsAt: p.ends })
