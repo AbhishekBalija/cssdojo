@@ -8,7 +8,7 @@ test("today's kata scores on its own board and starts a streak", async ({ page }
   await expect(page).toHaveURL(/^https?:\/\/[^/]+\/$/);
 
   const today = (await (await page.request.get("/api/kata/today")).json()) as { date: string; challengeId: string };
-  await page.goto("/kata");
+  await page.goto("/kata/play");
   // A streak day needs a Submit that changed the starter code, so edit it first.
   const editor = page.locator(".cm-content");
   await expect(editor).toContainText(/\S/);

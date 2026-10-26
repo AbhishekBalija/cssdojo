@@ -25,6 +25,7 @@ export function OutputFrame({
   state,
   slide,
   diff,
+  onion = false,
   onSlide,
 }: {
   code: string;
@@ -32,6 +33,8 @@ export function OutputFrame({
   state: PreviewState;
   slide: boolean;
   diff: boolean;
+  /** The target at 30% over your output. */
+  onion?: boolean;
   onSlide?: () => void;
 }) {
   const frameRef = useRef<HTMLDivElement>(null);
@@ -86,7 +89,7 @@ export function OutputFrame({
 
   const k = frameRef.current ? frameRef.current.clientWidth / 400 || 1 : 1;
   const sliding = !!pos && slide && !diff;
-  const clip = diff ? "none" : sliding ? (pos.vertical ? `inset(${pos.y}px 0 0 0)` : `inset(0 0 0 ${pos.x}px)`) : "inset(0 0 0 100%)";
+  const clip = sliding ? (pos.vertical ? `inset(${pos.y}px 0 0 0)` : `inset(0 0 0 ${pos.x}px)`) : "inset(0 0 0 100%)";
   const targetSrc = staticUrl(`/targets/${challengeId}/${state}.png`);
 
   return (
@@ -96,6 +99,12 @@ export function OutputFrame({
         <div className="over" style={{ clipPath: clip }}>
           <img src={targetSrc} alt="" width={400} height={300} style={{ width: "100%", height: "100%", display: "block" }} draggable={false} />
         </div>
+        {/* Mismatch: where your output and the target differ shows red. */}
+        <div className={`mm${diff ? " on" : ""}`} aria-hidden="true">
+          <img src={targetSrc} alt="" width={400} height={300} draggable={false} />
+          <span className="tint" />
+        </div>
+        <img className={`onion${onion ? " on" : ""}`} src={targetSrc} alt="" width={400} height={300} draggable={false} aria-hidden="true" />
       </div>
       {sliding ? (
         <>

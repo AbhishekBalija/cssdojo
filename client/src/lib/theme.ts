@@ -1,3 +1,4 @@
+import { reducedMotion } from "./prefs";
 import { storage } from "./storage";
 
 export type Theme = "dark" | "light";
@@ -7,8 +8,11 @@ export function currentTheme(): Theme {
 }
 
 export function applyTheme(t: Theme): void {
-  document.documentElement.setAttribute("data-theme", t);
   storage.set("dojo-theme-choice", t);
+  const set = () => document.documentElement.setAttribute("data-theme", t);
+  // A 150ms cross-fade where the browser has View Transitions and motion is welcome.
+  if (typeof document.startViewTransition === "function" && !reducedMotion()) document.startViewTransition(set);
+  else set();
 }
 
 /** A saved choice wins; otherwise follow the system setting (without saving it). */
