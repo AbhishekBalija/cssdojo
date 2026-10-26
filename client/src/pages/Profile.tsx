@@ -113,7 +113,7 @@ export function MyProfile() {
       <main className="page narrow-lb">
         <h1>Your progress</h1>
         <p className="lead">You are playing as a guest. Sign in to keep this progress on any device, appear on leaderboards and keep a kata streak.</p>
-        <Link to="/signin" className="btn primary">
+        <Link to="/signin" search={{ next: "/me" }} className="btn primary">
           Sign in
         </Link>
         {me.data ? (

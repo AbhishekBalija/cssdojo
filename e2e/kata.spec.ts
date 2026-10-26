@@ -5,7 +5,7 @@ test("today's kata scores on its own board and starts a streak", async ({ page }
   await page.goto("/signin");
   await page.getByTestId("test-login").locator("input").fill(`Kata ${Date.now()}`);
   await page.getByTestId("test-login").getByRole("button", { name: "Sign in" }).click();
-  await expect(page).toHaveURL(/\/me$/);
+  await expect(page).toHaveURL(/^https?:\/\/[^/]+\/$/);
 
   const today = (await (await page.request.get("/api/kata/today")).json()) as { date: string; challengeId: string };
   await page.goto("/kata");

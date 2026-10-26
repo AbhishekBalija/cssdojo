@@ -5,12 +5,13 @@ import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { api, ApiError } from "@/lib/api";
 import { useMe } from "@/lib/me";
+import { safeNext } from "@/lib/next";
 
 type Provider = "github" | "google";
 
-async function social(provider: Provider): Promise<void> {
-  const callbackURL = `${window.location.origin}/me`;
-  const r = await api<{ url?: string }>("/auth/sign-in/social", { method: "POST", json: { provider, callbackURL, errorCallbackURL: `${window.location.origin}/signin?error=1` } });
+async function social(provider: Provider, next: string): Promise<void> {
+  const callbackURL = `${window.location.origin}${next}`;
+  const r = await api<{ url?: string }>("/auth/sign-in/social", { method: "POST", json: { provider, callbackURL, errorCallbackURL: `${window.location.origin}/signin?error=1&next=${encodeURIComponent(next)}` } });
   if (r.url) window.location.assign(r.url);
 }
 
@@ -21,7 +22,9 @@ export function SignIn() {
   const [name, setName] = useState("Test Player");
   const [error, setError] = useState<string | null>(null);
   const providers = me.data?.providers ?? { github: false, google: false };
-  const failed = new URLSearchParams(window.location.search).has("error");
+  const params = new URLSearchParams(window.location.search);
+  const failed = params.has("error");
+  const next = safeNext(params.get("next") ?? undefined);
 
   const testLogin = async (e: FormEvent) => {
     e.preventDefault();
@@ -29,7 +32,7 @@ export function SignIn() {
     try {
       await api("/test-login", { method: "POST", json: { name } });
       await qc.invalidateQueries({ queryKey: ["me"] });
-      await navigate({ to: "/me" });
+      await navigate({ href: next });
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Sign-in failed");
     }
@@ -37,7 +40,7 @@ export function SignIn() {
 
   const go = (p: Provider) => {
     setError(null);
-    social(p).catch(() => setError("Could not reach the sign-in provider. Try again."));
+    social(p, next).catch(() => setError("Could not reach the sign-in provider. Try again."));
   };
 
   return (
@@ -49,7 +52,7 @@ export function SignIn() {
         {failed ? <p className="banner warn">Sign-in did not finish. Please try again.</p> : null}
         {me.data?.user ? (
           <p>
-            You are signed in as <strong>{me.data.user.handle ?? me.data.user.name}</strong>. <Link to="/me">Go to your profile</Link>.
+            You are signed in as <strong>{me.data.user.handle ?? me.data.user.name}</strong>. <Link to="/">Go to home</Link>.
           </p>
         ) : (
           <div className="signin-box">
