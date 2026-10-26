@@ -8,7 +8,11 @@ test("today's kata scores on its own board and starts a streak", async ({ page }
   await expect(page).toHaveURL(/^https?:\/\/[^/]+\/$/);
 
   const today = (await (await page.request.get("/api/kata/today")).json()) as { date: string; challengeId: string };
-  await page.goto("/kata");
+  await page.goto("/kata/play");
+  // A streak day needs an attempt that changed the starter code.
+  await page.locator(".cm-content").click();
+  await page.keyboard.press("Control+End");
+  await page.keyboard.type("<p>try</p>");
   await page.getByTestId("submit").click();
   await expect(page.getByTestId("last-score")).toContainText(/\d+(\.\d)?%/, { timeout: 30_000 });
 

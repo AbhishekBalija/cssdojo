@@ -257,7 +257,7 @@ function ProfileBody({ p, own }: { p: ProfileView; own: boolean }) {
           </span>
         </div>
         <BigBelt belt={cloth} have={have} />
-        <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }} data-testid="belt-progress">
           <b style={{ fontSize: 15 }}>{top ? `${cap(top)} belt` : "No belt yet"}</b>
           <span style={{ fontSize: 14, color: "var(--sub)", flex: 1 }}>
             {next

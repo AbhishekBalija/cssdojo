@@ -87,10 +87,10 @@ const signin = createRoute({
 });
 const gallery = createRoute({ getParentRoute: () => root, path: "/gallery", component: Gallery });
 const assets = createRoute({ getParentRoute: () => root, path: "/assets", component: Assets });
-const privacy = createRoute({ getParentRoute: () => root, path: "/privacy", component: Privacy });
-const terms = createRoute({ getParentRoute: () => root, path: "/terms", component: Terms });
+const privacy = createRoute({ getParentRoute: () => shell, path: "/privacy", component: Privacy });
+const terms = createRoute({ getParentRoute: () => shell, path: "/terms", component: Terms });
 
-export const routeTree = root.addChildren([shell.addChildren([home, kata, packs, pack, leaderboard, lbPacks, lbChallenges, lbStreaks, me, settings, userPage, solutions]), play, kataPlay, signin, gallery, assets, privacy, terms]);
+export const routeTree = root.addChildren([shell.addChildren([home, kata, packs, pack, leaderboard, lbPacks, lbChallenges, lbStreaks, me, settings, userPage, solutions, privacy, terms]), play, kataPlay, signin, gallery, assets]);
 export const router = createRouter({ routeTree, defaultPreload: "intent" });
 
 declare module "@tanstack/react-router" {

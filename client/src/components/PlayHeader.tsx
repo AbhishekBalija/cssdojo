@@ -3,6 +3,7 @@ import type { ChallengeSummary, PackSummary, PublicChallenge } from "@cssdojo/sh
 import { useEffect, useState } from "react";
 import { pad3 } from "@/lib/belts";
 import { packName, usePacks } from "@/lib/dojo";
+import { useGuestMerge } from "@/lib/me";
 import { useChallenges } from "./KataStage";
 import { BeltChip } from "./Craft";
 import { Sidebar } from "./Shell";
@@ -17,6 +18,7 @@ export function usePackOf(challengeId: string): PackSummary | undefined {
 }
 
 export function PlayHeader({ c, challengeId, kataLabel }: { c: PublicChallenge | undefined; challengeId: string; kataLabel?: string }) {
+  useGuestMerge();
   const navigate = useNavigate();
   const list = useChallenges();
   const pack = usePackOf(challengeId);

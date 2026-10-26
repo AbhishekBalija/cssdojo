@@ -1,11 +1,9 @@
-import { Footer } from "@/components/Footer";
-import { Header } from "@/components/Header";
+// Privacy and terms, inside the dojo shell.
 
 export function Privacy() {
   return (
-    <div className="app">
-      <Header />
-      <main className="page prose">
+    <div className="d-pg">
+      <main className="prose d-prose">
         <h1>Privacy</h1>
         <p>Short version: we keep what we need to run the dojo and nothing else. Last updated 26 October 2026.</p>
         <h2>What we store</h2>
@@ -18,16 +16,14 @@ export function Privacy() {
         <h2>Deleting your data</h2>
         <p>Open an issue or contact the maintainer through GitHub and we will delete your account and its submissions.</p>
       </main>
-      <Footer />
     </div>
   );
 }
 
 export function Terms() {
   return (
-    <div className="app">
-      <Header />
-      <main className="page prose">
+    <div className="d-pg">
+      <main className="prose d-prose">
         <h1>Terms</h1>
         <p>Last updated 26 October 2026.</p>
         <h2>Play fair</h2>
@@ -37,7 +33,6 @@ export function Terms() {
         <h2>No warranty</h2>
         <p>CSS Dojo is a free, open-source project offered as is. Scores are for practice and fun, not a certification.</p>
       </main>
-      <Footer />
     </div>
   );
 }

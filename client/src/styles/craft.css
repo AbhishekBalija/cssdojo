@@ -583,3 +583,14 @@ html[data-ligatures] .cm-content{font-variant-ligatures:normal}
 a:hover>.d-hthumb.has .hv,.d-hthumb.has:hover .hv{opacity:1}
 .d-hthumb .hchip{position:absolute;left:8px;bottom:8px;padding:3px 7px;border-radius:6px;background:rgba(14,15,18,.82);color:#ECEAE4;font:500 10.5px/1 var(--font-mono);opacity:0;transition:opacity .2s var(--d-ease);pointer-events:none}
 a:hover>.d-hthumb.has .hchip,.d-hthumb.has:hover .hchip{opacity:1}
+.d-prose{max-width:720px}
+@media (max-width:640px){
+  .d-prof{padding:22px 18px}
+  .d-prof .top{flex-wrap:wrap;gap:14px}
+  .d-prof .top>span:nth-child(2){flex:1 1 100%!important;order:3}
+  .d-prof .top h1{font-size:40px!important;line-height:44px!important}
+  .d-prof .top>span:last-child{margin-left:auto}
+  .d-set{padding:18px 16px 4px}
+  .d-set .field,.d-input{max-width:100%;min-width:0}
+  .d-set .v{min-width:0;overflow-wrap:anywhere}
+}

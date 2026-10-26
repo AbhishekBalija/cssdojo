@@ -7,7 +7,7 @@ test("guest submits the untouched starter and it scores low with every check fai
   await page.getByTestId("submit").click();
   await expect(page.getByTestId("last-score")).toContainText("0/5", { timeout: 30_000 });
   await expect(page.getByTestId("checks")).toBeVisible();
-  const score = Number(await page.getByTestId("last-score").locator(".v").innerText());
+  const score = Number(await page.getByTestId("last-score").locator(".v .d-rollnum").getAttribute("aria-label"));
   expect(score).toBeLessThan(15);
 });
 
