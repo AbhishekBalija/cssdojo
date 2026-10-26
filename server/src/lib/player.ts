@@ -46,6 +46,10 @@ async function guestPlayer(c: Context): Promise<string> {
  * reads only look one up, so crawlers never create rows.
  */
 export const withPlayer: MiddlewareHandler<{ Variables: PlayerVars }> = async (c, next) => {
+  // Every route group under /api adds this middleware, and Hono runs a group's "*"
+  // middleware for its sibling groups too. Work it out once per request, or a guest
+  // without an id would get a new player row from each group.
+  if (c.get("playerId") !== undefined) return next();
   const user = await getSessionUser(c);
   const create = c.req.method !== "GET";
   const playerId = user ? await playerForUser(user.id) : create ? await guestPlayer(c) : await existingGuest(c);

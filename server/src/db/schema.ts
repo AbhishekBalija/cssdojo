@@ -98,6 +98,8 @@ export const challenges = pgTable("challenges", {
   title: text("title").notNull(),
   belt: beltEnum("belt").notNull(),
   kind: challengeKindEnum("kind").notNull(),
+  /** The Battle Pack this challenge belongs to (from challenges/packs.json). Null for kata. */
+  packNumber: integer("pack_number"),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
@@ -149,6 +151,8 @@ export const submissions = pgTable(
     /** Full scorer result: per-frame scores, check results with hints. */
     result: jsonb("result"),
     error: text("error"),
+    /** Points, Wall moves and badges this Submit caused, for the result screen. */
+    ranking: jsonb("ranking"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     finishedAt: timestamp("finished_at"),
   },
@@ -189,6 +193,8 @@ export const bestScores = pgTable(
       .references(() => challenges.id),
     board: text("board").notNull(),
     score: real("score").notNull(),
+    /** Points this best gives (library board only, 0 elsewhere). */
+    points: integer("points").notNull().default(0),
     submissionId: uuid("submission_id")
       .notNull()
       .references(() => submissions.id, { onDelete: "cascade" }),
@@ -215,3 +221,145 @@ export const playerBelts = pgTable(
   },
   (t) => [uniqueIndex("player_belts_unique").on(t.playerId, t.belt)],
 );
+
+// ---------- Ranking: Battle Packs, locks, streaks, badges, notifications, events ----------
+
+/** Mirror of challenges/packs.json, plus flags for the one-off jobs a pack triggers. */
+export const packs = pgTable("packs", {
+  number: integer("number").primaryKey(),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  belt: beltEnum("belt").notNull(),
+  opensAt: timestamp("opens_at", { withTimezone: true }).notNull(),
+  endsAt: timestamp("ends_at", { withTimezone: true }).notNull(),
+  /** Set once followers were told it opens within 2 days. */
+  soonSentAt: timestamp("soon_sent_at", { withTimezone: true }),
+  /** Set once the "pack opened" event and notifications went out. */
+  openedSentAt: timestamp("opened_sent_at", { withTimezone: true }),
+  /** Set once the final standings were frozen into pack_results. */
+  finalizedAt: timestamp("finalized_at", { withTimezone: true }),
+});
+
+/** Players who asked to be told when a pack opens. */
+export const packFollows = pgTable(
+  "pack_follows",
+  {
+    playerId: uuid("player_id")
+      .notNull()
+      .references(() => players.id, { onDelete: "cascade" }),
+    packNumber: integer("pack_number")
+      .notNull()
+      .references(() => packs.number, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("pack_follows_unique").on(t.playerId, t.packNumber)],
+);
+
+/** Final standings of a finished pack, frozen when it ends. */
+export const packResults = pgTable(
+  "pack_results",
+  {
+    packNumber: integer("pack_number")
+      .notNull()
+      .references(() => packs.number, { onDelete: "cascade" }),
+    playerId: uuid("player_id")
+      .notNull()
+      .references(() => players.id, { onDelete: "cascade" }),
+    rank: integer("rank").notNull(),
+    points: integer("points").notNull(),
+    solved: integer("solved").notNull(),
+  },
+  (t) => [uniqueIndex("pack_results_unique").on(t.packNumber, t.playerId)],
+);
+
+/** Opening solutions freezes your points on that challenge at the best you had then. */
+export const answerLocks = pgTable(
+  "answer_locks",
+  {
+    playerId: uuid("player_id")
+      .notNull()
+      .references(() => players.id, { onDelete: "cascade" }),
+    challengeId: text("challenge_id")
+      .notNull()
+      .references(() => challenges.id),
+    lockedAt: timestamp("locked_at").notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("answer_locks_unique").on(t.playerId, t.challengeId)],
+);
+
+/** One row per UTC day a player submitted that day's kata with changed starter code. */
+export const kataDays = pgTable(
+  "kata_days",
+  {
+    playerId: uuid("player_id")
+      .notNull()
+      .references(() => players.id, { onDelete: "cascade" }),
+    date: date("date").notNull(),
+  },
+  (t) => [uniqueIndex("kata_days_unique").on(t.playerId, t.date)],
+);
+
+export const playerBadges = pgTable(
+  "player_badges",
+  {
+    playerId: uuid("player_id")
+      .notNull()
+      .references(() => players.id, { onDelete: "cascade" }),
+    badgeId: text("badge_id").notNull(),
+    earnedAt: timestamp("earned_at").notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("player_badges_unique").on(t.playerId, t.badgeId)],
+);
+
+export const notificationKindEnum = pgEnum("notification_kind", ["passed", "badge", "belt", "pack-open", "pack-soon"]);
+
+/** The bell: personal notifications. `board` lets "passed you" be throttled per board. */
+export const notifications = pgTable(
+  "notifications",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    playerId: uuid("player_id")
+      .notNull()
+      .references(() => players.id, { onDelete: "cascade" }),
+    kind: notificationKindEnum("kind").notNull(),
+    title: text("title").notNull(),
+    body: text("body").notNull(),
+    href: text("href"),
+    board: text("board"),
+    readAt: timestamp("read_at"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [index("notifications_player").on(t.playerId, t.createdAt)],
+);
+
+export const eventKindEnum = pgEnum("event_kind", ["moved", "number-one", "pack-top3", "belt", "pack-open"]);
+
+/** Public events: the header LIVE line and "Recent moves" on each board. */
+export const events = pgTable(
+  "events",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    kind: eventKindEnum("kind").notNull(),
+    playerId: uuid("player_id").references(() => players.id, { onDelete: "cascade" }),
+    /** "wall", "pack:3" or "challenge:<id>". */
+    board: text("board").notNull(),
+    text: text("text").notNull(),
+    delta: integer("delta"),
+    rank: integer("rank"),
+    href: text("href"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [index("events_board").on(t.board, t.createdAt), index("events_created").on(t.createdAt)],
+);
+
+/** Per-player notification choices. A missing row means all on. */
+export const playerSettings = pgTable("player_settings", {
+  playerId: uuid("player_id")
+    .primaryKey()
+    .references(() => players.id, { onDelete: "cascade" }),
+  notifyPassed: boolean("notify_passed").notNull().default(true),
+  notifyPackOpen: boolean("notify_pack_open").notNull().default(true),
+  notifyBadge: boolean("notify_badge").notNull().default(true),
+  showLive: boolean("show_live").notNull().default(true),
+  handleChangedAt: timestamp("handle_changed_at"),
+});

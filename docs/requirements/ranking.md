@@ -38,6 +38,15 @@ Approved by Abhi on 2026-10-26. Full reasoning: the review doc "CSS Dojo: is the
 | GET /profile/:handle | ProfileView, now with points, wallRank, badges, kata, checks |
 | GET /settings, PATCH /settings | SettingsView |
 
+Details settled with the screens thread after the first draft:
+
+- `SubmitRanking.wall` is null on kata Submits, which give no points.
+- `SolutionsView.reference` is our reference answer, null until you open solutions. `GET /challenges/:id/solutions` returns `locked: false` and an empty `top` until then.
+- `ProfileView.packs` lists opened packs the player is ranked on, with rank and player count.
+- `SettingsView.provider` and `providerAccount` (the account email) back "Signed in with". `PATCH /settings` takes `{ handle?, notify?: { passed?, packOpen?, badge?, live? } }`.
+- Links in notifications and events are client routes: `/c/:id`, `/packs/:number`, `/leaderboard`, `/me`.
+- Challenges in a pack that has not opened yet are hidden from `/challenges` and return 404 everywhere a player could reach them. The `/gallery` review page still lists them.
+
 `/leaderboard/:id` and `/rankings` stay until the client moves to `/boards/*`, then they are removed.
 
 ## Not backed by data (keep out of the screens)
@@ -45,3 +54,14 @@ Approved by Abhi on 2026-10-26. Full reasoning: the review doc "CSS Dojo: is the
 - Profile "technique checks" must list the real checks (hover-changes, focus-visible, text-contrast-aa, target-size, semantic-control, real-text). Checks never require a technique such as flexbox or grid.
 - "Where your points go" can show shape and colour only; there is no separate edges measure.
 - Weekly email needs an email service (a new dependency, not approved yet).
+
+## Running the database tests
+
+```sh
+createdb cssdojo_test
+DATABASE_URL=postgres://localhost/cssdojo_test bun run db:migrate
+DATABASE_URL=postgres://localhost/cssdojo_test bun run db:seed
+TEST_DATABASE_URL=postgres://localhost/cssdojo_test bun run test
+```
+
+CI has no database, so these tests skip there.

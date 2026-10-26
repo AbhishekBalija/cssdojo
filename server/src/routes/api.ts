@@ -2,6 +2,7 @@ import { zValidator } from "@hono/zod-validator";
 import { and, count, desc, eq, inArray, sql } from "drizzle-orm";
 import { Hono } from "hono";
 import {
+  MAX_POINTS,
   OpenRequestSchema,
   SOLVED_AT,
   SubmitRequestSchema,
@@ -13,14 +14,18 @@ import {
   type GalleryItem,
   type KataToday,
   type ScoreResult,
+  type SolutionsView,
   type SubmissionView,
+  type SubmitRanking,
 } from "@cssdojo/shared";
 import { getChallenge, listChallenges, toPublic } from "../challenges";
 import { db } from "../db/client";
-import { bestScores, kataSchedule, submissions } from "../db/schema";
+import { answerLocks, bestScores, kataSchedule, submissions } from "../db/schema";
 import { HOUR, LIMITS, MemoryRateLimiter } from "../lib/rate-limit";
 import { clientIp, withPlayer, type PlayerVars } from "../lib/player";
-import { recordOpen } from "../progress";
+import { isHidden, packOf } from "../packs";
+import { recordKataDay, recordOpen } from "../progress";
+import { challengeStandings, playerTags } from "../ranking/standings";
 import { queue } from "../scoring/runtime";
 import { scoreEvents } from "../scoring/events";
 
@@ -29,6 +34,11 @@ const WAIT_MS = 15_000;
 
 export const api = new Hono<{ Variables: PlayerVars }>();
 api.use("*", withPlayer);
+
+/** A challenge players can see: it exists and is not in a pack that has not opened yet. */
+function visibleChallenge(id: string): ReturnType<typeof getChallenge> {
+  return isHidden(id) ? undefined : getChallenge(id);
+}
 
 function backgroundOf(colors: string[]): string {
   return colors[0] ?? "#F1F2F4";
@@ -69,7 +79,9 @@ api.get("/challenges", async (c) => {
       .groupBy(bestScores.challengeId);
     for (const r of rows) bests.set(r.challengeId, r.score);
   }
-  const out: ChallengeSummary[] = listChallenges().map((ch) => ({
+  const out: ChallengeSummary[] = listChallenges()
+    .filter((ch) => !isHidden(ch.meta.id))
+    .map((ch) => ({
     id: ch.meta.id,
     number: ch.meta.number,
     title: ch.meta.title,
@@ -82,17 +94,18 @@ api.get("/challenges", async (c) => {
 });
 
 api.get("/challenges/:id", (c) => {
-  const ch = getChallenge(c.req.param("id"));
+  const ch = visibleChallenge(c.req.param("id"));
   if (!ch) return c.json({ error: "Challenge not found" }, 404);
   return c.json(toPublic(ch));
 });
 
-/** The player's standing on a challenge: best, attempts, and the note once unlocked. */
+/** The player's standing on a challenge: best, attempts, points, and the note once unlocked. */
 api.get("/challenges/:id/progress", async (c) => {
-  const ch = getChallenge(c.req.param("id"));
+  const ch = visibleChallenge(c.req.param("id"));
   if (!ch) return c.json({ error: "Challenge not found" }, 404);
   const playerId = c.get("playerId");
-  if (!playerId) return c.json({ best: null, attempts: 0, note: null, solved: false } satisfies ChallengeProgress);
+  const maxPoints = packOf(ch.meta.id) ? MAX_POINTS[ch.meta.belt] : 0;
+  if (!playerId) return c.json({ best: null, attempts: 0, note: null, solved: false, points: 0, maxPoints, locked: false } satisfies ChallengeProgress);
   const [attempts] = await db
     .select({ n: count() })
     .from(submissions)
@@ -101,28 +114,77 @@ api.get("/challenges/:id/progress", async (c) => {
     .select({ score: sql<number | null>`max(${bestScores.score})` })
     .from(bestScores)
     .where(and(eq(bestScores.playerId, playerId), eq(bestScores.challengeId, ch.meta.id)));
+  const [library] = await db
+    .select({ points: bestScores.points })
+    .from(bestScores)
+    .where(and(eq(bestScores.playerId, playerId), eq(bestScores.challengeId, ch.meta.id), eq(bestScores.board, "library")));
   const n = attempts?.n ?? 0;
   const bestScore = best?.score ?? null;
-  const progress: ChallengeProgress = { best: bestScore, attempts: n, note: n >= 3 && ch.note ? ch.note : null, solved: (bestScore ?? 0) >= SOLVED_AT };
+  const progress: ChallengeProgress = {
+    best: bestScore,
+    attempts: n,
+    note: n >= 3 && ch.note ? ch.note : null,
+    solved: (bestScore ?? 0) >= SOLVED_AT,
+    points: library?.points ?? 0,
+    maxPoints,
+    locked: await hasLock(playerId, ch.meta.id),
+  };
   return c.json(progress);
 });
 
-/** Solutions unlock at 90: our reference plus the top players' best answers. */
-api.get("/challenges/:id/solutions", async (c) => {
-  const ch = getChallenge(c.req.param("id"));
-  if (!ch) return c.json({ error: "Challenge not found" }, 404);
-  const playerId = c.get("playerId");
-  if (!playerId) return c.json({ error: "Solve it first (90 or more)" }, 403);
-  const [best] = await db
-    .select({ score: sql<number | null>`max(${bestScores.score})` })
+async function hasLock(playerId: string, challengeId: string): Promise<boolean> {
+  const [row] = await db.select({ at: answerLocks.lockedAt }).from(answerLocks).where(and(eq(answerLocks.playerId, playerId), eq(answerLocks.challengeId, challengeId)));
+  return !!row;
+}
+
+/** Solutions for one challenge. The top five answers and our reference only show once you opened them. */
+async function solutionsView(challengeId: string, reference: string, playerId: string | null): Promise<SolutionsView> {
+  const locked = playerId ? await hasLock(playerId, challengeId) : false;
+  if (!playerId || !locked) return { locked: false, frozen: null, reference: null, top: [] };
+  const [mine] = await db
+    .select({ score: bestScores.score, points: bestScores.points })
     .from(bestScores)
-    .where(and(eq(bestScores.playerId, playerId), eq(bestScores.challengeId, ch.meta.id)));
-  if ((best?.score ?? 0) < SOLVED_AT) return c.json({ error: "Solve it first (90 or more)" }, 403);
-  return c.json({ reference: ch.reference });
+    .where(and(eq(bestScores.playerId, playerId), eq(bestScores.challengeId, challengeId), eq(bestScores.board, "library")));
+  const top = (await challengeStandings(db, challengeId)).slice(0, 5);
+  const ids = top.map((t) => t.playerId);
+  const codes = ids.length
+    ? await db
+        .select({ playerId: bestScores.playerId, score: bestScores.score, code: submissions.code })
+        .from(bestScores)
+        .innerJoin(submissions, eq(submissions.id, bestScores.submissionId))
+        .where(and(eq(bestScores.challengeId, challengeId), eq(bestScores.board, "library"), inArray(bestScores.playerId, ids)))
+    : [];
+  const byPlayer = new Map(codes.map((r) => [r.playerId, r]));
+  const tags = await playerTags(db, ids);
+  return {
+    locked: true,
+    frozen: mine ? { score: mine.score, points: mine.points } : null,
+    reference,
+    top: top.flatMap((t, i) => {
+      const row = byPlayer.get(t.playerId);
+      const player = tags.get(t.playerId);
+      return row && player ? [{ rank: i + 1, player, score: row.score, chars: row.code.length, code: row.code }] : [];
+    }),
+  };
+}
+
+api.get("/challenges/:id/solutions", async (c) => {
+  const ch = visibleChallenge(c.req.param("id"));
+  if (!ch) return c.json({ error: "Challenge not found" }, 404);
+  return c.json(await solutionsView(ch.meta.id, ch.reference, c.get("playerId")));
+});
+
+/** Opening solutions locks your points on this challenge at your best so far. */
+api.post("/challenges/:id/solutions/open", async (c) => {
+  const ch = visibleChallenge(c.req.param("id"));
+  const playerId = c.get("playerId");
+  if (!ch || !playerId) return c.json({ error: "Challenge not found" }, 404);
+  await db.insert(answerLocks).values({ playerId, challengeId: ch.meta.id }).onConflictDoNothing();
+  return c.json(await solutionsView(ch.meta.id, ch.reference, playerId));
 });
 
 api.post("/challenges/:id/open", zValidator("json", OpenRequestSchema), async (c) => {
-  const ch = getChallenge(c.req.param("id"));
+  const ch = visibleChallenge(c.req.param("id"));
   const playerId = c.get("playerId");
   if (!ch || !playerId) return c.json({ error: "Challenge not found" }, 404);
   const { board } = c.req.valid("json");
@@ -134,7 +196,7 @@ api.post("/submissions", zValidator("json", SubmitRequestSchema), async (c) => {
   const body = c.req.valid("json");
   const playerId = c.get("playerId");
   const user = c.get("user");
-  const ch = getChallenge(body.challengeId);
+  const ch = visibleChallenge(body.challengeId);
   if (!ch || !playerId) return c.json({ error: "Challenge not found" }, 404);
   if (!boardIsOpen(body.board)) return c.json({ error: "That kata board closed at 00:00 UTC. Play it from the library." }, 409);
   const limit = user ? LIMITS.user : LIMITS.guest;
@@ -144,6 +206,7 @@ api.post("/submissions", zValidator("json", SubmitRequestSchema), async (c) => {
   await recordOpen(db, playerId, ch.meta.id, body.board);
   const [sub] = await db.insert(submissions).values({ playerId, challengeId: ch.meta.id, board: body.board, code: body.code }).returning({ id: submissions.id });
   if (!sub) return c.json({ error: "Could not save your Submit" }, 500);
+  await recordKataDay(db, playerId, body.board, ch.starter, body.code);
   await queue.enqueue(sub.id);
   return c.json({ id: sub.id }, 202);
 });
@@ -157,6 +220,7 @@ function view(s: typeof submissions.$inferSelect, extra: Partial<SubmissionView>
     result: (s.result as ScoreResult | null) ?? null,
     error: s.error,
     createdAt: s.createdAt.toISOString(),
+    ...(s.ranking ? { ranking: s.ranking as SubmitRanking } : {}),
     ...extra,
   };
 }

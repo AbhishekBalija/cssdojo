@@ -33,7 +33,7 @@ async function processOne(db: Db, queue: ScoreQueue): Promise<boolean> {
         finishedAt: sql`now()`,
       })
       .where(eq(submissions.id, sub.id));
-    const progress = scored ? await recordScore(db, sub.id) : { newBest: false, beltsEarned: [] };
+    const progress = scored ? await recordScore(db, sub.id) : { newBest: false, beltsEarned: [], ranking: null };
     await queue.complete(job.id);
     scoreEvents.emit(sub.id, { result, ...progress });
   } catch (err) {
