@@ -1,9 +1,9 @@
 import { Link } from "@tanstack/react-router";
 import { BELTS, SOLVED_AT, type Belt, type PackChallengeTile, type PackSummary } from "@cssdojo/shared";
-import { staticUrl } from "@/lib/api";
 import { packName } from "@/lib/dojo";
 import { useMe } from "@/lib/me";
 import { BeltBand, BeltChip, BigCountdown, CLOTH, I, untilLabel, useNow } from "./Craft";
+import { HoverThumb } from "./HoverThumb";
 import { scoreClass } from "./KataStage";
 
 // One Battle Pack as a belt-banded card (Home and the Battle Packs list), and
@@ -20,7 +20,7 @@ export function avatarColor(handle: string): string {
 export function PackTile({ c }: { c: PackChallengeTile }) {
   return (
     <Link to="/c/$id" params={{ id: c.id }} className="d-tile">
-      <img src={staticUrl(`/targets/${c.id}/thumb.png`)} alt={c.title} style={{ background: c.background }} loading="lazy" />
+      <HoverThumb id={c.id} title={c.title} background={c.background} />
       <span className="n">#{String(c.number).padStart(3, "0")}</span>
       <span className={`s ${scoreClass(c.best)}`}>{c.best === null ? "New" : c.best.toFixed(1)}</span>
       {c.locked ? <span className="locked">LOCKED</span> : null}

@@ -74,7 +74,7 @@ export function Gallery() {
       <main className="page">
         <h1>Challenge gallery</h1>
         <p className="lead">Every challenge and kata with its target frames, belt, golden set and the sources that inspired it. Nothing here is copied from one source.</p>
-        {q.isLoading ? <p className="note">Loading…</p> : null}
+        {q.isLoading ? <p className="note d-wait">Loading…</p> : null}
         {BELTS.map((belt) => {
           const rows = items.filter((g) => g.kind === "challenge" && g.belt === belt);
           if (rows.length === 0) return null;

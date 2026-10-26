@@ -1,4 +1,5 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { reducedMotion } from "@/lib/prefs";
 import { staticUrl } from "@/lib/api";
 import type { PreviewState } from "./OutputFrame";
 
@@ -17,15 +18,36 @@ interface Replay {
 
 type SeqName = "hover" | "press" | "focusHover" | "focusPress";
 
-export function TargetCanvas({ challengeId, title, forced }: { challengeId: string; title: string; forced: PreviewState }) {
+export function TargetCanvas({ challengeId, title, forced, measure = false }: { challengeId: string; title: string; forced: PreviewState; measure?: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const forcedRef = useRef(forced);
   const kickRef = useRef<() => void>(() => undefined);
   forcedRef.current = forced;
 
+  const [probe, setProbe] = useState<{ x: number; y: number; hex: string } | null>(null);
+
   useEffect(() => {
     kickRef.current();
+    // A short cross-fade when the previewed state changes.
+    if (!reducedMotion()) canvasRef.current?.animate([{ opacity: 0.55 }, { opacity: 1 }], { duration: 150, easing: "cubic-bezier(.2,.7,.2,1)" });
   }, [forced]);
+
+  // Measuring crosshair: x and y in the 400 x 300 target, and the colour under it.
+  const onProbe = (e: React.PointerEvent<HTMLDivElement>) => {
+    const cv = canvasRef.current;
+    if (!measure || !cv) return;
+    const r = cv.getBoundingClientRect();
+    const x = Math.max(0, Math.min(399, Math.floor(((e.clientX - r.left) * 400) / r.width)));
+    const y = Math.max(0, Math.min(299, Math.floor(((e.clientY - r.top) * 300) / r.height)));
+    let hex = "";
+    try {
+      const d = cv.getContext("2d")?.getImageData(x * 2, y * 2, 1, 1).data;
+      if (d) hex = `#${[d[0], d[1], d[2]].map((v) => (v ?? 0).toString(16).padStart(2, "0")).join("").toUpperCase()}`;
+    } catch {
+      /* a tainted canvas has no colour readout */
+    }
+    setProbe({ x, y, hex });
+  };
 
   useEffect(() => {
     const cv = canvasRef.current;
@@ -47,6 +69,7 @@ export function TargetCanvas({ challengeId, title, forced }: { challengeId: stri
     const load = (srcs: string[]) =>
       srcs.map((src) => {
         const im = new Image();
+        im.crossOrigin = "anonymous";
         im.onload = () => draw();
         im.src = src;
         return im;
@@ -196,10 +219,25 @@ export function TargetCanvas({ challengeId, title, forced }: { challengeId: stri
   }, [challengeId]);
 
   return (
-    <div className="frame live">
+    <div className={`frame live${measure ? " measuring" : ""}`} onPointerMove={onProbe} onPointerLeave={() => setProbe(null)}>
       <div className="clip">
         <canvas ref={canvasRef} tabIndex={0} role="img" aria-label={`Live target: ${title}. Hover, click, or press Tab to try it.`} data-testid="target-canvas" />
       </div>
+      {measure && probe ? (
+        <>
+          <span className="xh v" style={{ left: `${(probe.x / 400) * 100}%` }} aria-hidden="true" />
+          <span className="xh h" style={{ top: `${(probe.y / 300) * 100}%` }} aria-hidden="true" />
+          <span className={`xread${probe.x > 260 ? " l" : ""}${probe.y > 240 ? " u" : ""}`} style={{ left: `${(probe.x / 400) * 100}%`, top: `${(probe.y / 300) * 100}%` }}>
+            {probe.x}, {probe.y}
+            {probe.hex ? (
+              <>
+                <i style={{ background: probe.hex }} />
+                {probe.hex}
+              </>
+            ) : null}
+          </span>
+        </>
+      ) : null}
     </div>
   );
 }

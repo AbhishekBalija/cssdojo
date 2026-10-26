@@ -1,5 +1,7 @@
 import type { Belt } from "@cssdojo/shared";
-import { useEffect, useId, useState, type ReactNode } from "react";
+import { useRouterState } from "@tanstack/react-router";
+import { useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { Roll } from "./Roll";
 
 // Shared pieces of the dojo craft (mockup v49): mountain, lit rod, cloth belt band, chips, countdown.
 
@@ -165,14 +167,12 @@ export function untilLabel(to: string | number, now: number): string {
 export function Countdown({ to }: { to: string | number }) {
   const now = useNow();
   const p = parts(new Date(to).getTime() - now);
-  const text = p.d > 0 ? `${two(p.d)}:${two(p.h)}:${two(p.m)}` : `${two(p.h)}:${two(p.m)}:${two(p.s)}`;
+  // Seconds only show in the last hour.
+  const text = p.d > 0 ? `${two(p.d)}:${two(p.h)}:${two(p.m)}` : p.h > 0 ? `${two(p.h)}:${two(p.m)}` : `${two(p.m)}:${two(p.s)}`;
+  const label = p.d > 0 ? `${p.d} days ${p.h} hours ${p.m} minutes` : p.h > 0 ? `${p.h} hours ${p.m} minutes` : `${p.m} minutes ${p.s} seconds`;
   return (
-    <span className="d-clock" role="timer" aria-label={p.d > 0 ? `${p.d} days ${p.h} hours ${p.m} minutes` : `${p.h} hours ${p.m} minutes ${p.s} seconds`}>
-      {text.split("").map((ch, i) => (
-        <span key={i} className={ch === ":" ? "c" : undefined}>
-          {ch}
-        </span>
-      ))}
+    <span className="d-clock" role="timer" aria-label={label}>
+      <Roll text={text} ms={200} />
     </span>
   );
 }
@@ -219,22 +219,74 @@ export const I = {
 /** Four labelled boxes (days, hours, minutes, seconds) for a pack that has not opened yet. */
 export function BigCountdown({ to }: { to: string | number }) {
   const now = useNow();
-  const p = parts(new Date(to).getTime() - now);
-  const cells: [number, string][] = [
-    [p.d, "Days"],
-    [p.h, "Hrs"],
-    [p.m, "Min"],
-    [p.s, "Sec"],
-  ];
+  const left = new Date(to).getTime() - now;
+  const p = parts(left);
+  // Seconds only show in the last hour.
+  const cells: [number, string][] =
+    left < 3_600_000
+      ? [
+          [p.m, "Min"],
+          [p.s, "Sec"],
+        ]
+      : [
+          [p.d, "Days"],
+          [p.h, "Hrs"],
+          [p.m, "Min"],
+        ];
   return (
     <span className="d-bigclock" role="timer" aria-label={`${p.d} days ${p.h} hours ${p.m} minutes`}>
       {cells.map(([v, l]) => (
         <span key={l}>
-          <b>{two(v)}</b>
+          <b>
+            <Roll text={two(v)} ms={200} />
+          </b>
           <i>{l}</i>
         </span>
       ))}
     </span>
+  );
+}
+
+// Where the glide line last sat, so it can glide from there when a tab is its own route.
+let lastGlide: { x: number; s: number; top: string } | null = null;
+
+/** Pill tabs with an accent line that glides to the active one. */
+export function GlideTabs({ children }: { children: ReactNode }) {
+  const box = useRef<HTMLDivElement>(null);
+  const line = useRef<HTMLSpanElement>(null);
+  const placed = useRef(false);
+  const path = useRouterState({ select: (st) => st.location.href });
+  useLayoutEffect(() => {
+    const set = (l: HTMLSpanElement, g: { x: number; s: number; top: string }) => {
+      l.style.setProperty("--gx", `${g.x}px`);
+      l.style.setProperty("--gs", String(g.s));
+      l.style.top = g.top;
+    };
+    const place = (still: boolean) => {
+      const a = box.current?.querySelector<HTMLElement>('[aria-selected="true"],[data-status="active"]');
+      const l = line.current;
+      if (!l) return;
+      const g = a ? { x: a.offsetLeft, s: a.offsetWidth / 100, top: `${a.offsetTop + a.offsetHeight + 5}px` } : { x: 0, s: 0, top: "" };
+      if (!placed.current && lastGlide && !still) {
+        l.classList.add("still");
+        set(l, lastGlide);
+        void l.offsetWidth;
+      }
+      l.classList.toggle("still", still);
+      set(l, g);
+      lastGlide = g;
+      placed.current = true;
+    };
+    place(false);
+    const onResize = () => place(true);
+    addEventListener("resize", onResize);
+    return () => removeEventListener("resize", onResize);
+  }, [path, children]);
+  return (
+    <div ref={box} className="d-tabs" role="tablist">
+      {children}
+      <span ref={line} className="glide" aria-hidden="true" />
+    </div>
   );
 }
 

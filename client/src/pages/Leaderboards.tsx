@@ -1,7 +1,7 @@
 import { Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { BELTS, type Belt, type EventView, type PlayerTag, type WallRow, type WallView } from "@cssdojo/shared";
 import { useId, useState, type ReactNode } from "react";
-import { CLOTH, Page, untilLabel, useNow } from "@/components/Craft";
+import { CLOTH, GlideTabs, Page, untilLabel, useNow } from "@/components/Craft";
 import { useChallenges } from "@/components/KataStage";
 import { avatarColor } from "@/components/PackCard";
 import { ago, initials } from "@/components/Shell";
@@ -19,7 +19,7 @@ function Tabs({ tab }: { tab: Tab }) {
   const packs = usePacks();
   const live = packs.data?.find((p) => p.state === "live") ?? packs.data?.find((p) => p.state === "finished");
   return (
-    <div className="d-tabs" role="tablist">
+    <GlideTabs>
       <Link to="/leaderboard" role="tab" aria-selected={tab === "wall"} activeOptions={{ exact: true }}>
         All-time
       </Link>
@@ -32,7 +32,7 @@ function Tabs({ tab }: { tab: Tab }) {
       <Link to="/leaderboard/streaks" role="tab" aria-selected={tab === "streaks"}>
         Streaks
       </Link>
-    </div>
+    </GlideTabs>
   );
 }
 

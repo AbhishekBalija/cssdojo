@@ -2,7 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { SOLVED_AT, type PackSummary } from "@cssdojo/shared";
 import { useState } from "react";
-import { I, Page } from "@/components/Craft";
+import { GlideTabs, I, Page } from "@/components/Craft";
 import { avatarColor, PackCard, UpcomingPack } from "@/components/PackCard";
 import { EmptyState } from "@/components/States";
 import { api } from "@/lib/api";
@@ -75,13 +75,13 @@ export function Packs() {
       title="Battle Packs"
       sub="New packs drop any time. Each is one belt: solve 5 of its 6 to earn it."
       tabs={
-        <div className="d-tabs" role="tablist">
+        <GlideTabs>
           {tabs.map(([k, l]) => (
             <button key={k} type="button" role="tab" aria-selected={filter === k} onClick={() => setFilter(k)}>
               {l}
             </button>
           ))}
-        </div>
+        </GlideTabs>
       }
     >
       <div className="d-packs">
@@ -90,7 +90,7 @@ export function Packs() {
           {open.map((p) => (
             <PackCard key={p.number} p={p} />
           ))}
-          {packs.isLoading ? <p className="note">Loading packs…</p> : null}
+          {packs.isLoading ? <p className="note d-wait">Loading packs…</p> : null}
           {packs.data === null ? <EmptyState title="Battle Packs are on their way">The first pack opens soon. Today's kata is ready now.</EmptyState> : null}
           {packs.data && !open.length && filter !== "all" ? <EmptyState title={filter === "done" ? "No pack fully solved yet" : "No pack started yet"} /> : null}
         </div>

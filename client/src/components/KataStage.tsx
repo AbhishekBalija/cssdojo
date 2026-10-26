@@ -51,7 +51,7 @@ export function KataStage() {
   if (!today.data) {
     return (
       <section className="d-card" style={{ padding: "40px 32px", alignItems: "center" }}>
-        <p className="note">{today.isError ? "No kata today. Try a Battle Pack instead." : "Loading today's kata…"}</p>
+        <p className={today.isError ? "note" : "note d-wait"}>{today.isError ? "No kata today. Try a Battle Pack instead." : "Loading today's kata…"}</p>
       </section>
     );
   }

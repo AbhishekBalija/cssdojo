@@ -520,3 +520,66 @@ html[data-ligatures] .cm-content{font-variant-ligatures:normal}
 .d-code .more{display:block;width:100%;height:34px;border:0;border-top:1px solid var(--line);background:var(--d-card-b);color:var(--accent);font:500 12.5px var(--font-ui);cursor:pointer}
 .d-saved{opacity:0;transition:opacity .15s cubic-bezier(.2,.7,.2,1)}
 .d-saved.on{opacity:1}
+
+/* Interaction polish (motion/approved-polish.md): under ~300ms, ease-out, transform and opacity only. */
+:root{--d-ease:cubic-bezier(.2,.7,.2,1)}
+.d-toaster{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:60;display:flex;flex-direction:column;align-items:center;gap:8px;transform:translateX(-50%);pointer-events:none;width:max-content;max-width:calc(100% - 32px)}
+.d-tst{padding:11px 15px;border-radius:10px;background:var(--fg);color:var(--bg);font:500 13px/1.25 var(--font-ui);box-shadow:0 10px 28px rgba(0,0,0,.28);animation:d-tst-in .2s var(--d-ease) both}
+.d-tst.out{opacity:0;transition:opacity .15s var(--d-ease)}
+@keyframes d-tst-in{from{opacity:0;transform:translateY(8px)}}
+.d-rollnum{display:inline-flex;font-variant-numeric:tabular-nums}
+.d-roll{display:inline-block;height:1em;line-height:1;overflow:hidden;vertical-align:top}
+.d-roll>span{display:flex;flex-direction:column;transition-property:transform;transition-timing-function:var(--d-ease)}
+.d-roll>span>span{height:1em;line-height:1}
+.d-btn,.btn{transition:transform .1s var(--d-ease)}
+.d-btn:active:not(:disabled),.btn:active:not(:disabled){transform:scale(.97)}
+:where(a,button,input,select,textarea,summary,[tabindex]):focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+:where(a,button,input,select,textarea,summary,[tabindex]):focus:not(:focus-visible){outline:none}
+.d-ann .lv:before,.d-lvdot:before{box-shadow:none}
+.d-stag{animation:none}
+.d-streak>a:hover .d-stag,.d-stag.grow{animation:d-swing1 .3s var(--d-ease)}
+@keyframes d-swing1{0%{transform:rotate(0)}25%{transform:rotate(7deg)}55%{transform:rotate(-4deg)}80%{transform:rotate(2deg)}100%{transform:rotate(0)}}
+.w-r.moved{animation-duration:280ms}
+.d-tabs{position:relative}
+.d-tabs .glide{position:absolute;left:0;bottom:-7px;width:100px;height:2px;border-radius:2px;background:var(--accent);transform-origin:0 0;transform:translateX(var(--gx,0)) scaleX(var(--gs,0));transition:transform .2s var(--d-ease);pointer-events:none}
+.d-tabs .glide.still{transition:none}
+.d-pagein{animation:d-fade .12s var(--d-ease)}
+.d-wait{animation:d-fade .12s var(--d-ease) .3s both}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.15s;animation-timing-function:var(--d-ease)}
+@media (prefers-reduced-motion:reduce){.d-tst,.d-pagein,.d-wait,.d-stag.grow,.d-streak>a:hover .d-stag{animation:none}.d-roll>span,.d-tabs .glide{transition:none}}
+/* No opacity on .mm itself: that would isolate the blend. Each layer fades on its own. */
+.frame .mm{position:absolute;inset:0;pointer-events:none}
+.frame .mm>*{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity .2s var(--d-ease)}
+.frame .mm img{mix-blend-mode:difference}
+.frame .mm .tint{background:#FF5A5A;mix-blend-mode:multiply}
+.frame .mm.on>*{opacity:1}
+.frame.diff .over{mix-blend-mode:normal;clip-path:inset(0 0 0 100%)!important}
+.frame .onion{position:absolute;inset:0;width:100%;height:100%;opacity:0;pointer-events:none;transition:opacity .15s var(--d-ease)}
+.frame .onion.on{opacity:.3}
+.frame.measuring canvas{cursor:crosshair!important}
+.frame .xh{position:absolute;pointer-events:none;background:color-mix(in srgb,var(--accent) 80%,transparent)}
+.frame .xh.v{top:0;bottom:0;width:1px}
+.frame .xh.h{left:0;right:0;height:1px}
+.frame .xread{position:absolute;display:inline-flex;align-items:center;gap:6px;margin:8px 0 0 8px;padding:4px 7px;border-radius:6px;background:rgba(14,15,18,.88);color:#ECEAE4;font:500 10.5px/1 var(--font-mono);white-space:nowrap;pointer-events:none;font-variant-numeric:tabular-nums}
+.frame .xread.l{translate:calc(-100% - 16px) 0}
+.frame .xread.u{translate:0 calc(-100% - 16px)}
+.frame .xread.l.u{translate:calc(-100% - 16px) calc(-100% - 16px)}
+.frame .xread i{width:10px;height:10px;border-radius:3px;border:1px solid rgba(255,255,255,.3)}
+.d-swap{position:relative;display:inline-grid;width:15px;height:15px}
+.d-swap>*{grid-area:1/1;transition:opacity .16s var(--d-ease),transform .16s var(--d-ease)}
+.d-swap>:last-child{opacity:0;transform:scale(.6);color:var(--pass)}
+.d-swap[data-on="true"]>:first-child{opacity:0;transform:scale(.6)}
+.d-swap[data-on="true"]>:last-child{opacity:1;transform:none}
+.d-checkin{animation:d-rowin .18s var(--d-ease) both}
+
+.d-scorebar{position:relative;display:block;height:4px;margin:2px 0 4px;border-radius:4px;background:var(--line);overflow:visible}
+.d-scorebar i{position:absolute;inset:0;border-radius:inherit;background:var(--warn);transform-origin:0 0;transition:transform .28s var(--d-ease)}
+.d-scorebar.ok i{background:var(--pass)}
+.d-scorebar b{position:absolute;top:-3px;width:1.5px;height:10px;background:var(--fg);opacity:.5}
+@media (prefers-reduced-motion:reduce){.d-checkin{animation:none}}
+.d-hthumb{position:relative;display:block}
+.d-hthumb img{display:block;width:100%}
+.d-hthumb .hv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:8px;opacity:0;transition:opacity .2s var(--d-ease)}
+a:hover>.d-hthumb.has .hv,.d-hthumb.has:hover .hv{opacity:1}
+.d-hthumb .hchip{position:absolute;left:8px;bottom:8px;padding:3px 7px;border-radius:6px;background:rgba(14,15,18,.82);color:#ECEAE4;font:500 10.5px/1 var(--font-mono);opacity:0;transition:opacity .2s var(--d-ease);pointer-events:none}
+a:hover>.d-hthumb.has .hchip,.d-hthumb.has:hover .hchip{opacity:1}

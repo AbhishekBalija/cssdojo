@@ -4,7 +4,7 @@ import { BeltBand, BeltChip, BigCountdown, CLOTH, Hang, I, Mountain } from "@/co
 import { avatarColor, beltLine as packBeltLine } from "@/components/PackCard";
 import { ago } from "@/components/Shell";
 import { EmptyState } from "@/components/States";
-import { staticUrl } from "@/lib/api";
+import { HoverThumb } from "@/components/HoverThumb";
 import { packName, shortDate, usePack } from "@/lib/dojo";
 import { useMe } from "@/lib/me";
 
@@ -22,7 +22,7 @@ function ChallengeCard({ c, next, start }: { c: PackChallengeTile; next: boolean
   const card = (
     <div className={`d-pcard${next ? " next" : ""}`}>
       <Link to="/c/$id" params={{ id: c.id }} className="thumb">
-        <img src={staticUrl(`/targets/${c.id}/thumb.png`)} alt={c.title} style={{ background: c.background }} />
+        <HoverThumb id={c.id} title={c.title} background={c.background} />
         <span className="n">{n3(c.number)}</span>
       </Link>
       <span className="ttl">
@@ -119,7 +119,7 @@ export function PackPage() {
   const num = Number(n);
   const q = usePack(num);
   const me = useMe();
-  if (q.isLoading) return <div className="d-pg"><p className="note">Loading…</p></div>;
+  if (q.isLoading) return <div className="d-pg"><p className="note d-wait">Loading…</p></div>;
   const p = q.data;
   if (!p) {
     return (

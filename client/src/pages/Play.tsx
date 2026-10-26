@@ -1,6 +1,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { BarChart3, Copy, History, Settings, TextQuote, X } from "lucide-react";
+import { BarChart3, Check, Copy, History, Settings, TextQuote, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { SOLVED_AT, type Belt as BeltName, type ChallengeProgress, type CheckResult, type LeaderboardRow, type PublicChallenge, type ScoreResult, type SubmissionView } from "@cssdojo/shared";
 import { Belt } from "@/components/Belt";
@@ -8,6 +8,7 @@ import { CodeEditor, type CodeEditorHandle } from "@/components/CodeEditor";
 import { Dialog } from "@/components/Dialog";
 import { OutputFrame, type PreviewState } from "@/components/OutputFrame";
 import { PlayHeader, usePackOf } from "@/components/PlayHeader";
+import { Roll } from "@/components/Roll";
 import { BeltEarned, ResultCard } from "@/components/ResultCard";
 import { EmptyState, StatePage } from "@/components/States";
 import { TargetCanvas } from "@/components/TargetCanvas";
@@ -55,7 +56,12 @@ export function Play({ challengeId, board, kataLabel }: { challengeId: string; b
   const [diff, setDiff] = useState(false);
   const [result, setResult] = useState<ScoreResult | null>(null);
   const [submitting, setSubmitting] = useState(false);
-  const [openHints, setOpenHints] = useState<Record<string, boolean>>({});
+  const [onion, setOnion] = useState(false);
+  const [measure, setMeasure] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [playing, setPlaying] = useState(false);
+  // D and G are held to peek: release puts things back as they were.
+  const held = useRef<{ d?: boolean; g?: boolean }>({});
   const [dlg, setDlg] = useState<null | "keys" | "lb" | "hist">(null);
   const [pop, setPop] = useState<null | "gear">(null);
   const [moment, setMoment] = useState<null | { kind: "belt"; belt: BeltName; then: Moment | null } | Moment>(null);
@@ -191,11 +197,40 @@ export function Play({ challengeId, board, kataLabel }: { challengeId: string; b
       } else if (e.key === "?" && !typing) {
         e.preventDefault();
         setDlg("keys");
+      } else if (!typing && !mod && !e.altKey && !e.repeat && (k === "d" || k === "g")) {
+        e.preventDefault();
+        held.current[k] = true;
+        if (k === "d") setDiff(true);
+        else setOnion(true);
+      }
+    };
+    const onUp = (e: KeyboardEvent) => {
+      const k = e.key.toLowerCase();
+      if ((k === "d" || k === "g") && held.current[k]) {
+        held.current[k] = false;
+        if (k === "d") setDiff(false);
+        else setOnion(false);
       }
     };
     addEventListener("keydown", onKey);
-    return () => removeEventListener("keydown", onKey);
+    addEventListener("keyup", onUp);
+    return () => {
+      removeEventListener("keydown", onKey);
+      removeEventListener("keyup", onUp);
+    };
   });
+
+  // Target states playback: rest, hover, focus with a 900ms hold each, one loop.
+  const playStates = () => {
+    if (!c || playing) return;
+    const seq = (["rest", "hover", "focus"] as const).filter((x) => x === "rest" || c.frames.includes(x));
+    setPlaying(true);
+    seq.forEach((st, i) => setTimeout(() => setState(st), i * 900));
+    setTimeout(() => {
+      setState("rest");
+      setPlaying(false);
+    }, seq.length * 900);
+  };
 
   useEffect(() => {
     const close = (e: MouseEvent) => {
@@ -345,13 +380,19 @@ export function Play({ challengeId, board, kataLabel }: { challengeId: string; b
                 title="Copy your code"
                 onClick={() => {
                   navigator.clipboard.writeText(code).then(
-                    () => toast("Code copied"),
+                    () => {
+                      setCopied(true);
+                      setTimeout(() => setCopied(false), 1500);
+                    },
                     () => toast("Couldn't copy here"),
                   );
                 }}
               >
-                <Copy size={15} />
-                Copy
+                <span className="d-swap" data-on={copied}>
+                  <Copy size={15} />
+                  <Check size={15} />
+                </span>
+                {copied ? "Copied" : "Copy"}
               </button>
             </span>
             <span className={`meta d-saved${saved ? " on" : ""}`} aria-live="polite">
@@ -369,14 +410,18 @@ export function Play({ challengeId, board, kataLabel }: { challengeId: string; b
                   <span className="box" />
                   Slide
                 </button>
-                <button className="tog" type="button" aria-pressed={diff} title="Ctrl+Shift+D" onClick={() => setDiff(!diff)}>
+                <button className="tog" type="button" aria-pressed={diff} title="Show what doesn't match yet in red. Ctrl+Shift+D, or hold D" onClick={() => setDiff(!diff)}>
                   <span className="box" />
-                  Diff
+                  Mismatch
+                </button>
+                <button className="tog" type="button" aria-pressed={onion} title="The target at 30% over your output. Hold G" onClick={() => setOnion(!onion)}>
+                  <span className="box" />
+                  Onion
                 </button>
               </div>
             </div>
             <div className="pane-b">
-              {c ? <OutputFrame code={code} challengeId={c.id} state={state} slide={slide} diff={diff} onSlide={() => task("slide")} /> : <div className="frame" />}
+              {c ? <OutputFrame code={code} challengeId={c.id} state={state} slide={slide} diff={diff} onion={onion} onSlide={() => task("slide")} /> : <div className="frame" />}
               <div className="statebar">
                 <span className="seg" role="group" aria-label="Preview state">
                   {(["rest", "hover", "focus"] as const)
@@ -388,14 +433,23 @@ export function Play({ challengeId, board, kataLabel }: { challengeId: string; b
                     ))}
                 </span>
                 <span className="lbl">{state === "rest" ? "Preview both in a state" : state === "hover" ? "Showing :hover on both" : "Showing :focus-visible on both"}</span>
+                {c && c.frames.length > 1 ? (
+                  <button type="button" className="btn ghost sm" onClick={playStates} disabled={playing} title="Play rest, hover and focus once">
+                    {playing ? "Playing…" : "▶ Play states"}
+                  </button>
+                ) : null}
               </div>
               {result?.status === "missing-hook" ? <div className="banner warn">{result.message}</div> : null}
               <div className="stats">
                 <div className={`tile${last ? "" : " empty"}${last && high !== null && last.score >= high ? " best" : ""}`} data-testid="last-score">
                   <span className="k">Last score</span>
-                  <span className={`v${last ? " acc" : ""}`}>{last ? last.score : "–"}</span>
+                  <span className={`v${last ? " acc" : ""}`}>{last ? <Roll text={last.score.toFixed(1)} /> : "–"}</span>
                   {last ? (
                     <>
+                      <span className={`d-scorebar${last.score >= SOLVED_AT ? " ok" : ""}`} aria-hidden="true">
+                        <i style={{ transform: `scaleX(${last.score / 100})` }} />
+                        <b style={{ left: `${SOLVED_AT}%` }} />
+                      </span>
                       <span className="d">
                         {last.visual}% · {last.checksPassed}/{last.checksRun}
                       </span>
@@ -443,10 +497,16 @@ export function Play({ challengeId, board, kataLabel }: { challengeId: string; b
           <section className={`pane${pane === "target" ? " on" : ""}`} aria-label="Target">
             <div className="pane-h">
               <h2>Target</h2>
+              <div className="togs">
+                <button className="tog" type="button" aria-pressed={measure} title="Crosshair with x, y and colour" onClick={() => setMeasure(!measure)}>
+                  <span className="box" />
+                  Measure
+                </button>
+              </div>
               <span className="meta">400 × 300</span>
             </div>
             <div className="pane-b">
-              {c ? <TargetCanvas challengeId={c.id} title={c.title} forced={state} /> : <div className="frame" />}
+              {c ? <TargetCanvas challengeId={c.id} title={c.title} forced={state} measure={measure} /> : <div className="frame" />}
               <span className="livetag">
                 <i />
                 {c && c.frames.includes("focus")
@@ -489,26 +549,15 @@ export function Play({ challengeId, board, kataLabel }: { challengeId: string; b
               <div className="sec">
                 <span className="lbl">Outcome checks</span>
                 <div className="checks" data-testid="checks">
-                  {checks.map((ch) => {
+                  {checks.map((ch, i) => {
                     const cls = ch.pending ? "pending" : ch.pass ? "pass" : "miss";
-                    const hasHint = !ch.pending && !ch.pass && ch.hint;
+                    const hint = !ch.pending && !ch.pass ? ch.hint : undefined;
                     return (
-                      <div
-                        key={ch.id}
-                        className={`check ${cls}`}
-                        {...(hasHint ? { role: "button", tabIndex: 0, title: "Show a hint" } : {})}
-                        onClick={() => hasHint && setOpenHints((h) => ({ ...h, [ch.id]: !h[ch.id] }))}
-                        onKeyDown={(e) => {
-                          if (hasHint && (e.key === "Enter" || e.key === " ")) {
-                            e.preventDefault();
-                            setOpenHints((h) => ({ ...h, [ch.id]: !h[ch.id] }));
-                          }
-                        }}
-                      >
+                      <div key={`${ch.id}-${result ? "r" : "p"}`} className={`check ${cls}${ch.pending ? "" : " d-checkin"}`} style={ch.pending ? undefined : { animationDelay: `${i * 30}ms` }}>
                         <i>{ch.pending ? "" : ch.pass ? "✓" : "✕"}</i>
                         <span>{ch.label}</span>
-                        <span className="r">{ch.pending ? "not run" : ch.pass ? "pass" : "hint"}</span>
-                        {hasHint && openHints[ch.id] ? <span className="hint">{ch.hint}</span> : null}
+                        <span className="r">{ch.pending ? "not run" : ch.pass ? "pass" : "miss"}</span>
+                        {hint ? <span className="hint">{hint}</span> : null}
                       </div>
                     );
                   })}
@@ -570,7 +619,9 @@ export function Play({ challengeId, board, kataLabel }: { challengeId: string; b
             ["Focus the editor", ["Ctrl", "Shift", "E"]],
             ["Submit", ["Ctrl", "⏎"]],
             ["Toggle slide & compare", ["Ctrl", "Shift", "S"]],
-            ["Toggle diff", ["Ctrl", "Shift", "D"]],
+            ["Toggle mismatch", ["Ctrl", "Shift", "D"]],
+            ["Peek at mismatch", ["Hold D"]],
+            ["Peek with onion skin", ["Hold G"]],
             ["Focus target colors", ["Ctrl", "Shift", "C"]],
             ["Slide top to bottom", ["Shift while hovering"]],
             ["Format code", ["Shift", "Alt", "F"]],
@@ -613,7 +664,7 @@ function ColorChip({ hex }: { hex: string }) {
   const [copied, setCopied] = useState(false);
   const done = () => {
     setCopied(true);
-    setTimeout(() => setCopied(false), 1300);
+    setTimeout(() => setCopied(false), 1500);
   };
   return (
     <button className={`colorchip${copied ? " copied" : ""}`} type="button" onClick={() => navigator.clipboard.writeText(hex).then(done, done)}>
@@ -630,7 +681,7 @@ function FontChip({ family }: { family: string }) {
   const value = `"${family}", ${fallback}`;
   const done = () => {
     setCopied(true);
-    setTimeout(() => setCopied(false), 1300);
+    setTimeout(() => setCopied(false), 1500);
   };
   return (
     <button className={`colorchip fontchip${copied ? " copied" : ""}`} type="button" title={`Copy font-family: ${value}`} onClick={() => navigator.clipboard.writeText(value).then(done, done)}>

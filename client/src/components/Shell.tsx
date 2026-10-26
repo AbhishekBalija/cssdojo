@@ -206,10 +206,22 @@ function StreakTag() {
       ? `Played today. Come back tomorrow for ${current + 1}.`
       : "Submit an attempt on today's kata before 00:00 UTC to keep it.";
   const days = ["M", "T", "W", "T", "F", "S", "S"];
+  // Swing once when the streak grows (and on hover, in CSS). No idle loop.
+  const prev = useRef<number | null>(null);
+  const [grow, setGrow] = useState(false);
+  useEffect(() => {
+    if (prev.current !== null && current > prev.current) {
+      setGrow(true);
+      const t = setTimeout(() => setGrow(false), 320);
+      prev.current = current;
+      return () => clearTimeout(t);
+    }
+    prev.current = current;
+  }, [current]);
   return (
     <span className="d-streak">
       <Link to="/kata" aria-label={label}>
-        <span className="d-stag">
+        <span className={`d-stag${grow ? " grow" : ""}`}>
           <svg className="shape" width="72" height="132" viewBox="0 0 72 132" aria-hidden="true">
             <defs>
               <linearGradient id="stf" x1="0" y1="0" x2="1" y2="1">
@@ -527,7 +539,9 @@ export function AppShell() {
           </button>
           <TopBar />
         </div>
-        <Outlet />
+        <div key={path} className="d-pagein">
+          <Outlet />
+        </div>
       </main>
       <NoticeToasts />
     </div>
