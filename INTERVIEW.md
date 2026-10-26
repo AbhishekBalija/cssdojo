@@ -49,6 +49,7 @@ Concepts used in CSS Dojo, from basic to advanced, with why and how they were bu
 ### Outcome checks, not technique checks
 **What:** checks look at rendered pixels and the final DOM: did hover change anything, is there a 3:1 focus change around the element, is text 4.5:1, is a button still a button.
 **Why:** choosing the technique is the fun part, so no check may require a property, selector or layout method.
+**Gotcha we hit:** a native `<button>` already has a hover tint and a focus ring, so untouched starter code passed every check and scored 32.9. Checks now only count once every required part sits roughly where the target has it (a placement gate using box overlap, intersection over union). Lesson: test the worst answer, not only the near misses.
 
 ### Sandboxing untrusted HTML
 **What:** sanitise (strip scripts, handlers, url(), imports), then render in a fresh browser context with JavaScript disabled and every network request aborted except our fonts, with a 5 second timeout.

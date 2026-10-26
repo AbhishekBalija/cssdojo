@@ -21,7 +21,7 @@ challenges/y-008-segmented-control/
 - **Frames:** `rest` always. Add `hover` and/or `focus` only when the brief is about them (interactive pieces). White belt: 1 to 2 frames. Brown and black: all 3.
 - **Hooks:** the elements the player must keep (class selectors). The starter contains them already. `states.hover` / `states.focus` name the hook that receives the mouse / the Tab focus. A focus hook must be keyboard-focusable (button, a[href], input...).
 - **Checks** (pick those that match the brief; the reference must pass all of them):
-  - `hooks-present` (always)
+  - `hooks-present` (always): every hook is found, visible, and placed roughly where the target has it (half its area shared, or close by and within half to double the size). If any hook is misplaced, every check fails, so checks only earn points once the parts are built.
   - `hover-changes`: hover frame differs visibly from rest
   - `focus-visible`: Tab reaches the focus hook and a ring/change with 3:1 contrast appears around it (at least about a 1px ring all round)
   - `text-contrast-aa`: all text 4.5:1 (3:1 for 24px+ or 18.66px+ bold)
@@ -30,7 +30,7 @@ challenges/y-008-segmented-control/
   - `real-text`: every word in the target is real text in the answer
 - **Belts:** white = one element, few properties. Yellow = a small group (badge + text, simple card). Green = layout of several parts (list row, input with label and helper). Brown = several parts with states (tabs, toggle, pricing row). Black = intricate details (layered shadows, notches, pseudo-elements, precise type).
 - **Golden answers** (at least 3, more is better). First line: `<!-- golden max=89.9 reason="..." -->` (add `min=` for answers that must score high).
-  - `empty.html`: the starter, `max` around 40
+  - `empty.html`: the starter, `max=15` (every check must fail on it)
   - one or more near misses (a 1 to 4px size/radius/spacing error, a slightly wrong colour), `max=89.9`
   - one missing state per state frame (no hover style / no focus ring), `max=89.9`
   - ideally one "different technique, same look" answer with `min=99.5 max=100`

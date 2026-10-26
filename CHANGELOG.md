@@ -9,6 +9,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - Unused exports and the unused `codemirror` meta package (found by `bunx fallow`).
 
 ### Fixed
+- Scoring: untouched starter code no longer passes the outcome checks. Checks only count once every required part is placed roughly like the target (starter on #001 went from 32.9 with 5/5 checks to 2.9 with 0/5). Golden set now caps starter answers at 15.
+- Live target: clicking it and pressing Tab now shows its keyboard focus state. Before, the code editor kept Tab for indenting, so the focus state was unreachable from the keyboard.
 - Live target: the focus state showed the hover fill (it drew the first focus-plus-hover frame). It now shows the real focus frame, in the live target and the :focus preview.
 - Preview fonts failed to load on the split static-site deploy (no CORS on `/static/*`).
 - Fonts are bundled by Vite so the static site does not depend on the API for UI fonts.
