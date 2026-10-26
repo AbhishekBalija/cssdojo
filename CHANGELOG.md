@@ -19,6 +19,9 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - Live target: the focus state showed the hover fill (it drew the first focus-plus-hover frame). It now shows the real focus frame, in the live target and the :focus preview.
 - Preview fonts failed to load on the split static-site deploy (no CORS on `/static/*`).
 - Fonts are bundled by Vite so the static site does not depend on the API for UI fonts.
+- The theme follows the system light or dark setting until you pick one.
+- Long lines wrap in the editor instead of running off the edge.
+- Challenge #022: the "Most popular" badge no longer wraps onto two lines.
 - Submit stays disabled until the starter code has loaded. An early click used to submit an empty answer, which came back as "missing parts".
 - Play screen no longer shrinks to its content width (a Tailwind `fixed` utility collided with our class name).
 
