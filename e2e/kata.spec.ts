@@ -9,10 +9,12 @@ test("today's kata scores on its own board and starts a streak", async ({ page }
 
   const today = (await (await page.request.get("/api/kata/today")).json()) as { date: string; challengeId: string };
   await page.goto("/kata/play");
-  // A streak day needs an attempt that changed the starter code.
-  await page.locator(".cm-content").click();
-  await page.keyboard.press("Control+End");
-  await page.keyboard.type("<p>try</p>");
+  // A streak day needs a Submit that changed the starter code, so edit it first.
+  const editor = page.locator(".cm-content");
+  await expect(editor).toContainText(/\S/);
+  await editor.click();
+  await page.keyboard.press("ControlOrMeta+End");
+  await page.keyboard.type("\n<!-- my first try -->");
   await page.getByTestId("submit").click();
   await expect(page.getByTestId("last-score")).toContainText(/\d+(\.\d)?%/, { timeout: 30_000 });
 

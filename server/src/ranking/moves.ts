@@ -51,7 +51,8 @@ export async function announceMove(db: Db, board: BoardRef, playerId: string, ha
     });
   }
   const up = rankBefore === null ? null : rankBefore - rankAfter;
-  if (rankAfter === 1 && rankBefore !== 1 && !board.key.startsWith("challenge:")) {
+  // LIVE-line moments per the spec: a new #1 on a challenge, a new top 3 on a live pack.
+  if (board.key.startsWith("challenge:") && rankAfter === 1 && rankBefore !== 1) {
     await addEvent(db, { kind: "number-one", playerId, board: board.key, text: `took 1st on ${board.name}`, delta: up, rank: 1, href: board.href });
   } else if (board.live && rankAfter <= 3 && (rankBefore === null || rankBefore > 3)) {
     await addEvent(db, { kind: "pack-top3", playerId, board: board.key, text: `moved into the top 3 on ${board.name}`, delta: up, rank: rankAfter, href: board.href });

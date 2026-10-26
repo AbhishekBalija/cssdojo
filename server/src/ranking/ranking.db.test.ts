@@ -74,8 +74,8 @@ describe.skipIf(!enabled)("ranking against Postgres", () => {
     expect(out.ranking?.wall).toMatchObject({ rankBefore: null, rankAfter: 1, passed: ["ana"] });
     const passed = (await bell("ana")).filter((n) => n.kind === "passed");
     expect(passed.map((n) => n.board).sort()).toEqual([`challenge:${W1}`, "pack:1", "wall"]);
-    const ones = await db.select().from(s.events).where(and(eq(s.events.kind, "number-one"), eq(s.events.playerId, ids.ben as string)));
-    expect(ones.map((e) => e.board).sort()).toEqual(["pack:1", "wall"]);
+    const big = await db.select().from(s.events).where(and(eq(s.events.playerId, ids.ben as string), sql`${s.events.kind} <> 'moved'`));
+    expect(big.map((e) => `${e.kind} ${e.board}`).sort()).toEqual([`number-one challenge:${W1}`, "pack-top3 pack:1"]);
   });
 
   it("throttles 'passed you' to one per board per hour", async () => {
