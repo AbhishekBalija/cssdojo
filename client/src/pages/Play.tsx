@@ -114,7 +114,8 @@ export function Play({ challengeId, board, kataLabel }: { challengeId: string; b
   };
 
   const submit = useCallback(async () => {
-    if (submitting) return;
+    // The starter arrives with the challenge; an early click would submit nothing.
+    if (submitting || !code.trim()) return;
     setSubmitting(true);
     try {
       const { id } = await api<{ id: string }>("/submissions", { method: "POST", json: { challengeId, code, board } });
@@ -383,7 +384,7 @@ export function Play({ challengeId, board, kataLabel }: { challengeId: string; b
             <CodeEditor value={code} onChange={onChange} onSubmit={() => void submit()} onReady={(h) => (editor.current = h)} />
           </div>
           <div className="ed-foot">
-            <button className="btn primary" type="button" onClick={() => void submit()} disabled={submitting} data-testid="submit">
+            <button className="btn primary" type="button" onClick={() => void submit()} disabled={submitting || !code.trim()} data-testid="submit">
               {submitting ? "Scoring…" : "Submit"} <kbd>Ctrl</kbd>
               <kbd>⏎</kbd>
             </button>

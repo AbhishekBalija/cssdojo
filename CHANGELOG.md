@@ -8,12 +8,17 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 ### Removed
 - Unused exports and the unused `codemirror` meta package (found by `bunx fallow`).
 
+### Changed
+- Every challenge now uses a standard value scale (Tailwind-like: 0, 1, 2, even values to 14, then steps of 4; a type scale for fonts; fixed border widths and radii). 223 odd values such as 27px or 3px were snapped. A test fails on any new off-scale value.
+- Scoring is fairer on colour: inside the shape, a wrong colour is scored by the colour term only, not counted again as missing shape. A right-shaped answer with the wrong focus fill now scores about 86. Colour cost is `C^2` with `C = 1 - deltaE / 12`.
+
 ### Fixed
 - Scoring: untouched starter code no longer passes the outcome checks. Checks only count once every required part is placed roughly like the target (starter on #001 went from 32.9 with 5/5 checks to 2.9 with 0/5). Golden set now caps starter answers at 15.
 - Live target: clicking it and pressing Tab now shows its keyboard focus state. Before, the code editor kept Tab for indenting, so the focus state was unreachable from the keyboard.
 - Live target: the focus state showed the hover fill (it drew the first focus-plus-hover frame). It now shows the real focus frame, in the live target and the :focus preview.
 - Preview fonts failed to load on the split static-site deploy (no CORS on `/static/*`).
 - Fonts are bundled by Vite so the static site does not depend on the API for UI fonts.
+- Submit stays disabled until the starter code has loaded. An early click used to submit an empty answer, which came back as "missing parts".
 - Play screen no longer shrinks to its content width (a Tailwind `fixed` utility collided with our class name).
 
 ### Added

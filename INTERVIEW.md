@@ -41,9 +41,11 @@ Concepts used in CSS Dojo, from basic to advanced, with why and how they were bu
 ## Scoring
 
 ### Comparing screenshots fairly
-**What:** each frame scores `100 x S^2 x edge x (1 - meanDeltaE / 20)` over the component region only. S is the share of matching pixels (pixelmatch), deltaE is the average CIE Lab colour difference, and `edge` is a penalty for mistakes along the outline.
+**What:** each frame scores `100 x S^2 x edge x C^2`, with `C = 1 - meanDeltaE / 12`, over the component region only. S is the share of matching pixels (pixelmatch), deltaE is the average CIE Lab colour difference, and `edge` is a penalty for mistakes along the outline.
 **Why:** averaging over the whole canvas let small components hide their errors. The edge term exists because a wrong corner radius changes only a few soft (anti-aliased) pixels, which plain pixelmatch ignores.
 **Fairness:** a pixel that matches its neighbour within one device pixel is forgiven, so two correct techniques that land text half a CSS pixel apart both score about 100.
+**Two thresholds, one job each:** pixelmatch runs strict (0.05) where only one image paints a pixel (missing or extra shape) and looser (0.15) where both paint it. Inside the shape a difference is mostly a wrong colour, and the colour term already scores that. Before, a right-shaped button in the wrong fill lost on shape and on colour at once and scored 8 for that frame; now about 40. The loose threshold is only used where both images are covered, because thin text pixels otherwise counted as anti-aliasing and inflated text-only starters.
+**Why squared colour:** exact colours are given on the brief, so a visible colour miss should cost clearly, while tiny JPEG-level noise (deltaE under 1) costs almost nothing.
 **How it was tuned:** the golden set (known-wrong answers with a maximum score) is the test suite for the metric itself.
 
 ### Outcome checks, not technique checks

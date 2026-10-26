@@ -5,11 +5,10 @@ test("guest submits the untouched starter and it scores low with every check fai
   await page.goto("/c/w-001-primary-button");
   await expect(page.getByTestId("submit")).toBeVisible();
   await page.getByTestId("submit").click();
-  await expect(page.getByTestId("last-score")).toContainText(/\d+\.\d/, { timeout: 30_000 });
+  await expect(page.getByTestId("last-score")).toContainText("0/5", { timeout: 30_000 });
   await expect(page.getByTestId("checks")).toBeVisible();
-  const score = Number((await page.getByTestId("last-score").innerText()).match(/\d+\.\d/)?.[0]);
+  const score = Number(await page.getByTestId("last-score").locator(".v").innerText());
   expect(score).toBeLessThan(15);
-  await expect(page.getByTestId("last-score")).toContainText("0/5");
 });
 
 test("clicking the live target and pressing Tab shows its focus state", async ({ page }) => {

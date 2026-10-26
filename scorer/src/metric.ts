@@ -2,15 +2,28 @@ import pixelmatch from "pixelmatch";
 import type { PNG } from "pngjs";
 
 // Visual metric from the scoring spec:
-//   frame = 100 * S^2 * (1 - meanDeltaE / 20)
+//   frame = 100 * S^2 * C^2, with C = 1 - meanDeltaE / DE_SCALE
 // measured only over the component region (pixels that differ from the target's
 // background in either image, grown a little), so empty background never hides
 // a small component's mistakes.
 
+/**
+ * Mean colour error (CIE76) at which the colour factor reaches zero. A right
+ * shape in the wrong fill lands around 40 for that frame; exact colours are
+ * given on the brief, so a visible colour miss should cost.
+ */
+const DE_SCALE = 12;
 /** Region growth in device pixels (2 CSS px at 2x). */
 const GROW = 4;
-/** pixelmatch threshold: low, so small colour shifts count as shape errors. */
+/** pixelmatch threshold: low, so a pixel covered in one image and empty in the other counts. */
 const PM_THRESHOLD = 0.05;
+/**
+ * Looser threshold used where BOTH images cover the pixel (neither is
+ * background). There a difference is mostly a wrong colour, which the colour
+ * term scores; counting it as missing shape too dropped a right-shaped button
+ * with the wrong fill to 8/100 for that state.
+ */
+const PM_FILL_THRESHOLD = 0.15;
 /** A pixel is "not background" when its RGB distance from the background exceeds this. */
 const BG_TOLERANCE = 6;
 /** Width of the band around the target's shape edges, in device pixels. */
@@ -176,6 +189,8 @@ export function compareFrames(target: PNG, candidate: PNG, bg: Rgb = backgroundC
   if (candidate.width !== w || candidate.height !== h) throw new Error("Frame sizes differ");
   const diffOut = new Uint8Array(w * h * 4);
   pixelmatch(target.data, candidate.data, diffOut, w, h, { threshold: PM_THRESHOLD, includeAA: false, diffMask: true, alpha: 0 });
+  const fillDiff = new Uint8Array(w * h * 4);
+  pixelmatch(target.data, candidate.data, fillDiff, w, h, { threshold: PM_FILL_THRESHOLD, includeAA: false, diffMask: true, alpha: 0 });
   // Second pass that keeps anti-aliased pixels: a different corner radius only
   // shows up in the soft edge pixels, which the first pass ignores.
   const edgeDiff = new Uint8Array(w * h * 4);
@@ -201,7 +216,8 @@ export function compareFrames(target: PNG, candidate: PNG, bg: Rgb = backgroundC
   for (let p = 0; p < w * h; p++) {
     if (!region[p]) continue;
     regionN++;
-    const d1 = flagged(diffOut, p);
+    const covered = notBg(target, p * 4) && notBg(candidate, p * 4);
+    const d1 = covered ? flagged(fillDiff, p) : flagged(diffOut, p);
     const d2 = edges[p] ? flagged(edgeDiff, p) : false;
     const ok = (d1 || d2) && forgiven(p);
     if (d1 && !ok) diffN++;
@@ -217,7 +233,8 @@ export function compareFrames(target: PNG, candidate: PNG, bg: Rgb = backgroundC
   const edgeError = edgeN === 0 ? 0 : edgeDiffN / edgeN;
   const edge = 1 - EDGE_MAX * (1 - Math.exp(-edgeError / EDGE_SCALE));
   const deltaE = de / regionN;
-  const score = 100 * shape * shape * edge * (1 - deltaE / 20);
+  const colour = Math.max(0, 1 - deltaE / DE_SCALE);
+  const score = 100 * shape * shape * edge * colour * colour;
   return { score: Math.max(0, score), shape, deltaE, regionPixels: regionN, diffPixels: diffN + edgeDiffN };
 }
 
