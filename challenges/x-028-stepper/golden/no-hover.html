@@ -1,7 +1,7 @@
 <!-- golden max=89.9 reason="missing hover state" -->
 <div class="stage">
   <div class="stepper">
-    <button class="step step-done"><span class="dot"></span><span class="label">Cart</span></button>
+    <button class="step step-done"><span class="dot"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg></span><span class="label">Cart</span></button>
     <button class="step step-current"><span class="dot">2</span><span class="label">Delivery</span></button>
     <button class="step step-next"><span class="dot">3</span><span class="label">Payment</span></button>
   </div>
@@ -15,7 +15,6 @@
   .step-current::before { border-top: 2px solid #0B6E4F !important; }
   .dot { position: relative; z-index: 1; display: grid; place-items: center; box-sizing: border-box; width: 32px; height: 32px; border-radius: 50%; border: 2px solid #8A7F66; background: #FFF4E0; color: #5E5646; font: 700 14px/1 "Onest", sans-serif; }
   .step-done .dot { background: #0B6E4F; border-color: #0B6E4F; }
-  .step-done .dot::after { content: ""; width: 6px; height: 12px; margin-top: -4px; border: solid #FFFFFF; border-width: 0 2px 2px 0; transform: rotate(45deg); }
   .step-current .dot { border-color: #0B6E4F; color: #0B6E4F; box-shadow: 0 0 0 4px #E1F0E8; }
   .label { font: 600 12px/20px "Onest", sans-serif; color: #5E5646; }
   .step-current .label, .step-done .label { color: #0B3D2D; }
