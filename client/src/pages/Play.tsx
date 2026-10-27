@@ -55,6 +55,8 @@ export function Play({ challengeId, board, kataLabel }: { challengeId: string; b
   const [slide, setSlide] = useState(true);
   const [diff, setDiff] = useState(false);
   const [result, setResult] = useState<ScoreResult | null>(null);
+  // The scorer's mismatch maps from the last Submit, valid while the code is unchanged.
+  const [scored, setScored] = useState<{ code: string; maps: NonNullable<SubmissionView["maps"]> } | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [onion, setOnion] = useState(false);
   const [measure, setMeasure] = useState(false);
@@ -129,6 +131,7 @@ export function Play({ challengeId, board, kataLabel }: { challengeId: string; b
       }
       const r = view.result;
       setResult(r);
+      setScored(view.maps ? { code, maps: view.maps } : null);
       task("submit");
       if (r.status === "missing-hook") {
         toast(r.message);
@@ -143,7 +146,7 @@ export function Play({ challengeId, board, kataLabel }: { challengeId: string; b
       }
       const gained = view.ranking?.gained ?? 0;
       toast(view.newBest ? `New best: ${r.score}${gained > 0 ? ` · +${gained} pts` : ""}` : `Scored ${r.score} with a ${r.visual}% match`);
-      if (r.warnings.length) toast(r.warnings[0] ?? "");
+      for (const w of r.warnings.slice(0, 2)) toast(w);
       // A new best or a first solve opens the result card; a belt opens its own card first.
       const card: Moment | null = view.newBest || firstSolve ? { kind: "result", view, result: r, chars: code.length } : null;
       const belt = view.beltsEarned?.[0];
@@ -159,6 +162,8 @@ export function Play({ challengeId, board, kataLabel }: { challengeId: string; b
       setSubmitting(false);
     }
   }, [submitting, challengeId, code, board, task, progress.data?.best, qc]);
+
+  const scoreMap = scored && scored.code === code ? scored.maps[state] : undefined;
 
   const siblings = pack?.challenges ?? [];
   const at = siblings.findIndex((x) => x.id === challengeId);
@@ -421,7 +426,27 @@ export function Play({ challengeId, board, kataLabel }: { challengeId: string; b
               </div>
             </div>
             <div className="pane-b">
-              {c ? <OutputFrame code={code} challengeId={c.id} state={state} slide={slide} diff={diff} onion={onion} onSlide={() => task("slide")} /> : <div className="frame" />}
+              {c ? (
+                <OutputFrame
+                  code={code}
+                  challengeId={c.id}
+                  hooks={c.hooks}
+                  states={c.states}
+                  state={state}
+                  slide={slide}
+                  diff={diff}
+                  scoreMap={scoreMap}
+                  onion={onion}
+                  onSlide={() => task("slide")}
+                />
+              ) : (
+                <div className="frame" />
+              )}
+              {diff && scoreMap ? (
+                <p className="smap-note" data-testid="score-map-note">
+                  <i className="red" /> shape <i className="amber" /> colour · from your last Submit. Edit to go live.
+                </p>
+              ) : null}
               <div className="statebar">
                 <span className="seg" role="group" aria-label="Preview state">
                   {(["rest", "hover", "focus"] as const)

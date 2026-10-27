@@ -1,5 +1,5 @@
 import pixelmatch from "pixelmatch";
-import type { PNG } from "pngjs";
+import { PNG } from "pngjs";
 
 // Visual metric from the scoring spec:
 //   frame = 100 * S^2 * C^2, with C = 1 - meanDeltaE / DE_SCALE
@@ -49,7 +49,12 @@ export interface FrameMetric {
   deltaE: number;
   regionPixels: number;
   diffPixels: number;
+  /** Per device pixel: 0 fine, 1 counted as a shape or edge miss, 2 colour off by more than MAP_DE. */
+  mask: Uint8Array;
 }
+
+/** Colour error above which a pixel shows as "colour off" in the mismatch map (about two just-noticeable steps). */
+const MAP_DE = 4;
 
 /** The most common colour along the image border, taken as the background. */
 export function backgroundColor(img: PNG): Rgb {
@@ -213,6 +218,7 @@ export function compareFrames(target: PNG, candidate: PNG, bg: Rgb = backgroundC
   let edgeN = 0;
   let edgeDiffN = 0;
   let de = 0;
+  const mask = new Uint8Array(w * h);
   for (let p = 0; p < w * h; p++) {
     if (!region[p]) continue;
     regionN++;
@@ -226,16 +232,44 @@ export function compareFrames(target: PNG, candidate: PNG, bg: Rgb = backgroundC
       if (d2 && !ok) edgeDiffN++;
     }
     const direct = labDist(tLab, p, cLab, p);
-    de += Math.min(20, direct < 1 ? direct : Math.max(Math.min(nearDist(cLab, tLab, p, w, h), nearDist(tLab, cLab, p, w, h)), 0));
+    const pixelDe = Math.min(20, direct < 1 ? direct : Math.max(Math.min(nearDist(cLab, tLab, p, w, h), nearDist(tLab, cLab, p, w, h)), 0));
+    de += pixelDe;
+    if ((d1 || d2) && !ok) mask[p] = 1;
+    else if (pixelDe > MAP_DE) mask[p] = 2;
   }
-  if (regionN === 0) return { score: 100, shape: 1, deltaE: 0, regionPixels: 0, diffPixels: 0 };
+  if (regionN === 0) return { score: 100, shape: 1, deltaE: 0, regionPixels: 0, diffPixels: 0, mask };
   const shape = 1 - diffN / regionN;
   const edgeError = edgeN === 0 ? 0 : edgeDiffN / edgeN;
   const edge = 1 - EDGE_MAX * (1 - Math.exp(-edgeError / EDGE_SCALE));
   const deltaE = de / regionN;
   const colour = Math.max(0, 1 - deltaE / DE_SCALE);
   const score = 100 * shape * shape * edge * colour * colour;
-  return { score: Math.max(0, score), shape, deltaE, regionPixels: regionN, diffPixels: diffN + edgeDiffN };
+  return { score: Math.max(0, score), shape, deltaE, regionPixels: regionN, diffPixels: diffN + edgeDiffN, mask };
+}
+
+/**
+ * Turns a frame mask into the 1x picture the play screen lays over the output:
+ * red where the shape was counted wrong, amber where only the colour was.
+ * A 1x pixel is marked when any of its four device pixels is.
+ */
+export function maskToPng(mask: Uint8Array, w: number, h: number): PNG {
+  const W = Math.floor(w / 2);
+  const H = Math.floor(h / 2);
+  const out = new PNG({ width: W, height: H });
+  for (let y = 0; y < H; y++) {
+    for (let x = 0; x < W; x++) {
+      const i = 2 * y * w + 2 * x;
+      const a = mask[i] ?? 0;
+      const b = mask[i + 1] ?? 0;
+      const c = mask[i + w] ?? 0;
+      const d = mask[i + w + 1] ?? 0;
+      const kind = a === 1 || b === 1 || c === 1 || d === 1 ? 1 : a || b || c || d ? 2 : 0;
+      const o = (y * W + x) * 4;
+      if (kind === 1) out.data.set([255, 64, 64, 235], o);
+      else if (kind === 2) out.data.set([255, 176, 32, 200], o);
+    }
+  }
+  return out;
 }
 
 /** Number of pixels that differ between two frames of the same answer. */

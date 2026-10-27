@@ -554,6 +554,12 @@ html[data-ligatures] .cm-content{font-variant-ligatures:normal}
 .frame .mm .tint{background:#FF5A5A;mix-blend-mode:multiply}
 .frame .mm.on>*{opacity:1}
 .frame.diff .over{mix-blend-mode:normal;clip-path:inset(0 0 0 100%)!important}
+.smap-note{display:flex;align-items:center;gap:6px;margin:8px 0 0;font:500 11px/16px var(--font-mono);color:var(--sub)}
+.smap-note i{width:10px;height:10px;border-radius:2px}
+.smap-note i.red{background:#FF4040}
+.smap-note i.amber{background:#FFB020;margin-left:6px}
+.frame .smap{position:absolute;inset:0;width:100%;height:100%;opacity:0;pointer-events:none;image-rendering:pixelated;transition:opacity .2s var(--d-ease)}
+.frame .smap.on{opacity:1}
 .frame .onion{position:absolute;inset:0;width:100%;height:100%;opacity:0;pointer-events:none;transition:opacity .15s var(--d-ease)}
 .frame .onion.on{opacity:.3}
 .frame.measuring canvas{cursor:crosshair!important}

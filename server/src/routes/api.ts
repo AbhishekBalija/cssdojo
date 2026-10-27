@@ -27,7 +27,7 @@ import { isHidden, packOf } from "../packs";
 import { recordKataDay, recordOpen } from "../progress";
 import { challengeStandings, playerTags } from "../ranking/standings";
 import { queue } from "../scoring/runtime";
-import { scoreEvents } from "../scoring/events";
+import { mapsFor, scoreEvents } from "../scoring/events";
 
 const limiter = new MemoryRateLimiter();
 const WAIT_MS = 15_000;
@@ -233,8 +233,9 @@ api.get("/submissions/:id", async (c) => {
   const load = async () => (await db.select().from(submissions).where(and(eq(submissions.id, id), eq(submissions.playerId, playerId))))[0];
   let s = await load();
   if (!s) return c.json({ error: "Not found" }, 404);
+  let extra: Partial<SubmissionView> = {};
   if (c.req.query("wait") && (s.status === "queued" || s.status === "running")) {
-    const extra = await new Promise<Partial<SubmissionView>>((resolve) => {
+    extra = await new Promise<Partial<SubmissionView>>((resolve) => {
       const timer = setTimeout(() => {
         scoreEvents.off(id, onDone);
         resolve({});
@@ -250,9 +251,10 @@ api.get("/submissions/:id", async (c) => {
       });
     });
     s = (await load()) ?? s;
-    return c.json(view(s, extra));
   }
-  return c.json(view(s));
+  // Mismatch maps only travel with this request, the one the play screen waits on.
+  const maps = mapsFor(s.id);
+  return c.json(view(s, maps ? { ...extra, maps } : extra));
 });
 
 /** The player's recent Submits on one challenge, newest first. */

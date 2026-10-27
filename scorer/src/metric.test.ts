@@ -1,7 +1,7 @@
 import { PNG } from "pngjs";
 import { describe, expect, it } from "vitest";
 import { contrastRatio } from "./checks";
-import { backgroundColor, compareFrames } from "./metric";
+import { backgroundColor, compareFrames, maskToPng } from "./metric";
 
 function img(draw: (x: number, y: number) => [number, number, number]): PNG {
   const png = new PNG({ width: 40, height: 30 });
@@ -33,6 +33,28 @@ describe("compareFrames", () => {
   });
   it("scores a missing component low", () => {
     expect(compareFrames(box(10, 30), box(0, 0)).score).toBeLessThan(30);
+  });
+});
+
+describe("mismatch mask", () => {
+  it("is empty for identical frames", () => {
+    expect(compareFrames(box(10, 30), box(10, 30)).mask.every((v) => v === 0)).toBe(true);
+  });
+  it("marks a moved box as shape and a tinted background as colour", () => {
+    const moved = compareFrames(box(10, 30), box(14, 34)).mask;
+    expect(moved.includes(1)).toBe(true);
+    const tinted = img((x, y) => (x >= 10 && x < 30 && y >= 10 && y < 20 ? [95, 74, 230] : [234, 241, 236]));
+    const m = compareFrames(box(10, 30), tinted).mask;
+    expect(m[0]).toBe(2);
+  });
+  it("draws the 1x map with red for shape and amber for colour", () => {
+    const mask = new Uint8Array(4 * 2);
+    mask[0] = 1;
+    mask[2] = 2;
+    const png = maskToPng(mask, 4, 2);
+    expect([png.width, png.height]).toEqual([2, 1]);
+    expect(Array.from(png.data.subarray(0, 4))).toEqual([255, 64, 64, 235]);
+    expect(Array.from(png.data.subarray(4, 8))).toEqual([255, 176, 32, 200]);
   });
 });
 

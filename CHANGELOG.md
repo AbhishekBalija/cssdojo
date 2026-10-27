@@ -27,6 +27,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - Scoring is fairer on colour: inside the shape, a wrong colour is scored by the colour term only, not counted again as missing shape. A right-shaped answer with the wrong focus fill now scores about 86. Colour cost is `C^2` with `C = 1 - deltaE / 12`.
 
 ### Fixed
+- Mismatch now tells the truth: the :hover and :focus preview marks only what the scorer hovers or tabs to (7 challenges showed false red), and after a Submit the scorer's own map (red = shape, amber = colour) replaces the live overlay until the code changes. A Submit whose stage background colour differs from the target now says so.
 - The player middleware ran once per route group, so a guest's first POST could create several guest rows. It now runs once per request.
 - A Submit more than 24 days after first opening a challenge overflowed the solve-time column and failed to record.
 - Scoring: untouched starter code no longer passes the outcome checks. Checks only count once every required part is placed roughly like the target (starter on #001 went from 32.9 with 5/5 checks to 2.9 with 0/5). Golden set now caps starter answers at 15.
