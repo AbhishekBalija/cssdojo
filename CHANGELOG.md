@@ -22,6 +22,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - Unused exports and the unused `codemirror` meta package (found by `bunx fallow`).
 
 ### Changed
+- Icons are given, never drawn: the ticks in Done chip and Stepper, the tooltip arrow and the breadcrumb separators now ship as inline SVG in the starter. A test fails if a reference uses an `<svg>` its starter lacks.
 - Client deploys to Vercel and proxies `/api` and `/static` to the Render API, so sign-in cookies are first-party. New API settings `AUTH_URL` and `PAGES_REDIRECT_TO_CLIENT` (see `docs/guides/vercel.md`).
 - Every challenge now uses a standard value scale (Tailwind-like: 0, 1, 2, even values to 14, then steps of 4; a type scale for fonts; fixed border widths and radii). 223 odd values such as 27px or 3px were snapped. A test fails on any new off-scale value.
 - Scoring is fairer on colour: inside the shape, a wrong colour is scored by the colour term only, not counted again as missing shape. A right-shaped answer with the wrong focus fill now scores about 86. Colour cost is `C^2` with `C = 1 - deltaE / 12`.
