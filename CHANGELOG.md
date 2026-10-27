@@ -19,7 +19,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - Settings: handle, notifications, theme, reduce motion, sound and editor ligatures.
 
 ### Documentation
-- Handoff for local agents: `docs/context.md` (decisions, hosting, open PRs, open items) and a fuller `.agents/AGENTS.md`.
+- Handoff for local agents: `docs/context.md` (decisions, hosting, open PRs, open items) and a fuller `.agents/AGENTS.md`, with root `CLAUDE.md` as a symlink to it so Claude Code loads it.
 
 ### Removed
 - Unused exports and the unused `codemirror` meta package (found by `bunx fallow`).
