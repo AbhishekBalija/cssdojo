@@ -44,7 +44,12 @@ type Moment = { kind: "result"; view: SubmissionView; result: Extract<ScoreResul
 export function Play({ challengeId, board, kataLabel }: { challengeId: string; board: string; kataLabel?: string }) {
   const qc = useQueryClient();
   const me = useMe();
-  const challenge = useQuery({ queryKey: ["challenge", challengeId], queryFn: () => api<PublicChallenge>(`/challenges/${challengeId}`) });
+  // A 404 will not fix itself, so show "not here" at once instead of retrying for several seconds.
+  const challenge = useQuery({
+    queryKey: ["challenge", challengeId],
+    queryFn: () => api<PublicChallenge>(`/challenges/${challengeId}`),
+    retry: (count, err) => !(err instanceof ApiError && err.status === 404) && count < 3,
+  });
   const progress = useQuery({ queryKey: ["progress", challengeId], queryFn: () => api<ChallengeProgress>(`/challenges/${challengeId}/progress`) });
   const pack = usePackOf(challengeId);
 
@@ -525,7 +530,6 @@ export function Play({ challengeId, board, kataLabel }: { challengeId: string; b
                   <Belt belt={c.belt} />
                 </div>
               ) : null}
-              {c ? <p className="brief">{c.brief}</p> : null}
               {c ? (
                 <div className="sec">
                   <span className="lbl">Colors</span>
@@ -546,8 +550,12 @@ export function Play({ challengeId, board, kataLabel }: { challengeId: string; b
                   </div>
                 </div>
               ) : null}
-              <div className="sec">
-                <span className="lbl">Outcome checks</span>
+              {/* Collapsed by default to keep the panel calm. The summary still shows how many checks pass. */}
+              <details className="sec checks-fold">
+                <summary className="lbl">
+                  Outcome checks
+                  <span className="cnt">{result?.status === "scored" ? `${checks.filter((x) => x.pass).length} of ${checks.length} pass` : `${checks.length} checks`}</span>
+                </summary>
                 <div className="checks" data-testid="checks">
                   {checks.map((ch, i) => {
                     const cls = ch.pending ? "pending" : ch.pass ? "pass" : "miss";
@@ -562,7 +570,7 @@ export function Play({ challengeId, board, kataLabel }: { challengeId: string; b
                     );
                   })}
                 </div>
-              </div>
+              </details>
               {progress.data?.note ? (
                 <div className="sec">
                   <span className="lbl">A nudge</span>

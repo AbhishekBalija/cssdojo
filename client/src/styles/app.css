@@ -210,6 +210,13 @@ kbd{font:500 9px/1 var(--font-mono);padding:3px 4px;border-radius:4px;border:1px
 .brief{font-size:13px;color:var(--sub);margin:0}
 .sec{display:grid;gap:10px}
 .sec-h{display:flex;align-items:center;gap:8px}
+/* Outcome checks fold: the summary row is the label, a count and a chevron. */
+.checks-fold>summary{display:flex;align-items:center;gap:8px;cursor:pointer;list-style:none;padding:2px 0;border-radius:4px}
+.checks-fold>summary::-webkit-details-marker{display:none}
+.checks-fold>summary::after{content:"";width:6px;height:6px;margin-left:auto;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;rotate:45deg;translate:0 -2px;transition:rotate .15s}
+.checks-fold[open]>summary::after{rotate:225deg;translate:0 2px}
+.checks-fold>summary .cnt{color:var(--sub);letter-spacing:.04em}
+.checks-fold>summary:hover{color:var(--fg)}
 
 /* status bar */
 .status{display:flex;align-items:center;gap:20px;height:36px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));border-top:1px solid var(--line);background:var(--panel);font:400 11px/1 var(--font-mono);color:var(--faint);flex:none;white-space:nowrap;overflow:hidden}
