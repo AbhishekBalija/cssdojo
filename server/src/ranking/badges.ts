@@ -115,7 +115,7 @@ export async function badgeViews(db: Db, playerId: string | null): Promise<Badge
   const earned = new Map(rows.map((r) => [r.badgeId, r.earnedAt]));
   const beltSolves = await db.execute<{ belt: Belt; n: number }>(sql`
     select c.belt, count(distinct b.challenge_id)::int as n from best_scores b join challenges c on c.id = b.challenge_id
-    where b.player_id = ${playerId} and b.score >= ${SOLVED_AT} group by c.belt`);
+    where b.player_id = ${playerId} and c.kind = 'challenge' and b.score >= ${SOLVED_AT} group by c.belt`);
   for (const r of beltSolves) solvedPerBelt.set(`belt-${r.belt}`, r.n);
   return BADGES.map((b) => {
     const at = earned.get(b.id);
