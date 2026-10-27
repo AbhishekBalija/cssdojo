@@ -1,3 +1,3 @@
-One small pill with a round badge and a tick drawn in CSS. Check the gap between the badge and the words and the padding on the left being smaller than the right.
+One small pill with a round badge holding the tick icon (given in the starter). Check the gap between the badge and the words and the padding on the left being smaller than the right.
 
-The tick can be a rotated border, an inline svg path or a clip-path.
+Centre the tick in the badge with grid, flex or by sizing the badge around it.

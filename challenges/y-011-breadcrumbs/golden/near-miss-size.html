@@ -3,9 +3,9 @@
   <nav aria-label="Breadcrumb">
     <ol class="trail">
       <li><a class="crumb" href="#">Home</a></li>
-      <li><a class="crumb" href="#">Projects</a></li>
-      <li><a class="crumb" href="#">Harbor redesign</a></li>
-      <li><span class="current" aria-current="page">Brand colours</span></li>
+      <li><svg class="sep" viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="#8A97A3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 4l4 4-4 4"/></svg><a class="crumb" href="#">Projects</a></li>
+      <li><svg class="sep" viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="#8A97A3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 4l4 4-4 4"/></svg><a class="crumb" href="#">Harbor redesign</a></li>
+      <li><svg class="sep" viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="#8A97A3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 4l4 4-4 4"/></svg><span class="current" aria-current="page">Brand colours</span></li>
     </ol>
   </nav>
 </div>
@@ -13,7 +13,8 @@
   body { margin: 0; }
   .stage { height: 300px; display: grid; place-items: center; background: #EFF1EA; }
   .trail { list-style: none; margin: 0; padding: 0; display: flex; align-items: center; font: 400 12px/20px "Onest", sans-serif; }
-  .trail li + li::before { content: "\203A"; margin: 0 2px; color: #8A97A3; font-size: 18px; }
+  .trail li { display: flex; align-items: center; }
+  .sep { margin: 0 2px; }
   .crumb { display: inline-block; padding: 4px 6px; border-radius: 6px; color: #2F5D8A; text-decoration: none; }
   .crumb:hover { color: #153A5E; text-decoration: underline; text-underline-offset: 2px; background: #E0E6EC; }
   .crumb:focus-visible { outline: 2px solid #2F5D8A; outline-offset: 2px; }
