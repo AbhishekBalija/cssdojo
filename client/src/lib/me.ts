@@ -2,6 +2,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
 import type { Belt, MeView } from "@cssdojo/shared";
 import { api, clearGuestId, guestId } from "./api";
+import { resetTasks } from "./tasks";
 import { toast } from "./toast";
 
 /** Who is playing: guest or signed-in user, with streak and belts. */
@@ -35,4 +36,5 @@ export function useGuestMerge(): void {
 
 export async function signOut(): Promise<void> {
   await api("/auth/sign-out", { method: "POST", json: {} });
+  resetTasks();
 }

@@ -1,17 +1,19 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { reducedMotion } from "@/lib/prefs";
-import { onToast } from "@/lib/toast";
+import { onToast, type ToastAction } from "@/lib/toast";
 
 // Up to three toasts stacked at the bottom. New ones rise in, old ones fade
 // out, and the rest glide to their new place (FLIP).
 
 const SHOW_MS = 2600;
+const ACTION_MS = 6000;
 const OUT_MS = 150;
 const MAX = 3;
 
 interface Item {
   id: number;
   msg: string;
+  action?: ToastAction;
   out: boolean;
 }
 
@@ -31,13 +33,20 @@ export function Toaster() {
       }, ms);
       timers.add(t);
     };
-    const off = onToast((msg) => {
+    const off = onToast((msg, action) => {
+      if (msg === null) {
+        setItems([]);
+        return;
+      }
       const id = ++seq;
-      setItems((xs) => [...xs.filter((x) => x.msg !== msg), { id, msg, out: false }].slice(-MAX));
-      later(() => {
-        setItems((xs) => xs.map((x) => (x.id === id ? { ...x, out: true } : x)));
-        later(() => setItems((xs) => xs.filter((x) => x.id !== id)), OUT_MS);
-      }, SHOW_MS);
+      setItems((xs) => [...xs.filter((x) => x.msg !== msg), { id, msg, action, out: false }].slice(-MAX));
+      later(
+        () => {
+          setItems((xs) => xs.map((x) => (x.id === id ? { ...x, out: true } : x)));
+          later(() => setItems((xs) => xs.filter((x) => x.id !== id)), OUT_MS);
+        },
+        action ? ACTION_MS : SHOW_MS,
+      );
     });
     return () => {
       off();
@@ -68,6 +77,18 @@ export function Toaster() {
           className={`d-tst${t.out ? " out" : ""}`}
         >
           {t.msg}
+          {t.action ? (
+            <button
+              type="button"
+              className="act"
+              onClick={() => {
+                t.action?.run();
+                setItems((xs) => xs.filter((x) => x.id !== t.id));
+              }}
+            >
+              {t.action.label}
+            </button>
+          ) : null}
         </div>
       ))}
     </div>

@@ -3,6 +3,7 @@ import { BADGES, BELTS, SOLVED_AT, type Belt, type PackSummary, type PublicChall
 import { useEffect, useRef, type ReactNode } from "react";
 import { pad3 } from "@/lib/belts";
 import { packName } from "@/lib/dojo";
+import { useMe } from "@/lib/me";
 import { toast } from "@/lib/toast";
 import { BadgeIcon, BigBelt, GROUP_COLOR } from "@/pages/Profile";
 import { CLOTH, Hang, I } from "./Craft";
@@ -70,6 +71,8 @@ export function ResultCard({
   next: { id: string; number: number } | undefined;
   onClose: () => void;
 }) {
+  const me = useMe();
+  const guest = !me.data?.user;
   const solved = r.score >= SOLVED_AT;
   const runChecks = r.checks.filter((x) => x.id !== "hooks-present");
   const wall = ranking?.wall ?? null;
@@ -166,7 +169,15 @@ export function ResultCard({
                   </span>
                 </div>
               ))}
-              {!packMove && !wall && !ranking?.streakCounted && !badges.length ? <p className="note">{ranking?.locked ? "Points here are locked: you opened solutions." : "Nothing moved this time."}</p> : null}
+              {!packMove && !wall && !ranking?.streakCounted && !badges.length ? (
+                guest && solved && !ranking?.locked ? (
+                  <p className="note">
+                    Solved and saved on this browser. <Link to="/signin" search={{ next: `/c/${c.id}` }}>Sign in</Link> to earn its points and get on the Wall.
+                  </p>
+                ) : (
+                  <p className="note">{ranking?.locked ? "Points here are locked: you opened solutions." : "Nothing moved this time."}</p>
+                )
+              ) : null}
             </div>
           </div>
           <div className="acts">

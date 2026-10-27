@@ -534,6 +534,9 @@ html[data-ligatures] .cm-content{font-variant-ligatures:normal}
 .d-tst{padding:11px 15px;border-radius:10px;background:var(--fg);color:var(--bg);font:500 13px/1.25 var(--font-ui);box-shadow:0 10px 28px rgba(0,0,0,.28);animation:d-tst-in .2s var(--d-ease) both}
 .d-tst.out{opacity:0;transition:opacity .15s var(--d-ease)}
 @keyframes d-tst-in{from{opacity:0;transform:translateY(8px)}}
+.d-tst{pointer-events:auto;display:flex;align-items:center;gap:14px}
+.d-tst .act{all:unset;cursor:pointer;font-weight:600;color:inherit;text-decoration:underline;text-underline-offset:3px}
+.d-tst .act:focus-visible{outline:2px solid currentColor;outline-offset:2px;border-radius:3px}
 .d-rollnum{display:inline-flex;font-variant-numeric:tabular-nums}
 .d-roll{display:inline-block;height:1em;line-height:1;overflow:hidden;vertical-align:top}
 .d-roll>span{display:flex;flex-direction:column;transition-property:transform;transition-timing-function:var(--d-ease)}

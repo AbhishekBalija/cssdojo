@@ -20,7 +20,7 @@ import { useMe } from "@/lib/me";
 import { playSolveSound } from "@/lib/sound";
 import { storage } from "@/lib/storage";
 import { markTask } from "@/lib/tasks";
-import { toast } from "@/lib/toast";
+import { clearToasts, toast } from "@/lib/toast";
 
 // The play screen: editor | your output | target, as approved in
 // brand/play-final-2026-10-25.html. Scores come from the server scorer.
@@ -90,6 +90,8 @@ export function Play({ challengeId, board, kataLabel }: { challengeId: string; b
   useEffect(() => {
     void api(`/challenges/${challengeId}/open`, { method: "POST", json: { board } }).catch(() => undefined);
   }, [challengeId, board]);
+  // Toasts (and their Undo) belong to this challenge, so drop them on the way out.
+  useEffect(() => () => clearToasts(), [challengeId, board]);
 
   useEffect(() => {
     const t = setInterval(() => setResetIn(untilReset()), 30_000);
@@ -293,9 +295,16 @@ export function Play({ challengeId, board, kataLabel }: { challengeId: string; b
               type="button"
               onClick={() => {
                 if (!c) return;
+                const before = code;
                 onChange(c.starter);
                 editor.current?.setValue(c.starter);
-                toast("Code reset to the starter");
+                toast("Code reset to the starter", {
+                  label: "Undo",
+                  run: () => {
+                    onChange(before);
+                    editor.current?.setValue(before);
+                  },
+                });
               }}
             >
               Reset
@@ -712,6 +721,8 @@ function LeaderboardDialog({ challengeId, board, title, onClose }: { challengeId
             <span className="s">{r.score}</span>
           </div>
         ))}
+        {q.isLoading ? <div className="empty-note d-wait">Loading scores…</div> : null}
+        {q.isError ? <div className="empty-note">Could not load scores. Close and try again.</div> : null}
         {q.data && q.data.length === 0 ? <div className="empty-note">No signed-in scores yet. Be the first.</div> : null}
       </div>
       <span className="note">Best score first. Ties are broken by solve time, from first open to your best Submit.</span>
@@ -739,6 +750,8 @@ function AttemptsDialog({ challengeId, title, onClose, onLoad }: { challengeId: 
             </div>
           );
         })}
+        {q.isLoading ? <div className="empty-note d-wait">Loading attempts…</div> : null}
+        {q.isError ? <div className="empty-note">Could not load attempts. Close and try again.</div> : null}
         {q.data && q.data.length === 0 ? <div className="empty-note">No attempts yet. Submit once and it shows up here.</div> : null}
       </div>
       <span className="note">Load any attempt back into the editor.</span>

@@ -22,11 +22,24 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - Unused exports and the unused `codemirror` meta package (found by `bunx fallow`).
 
 ### Changed
+- Daily kata is for fun and streaks only: kata solves no longer count toward belts or belt badges.
+- Play screen: the challenge description is gone and the outcome checks fold into one line with a pass count.
+- Reset in the editor now offers Undo; toasts clear when you move to another challenge.
 - Client deploys to Vercel and proxies `/api` and `/static` to the Render API, so sign-in cookies are first-party. New API settings `AUTH_URL` and `PAGES_REDIRECT_TO_CLIENT` (see `docs/guides/vercel.md`).
 - Every challenge now uses a standard value scale (Tailwind-like: 0, 1, 2, even values to 14, then steps of 4; a type scale for fonts; fixed border widths and radii). 223 odd values such as 27px or 3px were snapped. A test fails on any new off-scale value.
 - Scoring is fairer on colour: inside the shape, a wrong colour is scored by the colour term only, not counted again as missing shape. A right-shaped answer with the wrong focus fill now scores about 86. Colour cost is `C^2` with `C = 1 - deltaE / 12`.
 
 ### Fixed
+- Play and the main pack card button open the pack screen (`/packs/:n`) instead of the first challenge.
+- Pack countdowns: the chip and big clock styles hit each rolling digit and garbled the numbers.
+- Under 1120px the live target frame was hidden by the header LIVE rule.
+- Phone play: the score cards covered the Editor / Output / Target tabs.
+- Phone: pages scrolled sideways (mountain art), the menu button covered the LIVE label, the streak tag overlapped page titles, and board tables squeezed player names.
+- Light theme: Wall pillar labels were white on white.
+- A missing challenge showed "Loading" for several seconds before the error; 404s no longer retry.
+- Profile kata chart: scores under 70 sat on the 70 line, days before you joined showed "missed", and labels overlapped the axis.
+- Guests who solve a challenge with nothing else to show are told to sign in instead of "Nothing moved this time".
+- Signing out resets the "Get started" list; My attempts and the challenge leaderboard show a loading state; "No belt yet" and "1 player" wording on boards; no request for pack 0.
 - The player middleware ran once per route group, so a guest's first POST could create several guest rows. It now runs once per request.
 - A Submit more than 24 days after first opening a challenge overflowed the solve-time column and failed to record.
 - Scoring: untouched starter code no longer passes the outcome checks. Checks only count once every required part is placed roughly like the target (starter on #001 went from 32.9 with 5/5 checks to 2.9 with 0/5). Golden set now caps starter answers at 15.
