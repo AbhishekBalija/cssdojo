@@ -18,6 +18,9 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - Interaction polish (`motion/approved-polish.md`): stacked toasts, rolling digits, gliding tabs, page and theme fades, a streak tag that swings only when it grows, mismatch (hold D), onion skin (hold G), a measuring crosshair, states playback, hover frames on tiles, full-screen confetti on a first solve, an optional solve sound and a quiet "Saved" label.
 - Settings: handle, notifications, theme, reduce motion, sound and editor ligatures.
 
+### Documentation
+- Handoff for local agents: `docs/context.md` (decisions, hosting, open PRs, open items) and a fuller `.agents/AGENTS.md`.
+
 ### Removed
 - Unused exports and the unused `codemirror` meta package (found by `bunx fallow`).
 
