@@ -48,7 +48,8 @@
   .d-side{position:fixed;left:0;top:0;z-index:20;translate:-100% 0;transition:translate .2s ease}
   .d-shell.nav-open .d-side{translate:0 0;box-shadow:0 0 60px rgba(0,0,0,.6)}
   .d-hamb{display:grid}
-  .d-head{padding:0 16px}
+  /* Leave room for the menu button, which sits over the left of the header. */
+  .d-head{padding:0 16px 0 60px}
 }
 
 /* streak tag hanging from the header */
@@ -91,7 +92,10 @@
 .d-pg>.d-glow,.d-pg>.d-mtn{position:absolute;z-index:0}
 .d-glow{inset:0 0 auto 0;height:420px;background:radial-gradient(900px 420px at 70% -80px,rgba(255,255,255,.035),transparent 70%);pointer-events:none}
 .d-mtn{right:-24px;top:-8px;width:640px;height:240px;max-width:70%;pointer-events:none}
-@media (max-width:700px){.d-pg{padding:28px 16px 48px}}
+/* On narrow screens the mountains sit flush right so the page never scrolls sideways. */
+@media (max-width:1200px){.d-mtn{right:0}}
+/* The streak tag hangs about 75px below the header; start the page under it on phones. */
+@media (max-width:700px){.d-pg{padding:84px 16px 48px}}
 .d-ph{display:flex;flex-direction:column;gap:6px}
 .d-kick{font:600 11px/16px var(--font-mono);letter-spacing:.22em;color:var(--pass);text-transform:uppercase}
 .d-ph h1{margin:0;font:italic 400 72px/76px var(--font-art);letter-spacing:-.015em;color:var(--d-title);-webkit-text-stroke:.9px var(--d-title);text-shadow:0 2px 24px rgba(243,235,221,.08)}
@@ -309,12 +313,14 @@ a.d-note:hover{background:var(--hover)}
 .w-ped .cyl{display:block;width:100%}
 .w-ped .medal{position:absolute;left:50%;width:26px;height:26px;margin-left:-13px;border-radius:50%;display:grid;place-items:center;color:var(--m);background:radial-gradient(circle at 40% 35%,#24262D,#0E0F12);border:1.5px solid var(--m);box-shadow:0 0 0 3px rgba(0,0,0,.35),0 0 14px color-mix(in srgb,var(--m) 55%,transparent)}
 .w-ped .pl{position:absolute;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center}
-.w-ped .pl b{font:600 13px/18px var(--font-ui);color:#F3F1EC;text-shadow:0 1px 2px rgba(0,0,0,.6)}.w-ped .pl span{font:400 10.5px/14px var(--font-ui);color:#B9BDC6;white-space:nowrap}
+/* Pillar labels follow the theme: light text on the dark wall, dark text on the light one. */
+.w-ped .pl b{font:600 13px/18px var(--font-ui);color:var(--fg)}.w-ped .pl span{font:400 10.5px/14px var(--font-ui);color:var(--sub);white-space:nowrap}
 
 /* plain board tables (pack, challenge, streaks) */
 .t-row{display:grid;align-items:center;gap:12px;height:48px;padding:0 16px;border-radius:10px;font-size:13.5px}
 .t-row.t-head{height:34px;font:500 10px/1 var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--faint);border-bottom:1px solid var(--d-rule);border-radius:0;margin-bottom:6px}
 .t-row .rn{font:500 12px/1 var(--font-mono);color:var(--faint)}
+@media (max-width:700px){.t-row{gap:8px;padding:0 10px}}
 .t-row .num{font:500 12.5px/1 var(--font-mono);color:var(--d-ink);text-align:right}
 .t-row.t-head span:nth-child(n+3){text-align:right}
 .t-row .who{display:flex;align-items:center;gap:10px;min-width:0}

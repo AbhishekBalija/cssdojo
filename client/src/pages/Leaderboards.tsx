@@ -13,6 +13,8 @@ import { useMe } from "@/lib/me";
 // one Battle Pack's board, one challenge's board, and streaks.
 
 const fmt = (n: number) => n.toLocaleString("en-US");
+// Number columns: full width on desktop, narrower on phones so player names still fit.
+const num = (px: number) => `clamp(48px, 13vw, ${px}px)`;
 const playersLabel = (n: number) => `${fmt(n)} ${n === 1 ? "player" : "players"}`;
 type Tab = "wall" | "pack" | "challenge" | "streaks";
 
@@ -459,8 +461,8 @@ export function PackBoardPage() {
   const cols: [string, string][] = [
     ["#", "36px"],
     ["Player", "minmax(0,1fr)"],
-    ["Solved", "80px"],
-    ["Points", "90px"],
+    ["Solved", num(80)],
+    ["Points", num(90)],
   ];
   const mine = p?.board.find((r) => r.me);
   return (
@@ -527,9 +529,9 @@ export function ChallengeBoardPage() {
   const cols: [string, string][] = [
     ["#", "36px"],
     ["Player", "minmax(0,1fr)"],
-    ["Match", "80px"],
-    ["Points", "80px"],
-    ["Chars", "70px"],
+    ["Match", num(80)],
+    ["Points", num(80)],
+    ["Chars", num(70)],
   ];
   return (
     <Frame tab="challenge">
@@ -580,8 +582,8 @@ export function StreakBoardPage() {
   const cols: [string, string][] = [
     ["#", "36px"],
     ["Player", "minmax(0,1fr)"],
-    ["Current", "80px"],
-    ["Longest", "80px"],
+    ["Current", num(80)],
+    ["Longest", num(80)],
   ];
   const rows = q.data ?? [];
   const top = rows.filter((r) => r.rank <= 10);
