@@ -1,6 +1,6 @@
 # Admin panel (v1)
 
-Status: **draft, 2026-10-28. Not approved yet.** Abhi to review the open questions at the bottom.
+Status: **approved by Abhi on 2026-10-28.** Decisions at the bottom.
 
 ## Why now
 
@@ -95,9 +95,9 @@ flowchart LR
 
 About a week of work: the migration and seed change, admin middleware and routes with tests, and four screens in the existing dojo shell style. Recalculating a player after a voided submission is the trickiest part and needs a Postgres test.
 
-## Open questions for Abhi
+## Decisions (2026-10-28)
 
-1. Is an `ADMIN_EMAILS` allowlist fine for v1, or do you want a role column now?
-2. Should hiding a challenge also remove the points players earned on it, or keep them (the draft keeps them)?
-3. When a player is hidden from boards, should they see that they are hidden?
-4. Who writes the final challenges, and how many do you want at launch (packs, kata, library)?
+1. **Admins:** the `ADMIN_EMAILS` allowlist. No role column in v1.
+2. **Hiding a challenge** is an emergency switch (unsolvable after a scorer bug, a 100 without really building it, content we should not use). It keeps the points players already earned there.
+3. **Hiding a player** is for board abuse (copied solutions on fresh accounts, scripted Submits, offensive handles). The player is not told; they still see themselves on their own profile. Undo is one click.
+4. **Content:** Abhi writes the final challenges. Launch set: at least 1 Battle Pack (6 challenges) and a kata for every day of January 2027 (31). Plan a second pack for mid-January, because one pack only lets players earn one belt. The placeholder challenges are removed before real players arrive.
