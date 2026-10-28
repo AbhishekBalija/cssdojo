@@ -90,6 +90,14 @@ OAuth cannot run in CI, so Playwright signs in through `POST /api/test-login`, b
 **Q: Why is the API URL the main app link, not the static site?**
 `onrender.com` is on the public suffix list, so a client on one subdomain and the API on another are different sites. The session cookie would have to be sent cross-site (`SameSite=None; Secure`), which Safari and Firefox block by default. Partitioned cookies do not help either: the OAuth callback sets the cookie with the API as the top-level site, so it would never be sent from the client's site. The API container serves the built client too, so on the API URL everything is same-origin and the cookie stays `Lax`. The static site still works in browsers that allow third-party cookies.
 
+## Rendered art and WebGL
+
+**Q: Why are the cloth banners WebGL and not a video?**
+They bend, so CSS transforms cannot move them, and a pre-rendered loop is heavy (about 1 MB for three banners with transparency) and needs two formats. A small shader moves a grid of points like hanging cloth instead: a vertex shader displaces each point with a few slow sine waves that grow towards the hem, and a fragment shader lights it with a fabric model (wrap diffuse plus sheen) and a weave normal map made in Blender. The whole thing is about 13 KB of texture plus a few KB of code.
+
+**Q: How does text end up on the cloth but stay accessible?**
+The page lays the text out as usual. A painter reads each element's position and computed font, draws it into a 2D canvas, and the shader samples that as a texture, so the print folds with the cloth. The real text stays in the page with a transparent fill, so links work and screen readers read it.
+
 ## Deploy and maintenance
 
 ### Same origin through a proxy

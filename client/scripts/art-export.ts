@@ -127,3 +127,14 @@ async function exportAsset(spec: AssetSpec): Promise<void> {
 await exportAsset(RAIL);
 await exportAsset(STREAK);
 await exportAsset(PILLAR);
+
+// The cloth weave normal map (made in Blender, design/renders/cloth/). Kept at full size: it tiles,
+// and WebGL builds its own smaller versions. Lossy WebP at high quality is fine for a normal map.
+{
+  const outDir = path.join(OUT, "cloth");
+  await mkdir(outDir, { recursive: true });
+  const info = await sharp(path.join(RENDERS, "cloth", "weave-normal.png"))
+    .webp({ quality: 92, effort: 6 })
+    .toFile(path.join(outDir, "weave.webp"));
+  console.log(`cloth/weave: 256x256, ${(info.size / 1024).toFixed(1)} KB`);
+}

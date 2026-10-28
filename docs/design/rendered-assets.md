@@ -1,6 +1,6 @@
 # Rendered assets: spec
 
-Status: in progress, 2026-10-28. Done: brass rail, streak tag, belt pillars. Next: belt knot and band. Replaces the hand-drawn SVG and CSS objects (belt knot, belt band, brass rail, streak tag, belt pillars) with images rendered in Blender, because brass shine and cloth folds need real light and reflections.
+Status: in progress, 2026-10-28. Done: brass rail, streak tag, belt pillars, cloth banners. Next: belt knot and band. Replaces the hand-drawn SVG and CSS objects (belt knot, belt band, brass rail, streak tag, belt pillars) with images rendered in Blender, because brass shine and cloth folds need real light and reflections.
 
 ## Art direction (same for every asset, so they read as one set)
 
@@ -29,6 +29,26 @@ Sizes are CSS pixels as used today. Every asset is exported at 1x, 2x and 3x. So
 | Streak tag | header, `Shell.tsx` | 72 x 132 including the cord | One sprite with an empty face. The number is live text |
 | Belt pillars | Wall, `Leaderboards.tsx` | 55 to 92 wide (capped), heights rise in equal steps and scale with the width | Square black marble plinth, one whole image per belt at its own height (veins would distort if stretched). No belt on the plinth; the detailed belt knot is its own asset. Labels on a plaque row below |
 | Avatar ring | boards, LIVE line | 20 to 40 | Later. Ring only; the face stays generated per player |
+
+## Cloth banners (live WebGL)
+
+The top 3 on the Wall are real cloth, drawn live, because cloth bends and CSS layers cannot.
+
+- **Why not video:** a Blender cloth loop would weigh about 1 MB for three banners, needs two formats for transparency (HEVC for Safari, VP9 for the rest), and the live text would sit still on moving cloth.
+- **What Blender makes:** a tileable 2/2 twill weave normal map (`design/renders/cloth/weave-normal.png`, 16 threads per tile, exported to `art/cloth/weave.webp`, 13 KB).
+- **What the browser does** (`client/src/components/cloth/`, no library):
+  - A 64 x 48 grid pinned at the rod.
+  - Broad, slow drape folds that grow towards the hem, drifting sideways with a slow breath. Heavy cloth, never flutter.
+  - Light from the same studio as the renders.
+  - Fabric wrap diffuse, a sheen that slides over the folds as they move, a soft satin highlight, and fold occlusion.
+  - Thread gaps from the weave, a rolled and stitched hem on the sides and chevron, and a rod pocket.
+- **Text:** the page still lays out the rank, name, points and avatar. The painter draws each `[data-cloth]` element onto the cloth at its spot, so print folds and catches the light with the fabric. The page copy stays (transparent fill), so links work and screen readers read it.
+- **Cost and safety:**
+  - Runs at 30 fps, only while on screen, and stops with the tab hidden.
+  - One still frame under reduced motion.
+  - One WebGL context per canvas, kept for its life.
+  - No WebGL, or a failed load, leaves the SVG banner.
+- **Later:** when HTML-in-Canvas ships beyond Chrome's origin trial, the real DOM can be drawn onto the cloth instead of the painter.
 
 ## Export and budgets
 

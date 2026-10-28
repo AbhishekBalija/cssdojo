@@ -290,11 +290,23 @@ a.d-note:hover{background:var(--hover)}
 .w-top{display:grid;grid-template-columns:1fr 1.12fr 1fr;gap:22px;align-items:end;padding:6px 10px 0}
 .w-tb{position:relative;display:flex;flex-direction:column;align-items:center;padding-top:6px}
 .w-lamp{position:absolute;left:50%;top:-24px;width:200px;height:70px;margin-left:-100px;background:radial-gradient(closest-side,rgba(255,206,130,.32),rgba(255,180,90,.08) 60%,transparent);pointer-events:none}
-.w-hook{position:absolute;left:50%;top:-8px;width:9px;height:10px;margin-left:-5.5px;border:1.5px solid #9C8A6A;border-bottom:0;border-radius:6px 6px 0 0;box-shadow:0 0 8px rgba(255,200,120,.6)}
-.w-rod{position:absolute;left:4px;right:4px;top:1px;height:4px;border-radius:4px;background:linear-gradient(180deg,#C9B48C,#7A6748 60%,#4E4230);box-shadow:0 2px 3px rgba(0,0,0,.5)}
-.w-rod:before,.w-rod:after{content:"";position:absolute;top:-2px;width:8px;height:8px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#E6D4AE,#7A6748)}
-.w-rod:before{left:-4px}.w-rod:after{right:-4px}
 .w-ban{position:relative;width:100%;filter:drop-shadow(0 12px 16px rgba(0,0,0,.5))}
+[data-theme="light"] .w-ban{filter:drop-shadow(0 4px 5px rgba(30,32,40,.16)) drop-shadow(0 14px 18px rgba(30,32,40,.12))}
+/* The banner rail is the rendered brass one (RailArt); its pieces sit 15 px above their box. */
+.w-rail{position:absolute;left:4px;right:4px;top:0;height:6px}
+/* WebGL cloth (components/cloth): drawn behind the content; the page text stays for clicks and
+   screen readers but is not painted, because the cloth prints it. */
+.w-cloth{position:absolute;left:-14px;top:0;pointer-events:none;z-index:0}
+.w-ban .w-in{z-index:1}
+/* Long names end with an ellipsis inside the banner (the cloth painter draws the same cut). */
+.w-in>span{max-width:calc(100% - 24px)}
+.w-in>span>span:last-child{min-width:0}
+.w-nm{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media (max-width:600px){.w-in{gap:6px;padding-top:12px}.w-in .d-kick{display:none}}
+.w-ban.cloth-on>svg{visibility:hidden}
+.w-ban.cloth-on .w-in,.w-ban.cloth-on .w-in *{-webkit-text-fill-color:transparent;text-shadow:none}
+.w-ban.cloth-on .w-in [data-cloth="avatar"]{opacity:0}
+.w-ban.cloth-on .w-in a:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
 .w-ban svg{display:block;width:100%;height:100%}
 .w-in{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:8px;padding-top:16px}
 .w-rk{font:italic 400 46px/1 var(--font-art);text-shadow:0 1px 0 rgba(255,255,255,.2)}

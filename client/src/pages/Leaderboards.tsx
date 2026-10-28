@@ -1,7 +1,8 @@
 import { Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { BELTS, type Belt, type EventView, type PlayerTag, type WallRow, type WallView } from "@cssdojo/shared";
-import { useId, useState, type ReactNode } from "react";
-import { CLOTH, GlideTabs, Page, untilLabel, useNow } from "@/components/Craft";
+import { useId, useRef, useState, type ReactNode } from "react";
+import { CLOTH, GlideTabs, Page, RailArt, untilLabel, useNow } from "@/components/Craft";
+import { ClothLayer } from "@/components/cloth/ClothLayer";
 import { useChallenges } from "@/components/KataStage";
 import { avatarColor } from "@/components/PackCard";
 import { ago, initials } from "@/components/Shell";
@@ -80,13 +81,16 @@ function Banner({ r, place }: { r: WallRow; place: number }) {
   const c = CLOTH[belt];
   const H = place === 1 ? 176 : 150;
   const g = useId();
+  const box = useRef<HTMLDivElement>(null);
   const shape = `M4 2 H196 L192 ${H - 34} Q191 ${H - 28} 185 ${H - 27} L100 ${H - 2} L15 ${H - 27} Q9 ${H - 28} 8 ${H - 34} Z`;
   return (
     <div className="w-tb">
       <span className="w-lamp" />
-      <span className="w-hook" />
-      <span className="w-rod" />
-      <div className="w-ban" style={{ height: H, color: c.ink }}>
+      <span className="w-rail">
+        <RailArt />
+      </span>
+      <div className="w-ban" ref={box} style={{ height: H, color: c.ink }}>
+        <ClothLayer box={box} colors={{ lt: c.lt, md: c.md, dk: c.dk, ink: c.ink }} seed={place} />
         <svg viewBox={`0 0 200 ${H}`} preserveAspectRatio="none" aria-hidden="true">
           <defs>
             <linearGradient id={`${g}f`} x1="0" y1="0" x2="0" y2="1">
@@ -111,15 +115,21 @@ function Banner({ r, place }: { r: WallRow; place: number }) {
           <path d={`M14 10 V${H - 36} M186 10 V${H - 36}`} stroke={c.ink} strokeOpacity=".18" strokeDasharray="2 3" vectorEffect="non-scaling-stroke" />
         </svg>
         <div className="w-in">
-          {place === 1 ? <span className="d-kick" style={{ color: c.ink, opacity: 0.8, fontSize: 9.5, letterSpacing: ".24em" }}>Top of the wall</span> : null}
-          <span className="w-rk">{place}</span>
+          {place === 1 ? <span className="d-kick" data-cloth="text" style={{ color: c.ink, opacity: 0.8, fontSize: 9.5, letterSpacing: ".24em" }}>Top of the wall</span> : null}
+          <span className="w-rk" data-cloth="text">
+            {place}
+          </span>
           <span style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <Avatar p={r.player} me={r.me} size={38} />
+            <span data-cloth="avatar" style={{ display: "inline-flex" }}>
+              <Avatar p={r.player} me={r.me} size={38} />
+            </span>
             <span style={{ display: "flex", flexDirection: "column", gap: 4, textAlign: "left" }}>
-              <Link to="/u/$handle" params={{ handle: r.player.handle }} className="w-nm" style={{ color: "inherit", textDecoration: "none" }}>
+              <Link to="/u/$handle" params={{ handle: r.player.handle }} className="w-nm" data-cloth="text" style={{ color: "inherit", textDecoration: "none" }}>
                 {r.player.handle}
               </Link>
-              <span className="w-pt">{fmt(r.points)} pts</span>
+              <span className="w-pt" data-cloth="text">
+                {fmt(r.points)} pts
+              </span>
             </span>
           </span>
         </div>

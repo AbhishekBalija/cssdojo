@@ -62,22 +62,29 @@ export function Page({ kicker, title, sub, right, tabs, children }: { kicker: Re
   );
 }
 
+/** The rendered brass rail (docs/design/rendered-assets.md), with or without hanging wires. */
+export function RailArt({ cords = false }: { cords?: boolean }) {
+  return (
+    <span className="d-rail" aria-hidden="true">
+      {cords ? (
+        <>
+          <span className="d-rail-wire" style={{ left: "22%" }} />
+          <span className="d-rail-wire" style={{ left: "78%" }} />
+        </>
+      ) : null}
+      <span className="d-rail-cap l" />
+      <span className="d-rail-rod" />
+      <span className="d-rail-cap r" />
+      <span className="d-rail-hook" />
+    </span>
+  );
+}
+
 export function Hang({ children, cords = true, lamp = true }: { children: ReactNode; cords?: boolean; lamp?: boolean }) {
   return (
     <div className="d-hang">
       {lamp ? <span className="lamp" /> : null}
-      <span className="d-rail" aria-hidden="true">
-        {cords ? (
-          <>
-            <span className="d-rail-wire" style={{ left: "22%" }} />
-            <span className="d-rail-wire" style={{ left: "78%" }} />
-          </>
-        ) : null}
-        <span className="d-rail-cap l" />
-        <span className="d-rail-rod" />
-        <span className="d-rail-cap r" />
-        <span className="d-rail-hook" />
-      </span>
+      <RailArt cords={cords} />
       {children}
     </div>
   );
