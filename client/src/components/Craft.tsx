@@ -167,9 +167,9 @@ export function untilLabel(to: string | number, now: number): string {
 export function Countdown({ to }: { to: string | number }) {
   const now = useNow();
   const p = parts(new Date(to).getTime() - now);
-  // Seconds only show in the last hour.
-  const text = p.d > 0 ? `${two(p.d)}:${two(p.h)}:${two(p.m)}` : p.h > 0 ? `${two(p.h)}:${two(p.m)}` : `${two(p.m)}:${two(p.s)}`;
-  const label = p.d > 0 ? `${p.d} days ${p.h} hours ${p.m} minutes` : p.h > 0 ? `${p.h} hours ${p.m} minutes` : `${p.m} minutes ${p.s} seconds`;
+  // Under a day, show seconds so the clock visibly ticks. Farther out, minutes are enough.
+  const text = p.d > 0 ? `${two(p.d)}:${two(p.h)}:${two(p.m)}` : `${two(p.h)}:${two(p.m)}:${two(p.s)}`;
+  const label = p.d > 0 ? `${p.d} days ${p.h} hours ${p.m} minutes` : `${p.h} hours ${p.m} minutes ${p.s} seconds`;
   return (
     <span className="d-clock" role="timer" aria-label={label}>
       <Roll text={text} ms={200} />
