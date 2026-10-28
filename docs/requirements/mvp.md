@@ -1,4 +1,4 @@
-# MVP requirements (v0.1.0)
+# MVP requirements (v1.0.0)
 
 ## Players
 - A guest can open any challenge, edit HTML and CSS, preview it live and submit.
