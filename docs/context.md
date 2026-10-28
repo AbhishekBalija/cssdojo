@@ -49,6 +49,8 @@ In-repo summaries: `docs/requirements/` (mvp.md, ranking.md), `docs/adr/`, `docs
 
 ### Scoring and challenges
 - Each challenge is a folder in `challenges/` (challenge.json, starter.html, reference.html, note.md, golden/). 30 library challenges + 14 kata today.
+- **Today's challenges are placeholders for testing,** not the public set. The team writes the final challenges before launch. Once anyone scores on a released challenge it is frozen: a fix ships as a new challenge and the old one is hidden.
+- **Admin panel** is planned, draft in `docs/requirements/admin.md`. Challenges stay in git; the panel runs schedule, visibility, moderation and health.
 - Frames: rest, hover, focus. The 320px narrow frame was dropped.
 - Per frame: `100 * S^2 * (1 - meanDeltaE / 20)` on the component region, rendered at 2x in pinned Chromium with JS and network off. Colour term was made gentler (C^2 with C = 1 - dE/12).
 - **Checks are outcome-only.** No check may require a property, selector or layout method. Hints say what is wrong, never how to fix it. The technique is the player's choice.
