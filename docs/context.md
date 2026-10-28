@@ -42,7 +42,7 @@ In-repo summaries: `docs/requirements/` (mvp.md, ranking.md), `docs/adr/`, `docs
 ## Branch model
 
 - `feature/mvp` is the long-lived MVP branch. Task and fix branches open PRs into it.
-- `main` is nearly empty until release PR **#15** (`feature/mvp` into `main`, v0.1.0) merges. A fresh clone of `main` looks empty for this reason.
+- `main` is nearly empty until release PR **#15** (`feature/mvp` into `main`) merges. The first release is **v1.0.0**, not v0.1.0. A fresh clone of `main` looks empty for this reason.
 - Never push to `main`. Abhi merges, tags and releases.
 
 ## Locked decisions
@@ -71,24 +71,25 @@ In-repo summaries: `docs/requirements/` (mvp.md, ranking.md), `docs/adr/`, `docs
 - Rules: purpose first, under ~300ms, ease-out, transform/opacity only, respect reduced motion, content never waits.
 - Kept: live line, toasts, countdown, press, focus, tiles, tabs, copy, checks, rolling score, diff (hold D), onion skin (hold G), states playback, crosshair, theme fade, loading.
 - Tweaked: leaderboard rows 280ms; streak tag swings only when it grows (no idle loop); belt and lamp use the real v49 assets; confetti full screen on first solves; sound off by default.
-- Dropped: submit label progress (toast after scoring instead). Page change = 120ms fade. Countdown shows seconds only in the last hour.
+- Dropped: submit label progress (toast after scoring instead). Page change = 120ms fade.
+- Countdown shows seconds whenever under a day is left, so the clock never looks stuck (Abhi's call, replaces "seconds only in the last hour").
 
 ## Open PRs (into `feature/mvp` unless noted)
 
 | PR | What | Notes |
 | --- | --- | --- |
-| #15 | Release `feature/mvp` into `main` (v0.1.0) | Merge last. Then switch Render to `main`, Abhi tags v0.1.0 (`docs/releases/v0.1.0.md`). |
-| #20 | `fix/dev-env-loading`: dev and db scripts load root `.env.local` | Abhi's local work, CI green. |
-| #21 | Icons and glyphs ship in starters, plus test | Merge before #22. |
-| #22 | `fix/target-layout`: nine target layout mishaps | Stacked on #21. |
-| #23 | Fixes from the player-style QA sweep, including kata no longer counting toward belts | Overlaps Abhi's uncommitted clock/header fixes; those local edits can be dropped. |
-| next | Scoring / Mismatch (option 1) | Coming from the scoring thread. Known bug it targets: the play preview adds hover/focus to every element while the scorer only hovers/tabs the hook, so 7 challenges show false mismatch (y-011, g-014, g-015, g-018, b-019, b-021, b-023). |
+| #15 | Release `feature/mvp` into `main` (v1.0.0) | Merge last, once Abhi's bug pass is done. Then switch Render to `main`, Abhi tags v1.0.0 (`docs/releases/v1.0.0.md`). |
+
+Merged since the last update: #20 to #27 (env loading, starter icons, target layouts, QA sweep, Mismatch score map, test database, light theme shadows and countdown seconds).
 
 ## Known open items
 
 - **Render cold start:** the free API sleeps and takes about 80s on the first hit.
-- **Abhi's local work** in `~/Desktop/Opensource/cssdojo`: unpushed branch `fix/tsconfig-baseurl` (drops deprecated `baseUrl`), and uncommitted changes on `chore/test-database` (test DB scripts, plus UI tweaks). One of those tweaks shows countdown seconds under a day, which contradicts the approved polish rule; ask Abhi before keeping it. Ask before pushing or splitting any of this.
-- Phone pages scroll sideways (`.d-mtn svg` at `right: -24px`), check after #23.
+- **Abhi's bug pass:** Abhi is checking the app by hand before release and will report fixes one by one.
+- **Abhi's local work:** unpushed branch `fix/tsconfig-baseurl` (drops deprecated `baseUrl`). Ask before pushing it.
+- **Release notes** in `docs/releases/v1.0.0.md` were written before ranking and the front screens; refresh the highlights from CHANGELOG before tagging.
+- Phone pages scroll sideways (`.d-mtn svg` at `right: -24px`): #23 moved it flush right, not yet re-checked on a phone.
+- **Launch target: early January 2027.** Before then: an always-on API (no cold start), a custom domain (fixes the Safari/Firefox cookie), and Google OAuth published.
 - Safari/Firefox block the cross-site cookie on `onrender.com`; the Vercel proxy avoids it, a custom domain fixes it for good (ADR 0005).
 - Google OAuth consent screen may still be in Testing (add test users or publish).
 - `cssdojo.com` looked free on 2026-10-25; trademark check and purchase pending.

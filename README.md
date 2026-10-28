@@ -4,7 +4,7 @@ Practise CSS by rebuilding small, real UI pieces: buttons, cards, inputs, toggle
 
 Belts run white to black. A daily kata resets at 00:00 UTC.
 
-> Status: 0.1.0 MVP. Live preview: https://cssdojo-api.onrender.com (free plan, first load after idle takes about a minute).
+> Status: 1.0.0. Live preview: https://cssdojo-api.onrender.com (free plan, first load after idle takes about a minute).
 
 ## Quick start
 
