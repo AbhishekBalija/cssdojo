@@ -1,32 +1,31 @@
 import { useEffect, useRef, type RefObject } from "react";
-import { ClothRenderer, type ClothColors } from "./clothGl";
+import type { ClothColors, ClothScene, ClothTextures } from "./clothScene";
 
-// Puts a WebGL cloth behind a banner's content (clothGl.ts). The page still does the layout: every
+// Puts a real cloth (clothScene.ts, three.js) behind a banner's content. The page still does the layout: every
 // element marked data-cloth is painted onto the cloth at the spot the page laid it out, then hidden
 // in the page (but kept, so links stay clickable and screen readers still read them). If WebGL is
 // missing or fails, nothing changes and the SVG banner stays.
 
 const PAD = 14;
-const renderers = new WeakMap<HTMLCanvasElement, ClothRenderer>();
+// One scene per canvas for its whole life: a canvas keeps its WebGL context, so recreating (or
+// losing) it on every resize or remount would leave a dead context behind.
+const scenes = new WeakMap<HTMLCanvasElement, ClothScene>();
+let texturesPromise: Promise<ClothTextures> | null = null;
 
-function rendererFor(canvas: HTMLCanvasElement, make: () => ClothRenderer): ClothRenderer {
-  let r = renderers.get(canvas);
-  if (!r) {
-    r = make();
-    renderers.set(canvas, r);
-  }
-  return r;
-}
-let weavePromise: Promise<HTMLImageElement> | null = null;
-
-function loadWeave(): Promise<HTMLImageElement> {
-  weavePromise ??= new Promise((resolve, reject) => {
+function loadRequired(src: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => resolve(img);
-    img.onerror = () => reject(new Error("weave did not load"));
-    img.src = "/art/cloth/weave.webp";
+    img.onerror = () => reject(new Error(`${src} did not load`));
+    img.src = src;
   });
-  return weavePromise;
+}
+
+function loadTextures(): Promise<ClothTextures> {
+  texturesPromise ??= Promise.all([loadRequired("/art/cloth/linen-normal.webp"), loadRequired("/art/cloth/linen-rough.webp"), loadRequired("/art/cloth/linen-detail.webp")]).then(
+    ([normal, rough, detail]) => ({ normal, rough, detail }),
+  );
+  return texturesPromise;
 }
 
 function loadImage(src: string): Promise<HTMLImageElement | null> {
@@ -40,13 +39,13 @@ function loadImage(src: string): Promise<HTMLImageElement | null> {
   });
 }
 
-/** Paints every [data-cloth] element of the box into a canvas, at device pixel scale. */
+/** Paints every [data-cloth] element of the box into a banner-sized canvas, at device pixel scale. */
 async function paintPrint(box: HTMLElement, canvas: HTMLCanvasElement, dpr: number): Promise<void> {
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.setTransform(dpr, 0, 0, dpr, PAD * dpr, 0);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   const origin = box.getBoundingClientRect();
   for (const el of box.querySelectorAll<HTMLElement>("[data-cloth]")) {
     const kind = el.dataset.cloth;
@@ -129,50 +128,51 @@ export function ClothLayer({ box, colors, seed }: { box: RefObject<HTMLDivElemen
     const el = box.current;
     const canvas = ref.current;
     if (!el || !canvas) return;
-    let renderer: ClothRenderer | null = null;
+    let scene: ClothScene | null = scenes.get(canvas) ?? null;
     let raf = 0;
     let visible = false;
     let cancelled = false;
     const reduced = matchMedia("(prefers-reduced-motion: reduce)");
     const print = document.createElement("canvas");
 
-    // Heavy cloth moves slowly, so 30 frames a second look the same as 60 and cost half.
+    // Physics steps at a fixed 60 per second inside the scene; drawing every other frame (30 fps) is
+    // plenty for slow, heavy cloth and halves the cost.
     let last = 0;
     const frame = (now: number) => {
       if (now - last >= 32) {
+        const dt = last ? Math.min((now - last) / 1000, 0.1) : 1 / 30;
         last = now;
-        renderer?.draw((now / 1000) * 0.9);
+        scene?.frame(dt);
       }
       if (visible && !reduced.matches) raf = requestAnimationFrame(frame);
     };
     const start = () => {
       cancelAnimationFrame(raf);
-      if (reduced.matches) renderer?.draw(2);
+      last = 0;
+      if (reduced.matches) scene?.still();
       else raf = requestAnimationFrame(frame);
     };
 
     const build = async () => {
-      const weave = await loadWeave();
+      // three.js and the scene load only when a banner is on the page.
+      const [{ ClothScene: Scene }, textures] = await Promise.all([import("./clothScene"), loadTextures()]);
       await document.fonts.ready;
       if (cancelled) return;
       const { width, height } = el.getBoundingClientRect();
       if (width < 10 || height < 10) return;
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      const cw = width + PAD * 2;
-      const ch = height + PAD;
-      for (const c of [canvas, print]) {
-        c.width = Math.round(cw * dpr);
-        c.height = Math.round(ch * dpr);
-      }
-      canvas.style.width = `${cw}px`;
-      canvas.style.height = `${ch}px`;
+      print.width = Math.round(width * dpr);
+      print.height = Math.round(height * dpr);
+      canvas.style.width = `${width + PAD * 2}px`;
+      canvas.style.height = `${height + PAD}px`;
       await paintPrint(el, print, dpr);
       if (cancelled) return;
-      // One renderer per canvas for its whole life: a canvas keeps the same WebGL context, so
-      // rebuilding (or losing) it on every resize or remount would leave a dead context behind.
-      renderer ??= rendererFor(canvas, () => new ClothRenderer(canvas, { width, height, colors: { lt, md, dk, ink }, pad: PAD, weave, print, seed }, dpr));
-      renderer.resize(width, height, dpr);
-      renderer.setPrint(print);
+      const opts = { width, height, pad: PAD, colors: { lt, md, dk, ink }, textures, print, seed };
+      if (scene) scene.update(opts, dpr);
+      else {
+        scene = new Scene(canvas, opts, dpr);
+        scenes.set(canvas, scene);
+      }
       el.classList.add("cloth-on");
       start();
     };
@@ -191,9 +191,15 @@ export function ClothLayer({ box, colors, seed }: { box: RefObject<HTMLDivElemen
     });
     io.observe(el);
     let resizeTimer = 0;
+    let firstResize = true;
     const ro = new ResizeObserver(() => {
+      // The observer fires once on start; the first build already covers that.
+      if (firstResize) {
+        firstResize = false;
+        return;
+      }
       clearTimeout(resizeTimer);
-      resizeTimer = window.setTimeout(() => void build().catch(fallBack), 120);
+      resizeTimer = window.setTimeout(() => void build().catch(fallBack), 150);
     });
     ro.observe(el);
     reduced.addEventListener("change", start);

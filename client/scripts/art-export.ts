@@ -142,13 +142,26 @@ await exportAsset(STREAK);
 await exportAsset(PILLAR);
 await exportAsset(TOKEN);
 
-// The cloth weave normal map (made in Blender, design/renders/cloth/). Kept at full size: it tiles,
-// and WebGL builds its own smaller versions. Lossy WebP at high quality is fine for a normal map.
+// Banner fabric from a real scan: Poly Haven "Rough Linen" (CC0, polyhaven.com/a/rough_linen).
+// The scan is blue linen, so only its structure is kept: the normal map (thread relief), the
+// roughness map (threads catch light unevenly) and a detail map (the scan's brightness only, centred
+// on mid grey so it can tint any belt colour). All three tile.
 {
+  const src = path.join(RENDERS, "cloth", "polyhaven");
   const outDir = path.join(OUT, "cloth");
   await mkdir(outDir, { recursive: true });
-  const info = await sharp(path.join(RENDERS, "cloth", "weave-normal.png"))
-    .webp({ quality: 92, effort: 6 })
-    .toFile(path.join(outDir, "weave.webp"));
-  console.log(`cloth/weave: 256x256, ${(info.size / 1024).toFixed(1)} KB`);
+  const size = 512;
+  const normal = await sharp(path.join(src, "rough_linen_nor_gl_1k.png")).resize(size, size).webp({ quality: 88, effort: 6 }).toFile(path.join(outDir, "linen-normal.webp"));
+  // Roughness only needs its broad variation, so half size and softer compression is plenty.
+  const rough = await sharp(path.join(src, "rough_linen_rough_1k.png")).resize(size / 2, size / 2).greyscale().blur(0.6).webp({ quality: 70, effort: 6 }).toFile(path.join(outDir, "linen-rough.webp"));
+  // Detail: greyscale, contrast stretched, then centred on 128 so multiplying by it keeps the colour.
+  const { data, info } = await sharp(path.join(src, "rough_linen_diff_1k.png")).resize(size, size).greyscale().raw().toBuffer({ resolveWithObject: true });
+  let sum = 0;
+  for (const v of data) sum += v;
+  const mean = sum / data.length;
+  const out = Buffer.alloc(data.length);
+  for (let i = 0; i < data.length; i++) out[i] = Math.max(0, Math.min(255, Math.round(128 + ((data[i] ?? 0) - mean) * 1.6)));
+  const detail = await sharp(out, { raw: { width: info.width, height: info.height, channels: 1 } }).webp({ quality: 85, effort: 6 }).toFile(path.join(outDir, "linen-detail.webp"));
+  for (const [name, i] of [["linen-normal", normal], ["linen-rough", rough], ["linen-detail", detail]] as const) console.log(`cloth/${name}: ${i.width}x${i.height}, ${(i.size / 1024).toFixed(1)} KB`);
 }
+

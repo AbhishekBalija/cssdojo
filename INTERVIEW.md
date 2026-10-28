@@ -92,8 +92,11 @@ OAuth cannot run in CI, so Playwright signs in through `POST /api/test-login`, b
 
 ## Rendered art and WebGL
 
-**Q: Why are the cloth banners WebGL and not a video?**
-They bend, so CSS transforms cannot move them, and a pre-rendered loop is heavy (about 1 MB for three banners with transparency) and needs two formats. A small shader moves a grid of points like hanging cloth instead: a vertex shader displaces each point with a few slow sine waves that grow towards the hem, and a fragment shader lights it with a fabric model (wrap diffuse plus sheen) and a weave normal map made in Blender. The whole thing is about 13 KB of texture plus a few KB of code.
+**Q: How do the cloth banners move like real cloth?**
+A small Verlet simulation. Each point remembers where it was, so it keeps moving on its own momentum, and springs pull neighbours back to their rest distance. Three tricks make it look like fabric instead of rubber. The top is pinned narrower than the cloth, so the slack drapes. Springs push back only weakly when squashed, so the cloth buckles into folds. Long-range tethers cap each point's distance to the rod, so it never sags. Wind pushes each triangle by how much it faces the wind, so gusts make folds roll. three.js then lights it with a physical fabric material and a scanned linen texture.
+
+**Q: Why not ship a cloth video?**
+It would be about 1 MB for three banners, needs two video formats for transparency, and live text on top would not fold with the cloth.
 
 **Q: How does text end up on the cloth but stay accessible?**
 The page lays the text out as usual. A painter reads each element's position and computed font, draws it into a 2D canvas, and the shader samples that as a texture, so the print folds with the cloth. The real text stays in the page with a transparent fill, so links work and screen readers read it.

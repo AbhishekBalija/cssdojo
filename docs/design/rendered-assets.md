@@ -30,23 +30,29 @@ Sizes are CSS pixels as used today. Every asset is exported at 1x, 2x and 3x. So
 | Belt pillars | Wall, `Leaderboards.tsx` | 55 to 92 wide (capped), heights rise in equal steps and scale with the width | Square black marble plinth, one whole image per belt at its own height (veins would distort if stretched). No belt on the plinth; the detailed belt knot is its own asset. Labels on a plaque row below |
 | Player token | boards, Packs page, pack cards, Wall, cloth banners | 18 to 38 | Brass rim + neutral grey enamel face, 48 px canvas. CSS blends the player colour into the face (overlay), so one render covers everyone. Initials live; a photo replaces the enamel |
 
-## Cloth banners (live WebGL)
+## Cloth banners (live, real physics)
 
-The top 3 on the Wall are real cloth, drawn live, because cloth bends and CSS layers cannot.
+The top 3 on the Wall are real cloth, simulated and drawn live, because cloth bends and CSS layers cannot.
 
 - **Why not video:** a Blender cloth loop would weigh about 1 MB for three banners, needs two formats for transparency (HEVC for Safari, VP9 for the rest), and the live text would sit still on moving cloth.
-- **What Blender makes:** a tileable 2/2 twill weave normal map (`design/renders/cloth/weave-normal.png`, 16 threads per tile, exported to `art/cloth/weave.webp`, 13 KB).
-- **What the browser does** (`client/src/components/cloth/`, no library):
-  - A 64 x 48 grid pinned at the rod.
-  - Broad, slow drape folds that grow towards the hem, drifting sideways with a slow breath. Heavy cloth, never flutter.
-  - Light from the same studio as the renders.
-  - Fabric wrap diffuse, a sheen that slides over the folds as they move, a soft satin highlight, and fold occlusion.
-  - Thread gaps from the weave, a rolled and stitched hem on the sides and chevron, and a rod pocket.
-- **Text:** the page still lays out the rank, name, points and avatar. The painter draws each `[data-cloth]` element onto the cloth at its spot, so print folds and catches the light with the fabric. The page copy stays (transparent fill), so links work and screen readers read it.
+- **Fabric:** a real scan, Poly Haven "Rough Linen" (CC0, polyhaven.com/a/rough_linen). Only its structure is used, tinted to each belt:
+  - normal map: 512 px, 33 KB
+  - roughness map: 256 px, 1 KB
+  - detail map: brightness only, 512 px, 37 KB
+  - The weave is drawn about 3.5x larger than true scale on purpose. At true scale a thread is a tenth of a pixel.
+- **Physics** (`client/src/components/cloth/clothScene.ts`): a Verlet simulation of about 30 x 20 points, run at a fixed 60 steps a second.
+  - The top row is sewn onto the rod 12% narrower than the cloth, so the slack falls into real drapes.
+  - Springs resist stretching hard but squashing hardly at all, so the cloth buckles into folds instead of fanning out.
+  - Long-range tethers keep every point within its length of the rod, so it never sags.
+  - Gusting wind pushes each triangle by how squarely it faces the wind.
+- **Look:** three.js physical material (fabric sheen, normal and roughness maps), studio reflections (RoomEnvironment), a key raking in from the left with soft self-shadows into the folds, and Neutral tone mapping so light colours stay true.
+- **Surface:** belt colour, linen detail (multiply), the print, a rod pocket, and turned, stitched hems, painted into one texture. The chevron is a soft alpha mask.
+- **Text:** the page still lays out the rank, name, points and token. The painter draws each `[data-cloth]` element onto the cloth, so print folds with the fabric. The page copy stays (transparent fill), so links work and screen readers read it.
 - **Cost and safety:**
-  - Runs at 30 fps, only while on screen, and stops with the tab hidden.
-  - One still frame under reduced motion.
-  - One WebGL context per canvas, kept for its life.
+  - three.js and the scene are one lazy chunk (136 KB gzipped), loaded only when a banner is on screen.
+  - Draws at 30 fps only while on screen.
+  - Settles and draws one still frame under reduced motion.
+  - One WebGL context per canvas for its life.
   - No WebGL, or a failed load, leaves the SVG banner.
 - **Later:** when HTML-in-Canvas ships beyond Chrome's origin trial, the real DOM can be drawn onto the cloth instead of the painter.
 
