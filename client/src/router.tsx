@@ -1,6 +1,7 @@
 import { createRootRoute, createRoute, createRouter, Outlet, useParams } from "@tanstack/react-router";
 import { Toaster } from "@/components/Toaster";
 import { ErrorState, StatePage } from "@/components/States";
+import { Admin, ADMIN_TABS, type AdminTab } from "@/pages/Admin";
 import { Assets } from "@/pages/Assets";
 import { Gallery } from "@/pages/Gallery";
 import { AppShell } from "@/components/Shell";
@@ -87,10 +88,22 @@ const signin = createRoute({
 });
 const gallery = createRoute({ getParentRoute: () => root, path: "/gallery", component: Gallery });
 const assets = createRoute({ getParentRoute: () => root, path: "/assets", component: Assets });
+function AdminRoute() {
+  const { tab } = admin.useSearch();
+  return <Admin tab={tab} />;
+}
+const admin = createRoute({
+  getParentRoute: () => shell,
+  path: "/admin",
+  validateSearch: (s: Record<string, unknown>): { tab: AdminTab } => ({
+    tab: ADMIN_TABS.find((t) => t === s.tab) ?? "schedule",
+  }),
+  component: AdminRoute,
+});
 const privacy = createRoute({ getParentRoute: () => shell, path: "/privacy", component: Privacy });
 const terms = createRoute({ getParentRoute: () => shell, path: "/terms", component: Terms });
 
-export const routeTree = root.addChildren([shell.addChildren([home, kata, packs, pack, leaderboard, lbPacks, lbChallenges, lbStreaks, me, settings, userPage, solutions, privacy, terms]), play, kataPlay, signin, gallery, assets]);
+export const routeTree = root.addChildren([shell.addChildren([home, kata, packs, pack, leaderboard, lbPacks, lbChallenges, lbStreaks, me, settings, userPage, solutions, admin, privacy, terms]), play, kataPlay, signin, gallery, assets]);
 export const router = createRouter({ routeTree, defaultPreload: "intent" });
 
 declare module "@tanstack/react-router" {

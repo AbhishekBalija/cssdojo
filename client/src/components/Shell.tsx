@@ -4,6 +4,7 @@ import { BELTS, type Belt, type EventView, type MeView, type NotificationView } 
 import { useEffect, useRef, useState } from "react";
 import { api } from "@/lib/api";
 import { shortDate, useEvents, useNotifications, useSettings } from "@/lib/dojo";
+import { useIsAdmin } from "@/lib/admin";
 import { useGuestMerge, useMe } from "@/lib/me";
 import { loadTasks, onTasks, TASKS, type Tasks } from "@/lib/tasks";
 import { storage } from "@/lib/storage";
@@ -108,6 +109,7 @@ function GetStarted() {
 
 export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   const me = useMe();
+  const isAdmin = useIsAdmin(!!me.data?.user);
   const { top, next, have } = beltProgress(me.data);
   const playedToday = me.data?.streakDetail?.playedToday ?? false;
   const bp = top ?? "white";
@@ -172,6 +174,14 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
           </svg>
           Settings
         </Link>
+        {isAdmin.data ? (
+          <Link to="/admin" search={{ tab: "schedule" }} className="d-nav">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z" />
+            </svg>
+            Admin
+          </Link>
+        ) : null}
       </div>
       <div style={{ flexGrow: 1 }} />
       <Link to="/me" className="d-beltcard" style={{ ["--b" as string]: CLOTH[top ?? "white"].acc }}>
