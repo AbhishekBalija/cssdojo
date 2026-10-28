@@ -70,7 +70,7 @@ In-repo summaries: `docs/requirements/` (mvp.md, ranking.md), `docs/adr/`, `docs
 ### Interaction polish
 - Rules: purpose first, under ~300ms, ease-out, transform/opacity only, respect reduced motion, content never waits.
 - Kept: live line, toasts, countdown, press, focus, tiles, tabs, copy, checks, rolling score, diff (hold D), onion skin (hold G), states playback, crosshair, theme fade, loading.
-- Tweaked: leaderboard rows 280ms; streak tag swings only when it grows (no idle loop); belt and lamp use the real v49 assets; confetti full screen on first solves; sound off by default.
+- Tweaked: leaderboard rows 280ms; streak tag has a slow idle sway (about 1 degree, 7s) plus an eased, damped swing of about 1.4s on hover and when the streak grows (Abhi, 2026-10-28; a decorative exception to the 300ms rule); belt and lamp use the real v49 assets; confetti full screen on first solves; sound off by default.
 - Dropped: submit label progress (toast after scoring instead). Page change = 120ms fade. Countdown shows seconds only in the last hour.
 
 ## Open PRs (into `feature/mvp` unless noted)

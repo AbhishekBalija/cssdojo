@@ -205,13 +205,13 @@ function StreakTag() {
       ? `Played today. Come back tomorrow for ${current + 1}.`
       : "Submit an attempt on today's kata before 00:00 UTC to keep it.";
   const days = ["M", "T", "W", "T", "F", "S", "S"];
-  // Swing once when the streak grows (and on hover, in CSS). No idle loop.
+  // Swing once when the streak grows (and on hover, in CSS), on top of a slow idle sway.
   const prev = useRef<number | null>(null);
   const [grow, setGrow] = useState(false);
   useEffect(() => {
     if (prev.current !== null && current > prev.current) {
       setGrow(true);
-      const t = setTimeout(() => setGrow(false), 320);
+      const t = setTimeout(() => setGrow(false), 1500);
       prev.current = current;
       return () => clearTimeout(t);
     }
