@@ -3,7 +3,8 @@ import { Link } from "@tanstack/react-router";
 import { SOLVED_AT, type PackSummary } from "@cssdojo/shared";
 import { useState } from "react";
 import { GlideTabs, I, Page } from "@/components/Craft";
-import { avatarColor, PackCard, UpcomingPack } from "@/components/PackCard";
+import { PackCard, UpcomingPack } from "@/components/PackCard";
+import { Token } from "@/components/Token";
 import { EmptyState } from "@/components/States";
 import { api } from "@/lib/api";
 import { usePacks, useWall } from "@/lib/dojo";
@@ -33,7 +34,7 @@ function LeadersAside() {
             <span className="rn" style={{ color: r.rank <= 3 ? "var(--warn)" : undefined }}>
               {r.rank}
             </span>
-            <span className="av" style={{ background: r.me ? "var(--line-strong)" : avatarColor(r.player.handle) }} />
+            <Token handle={r.player.handle} image={r.player.image} me={r.me} size={20} />
             <Link to="/u/$handle" params={{ handle: r.player.handle }} className="nm">
               {r.player.handle}
             </Link>

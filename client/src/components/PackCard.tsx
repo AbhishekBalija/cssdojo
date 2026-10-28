@@ -4,6 +4,7 @@ import { packName } from "@/lib/dojo";
 import { useMe } from "@/lib/me";
 import { BeltBand, BeltChip, BigCountdown, CLOTH, I, untilLabel, useNow } from "./Craft";
 import { HoverThumb } from "./HoverThumb";
+import { Token } from "./Token";
 import { scoreClass } from "./KataStage";
 
 // One Battle Pack as a belt-banded card (Home and the Battle Packs list), and
@@ -90,7 +91,7 @@ export function PackCard({ p }: { p: PackSummary }) {
             {leaders.length ? (
               <span className="d-avs">
                 {leaders.map((h) => (
-                  <i key={h} style={{ background: avatarColor(h) }} title={h} />
+                  <Token key={h} handle={h} size={18} title={h} />
                 ))}
               </span>
             ) : null}

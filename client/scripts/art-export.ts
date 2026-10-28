@@ -90,6 +90,19 @@ const PILLAR: AssetSpec = {
   meta: { plinthWidth: 100, pillars: PILLARS },
 };
 
+// The player token: 48 x 48. A grey enamel face (each player's colour is blended in by CSS, so one
+// render covers everyone) and a brass rim on top. The face was rendered with the rim as a holdout,
+// so the rim's contact shadow on the enamel is kept.
+const TOKEN: AssetSpec = {
+  asset: "token",
+  canvas: { width: 48, height: 48 },
+  crops: [
+    { name: "face", layer: "face", x: 0, width: 48 },
+    { name: "rim", layer: "rim", x: 0, width: 48 },
+  ],
+  meta: { faceRadius: 19.2, rimRadius: 23.5 },
+};
+
 async function exportAsset(spec: AssetSpec): Promise<void> {
   const outDir = path.join(OUT, spec.asset);
   await mkdir(outDir, { recursive: true });
@@ -127,6 +140,7 @@ async function exportAsset(spec: AssetSpec): Promise<void> {
 await exportAsset(RAIL);
 await exportAsset(STREAK);
 await exportAsset(PILLAR);
+await exportAsset(TOKEN);
 
 // The cloth weave normal map (made in Blender, design/renders/cloth/). Kept at full size: it tiles,
 // and WebGL builds its own smaller versions. Lossy WebP at high quality is fine for a normal map.

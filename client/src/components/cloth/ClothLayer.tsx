@@ -51,33 +51,47 @@ async function paintPrint(box: HTMLElement, canvas: HTMLCanvasElement, dpr: numb
   for (const el of box.querySelectorAll<HTMLElement>("[data-cloth]")) {
     const kind = el.dataset.cloth;
     if (kind === "avatar") {
-      const img = el.querySelector("img");
-      const dot = el.querySelector<HTMLElement>(".d-av");
-      const target = img ?? dot;
-      if (!target) continue;
-      const r = target.getBoundingClientRect();
+      // The player token (Token.tsx): colour, enamel face blended in with overlay, initials,
+      // brass rim on top. A photo replaces the enamel and the initials.
+      const tok = el.querySelector<HTMLElement>(".d-token");
+      if (!tok) continue;
+      const r = tok.getBoundingClientRect();
       const x = r.left - origin.left;
       const y = r.top - origin.top;
+      const size = r.width;
+      const photo = tok.querySelector("img");
+      const [face, rim, pic] = await Promise.all([
+        loadImage("/art/token/face@2x.webp"),
+        loadImage("/art/token/rim@2x.webp"),
+        photo ? loadImage(photo.currentSrc || photo.src) : Promise.resolve(null),
+      ]);
       ctx.save();
       ctx.beginPath();
-      ctx.arc(x + r.width / 2, y + r.height / 2, r.width / 2, 0, Math.PI * 2);
+      ctx.arc(x + size / 2, y + size / 2, size / 2, 0, Math.PI * 2);
       ctx.clip();
-      const pic = img ? await loadImage(img.currentSrc || img.src) : null;
-      if (pic) ctx.drawImage(pic, x, y, r.width, r.height);
-      else if (dot) {
-        const s = getComputedStyle(dot);
-        ctx.fillStyle = s.backgroundColor;
-        ctx.fillRect(x, y, r.width, r.height);
-        const t = dot.textContent?.trim();
-        if (t) {
+      if (pic) {
+        const inset = size * 0.09;
+        ctx.drawImage(pic, x + inset, y + inset, size - inset * 2, size - inset * 2);
+      } else {
+        ctx.fillStyle = getComputedStyle(tok).getPropertyValue("--tok").trim() || "#2E323A";
+        ctx.fillRect(x, y, size, size);
+        if (face) {
+          ctx.globalCompositeOperation = "overlay";
+          ctx.drawImage(face, x, y, size, size);
+          ctx.globalCompositeOperation = "source-over";
+        }
+        const ini = tok.querySelector<HTMLElement>(".ini");
+        if (ini?.textContent) {
+          const s = getComputedStyle(ini);
           ctx.fillStyle = s.color;
           ctx.font = `${s.fontWeight} ${s.fontSize} ${s.fontFamily}`;
           ctx.textAlign = "center";
           ctx.textBaseline = "middle";
-          ctx.fillText(t, x + r.width / 2, y + r.height / 2 + 0.5);
+          ctx.fillText(ini.textContent, x + size / 2, y + size / 2 + 0.5);
         }
       }
       ctx.restore();
+      if (rim) ctx.drawImage(rim, x, y, size, size);
       continue;
     }
     const s = getComputedStyle(el);

@@ -174,8 +174,7 @@ a.d-tile:hover{border-color:var(--line-strong);translate:0 -1px}
 .d-segs i.on{background:var(--pass)}
 .d-segs i.mid{background:var(--warn)}
 .d-avs{display:flex}
-.d-avs i{width:18px;height:18px;border-radius:999px;border:2px solid var(--d-chip)}
-.d-avs i+i{margin-left:-7px}
+.d-avs .d-token+.d-token{margin-left:-6px}
 
 /* kata stage on Home and the kata page */
 .d-stage{display:flex;align-items:flex-end;justify-content:center;gap:36px;flex-wrap:wrap}
@@ -280,6 +279,15 @@ a.d-note:hover{background:var(--hover)}
 .d-podium .blk span{font:500 10px/1 var(--font-mono);color:#C9CDD6}
 
 /* the wall */
+/* Player token (components/Token.tsx): rendered brass rim over a grey enamel face that takes the
+   player's colour through an overlay blend, so highlights and depth stay real. */
+.d-token{position:relative;display:inline-block;flex:none;border-radius:50%;filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.45))}
+[data-theme="light"] .d-token{filter:drop-shadow(0 1px 1.5px rgba(30,32,40,.25))}
+.d-token>span,.d-token>img{position:absolute;border-radius:50%}
+.d-token .face{inset:0;background-color:var(--tok);background-image:url("/art/token/face@2x.webp");background-image:-webkit-image-set(url("/art/token/face@1x.webp") 1x,url("/art/token/face@2x.webp") 2x,url("/art/token/face@3x.webp") 3x);background-image:image-set(url("/art/token/face@1x.webp") 1x,url("/art/token/face@2x.webp") 2x,url("/art/token/face@3x.webp") 3x);background-size:100% 100%;background-blend-mode:overlay}
+.d-token .ph{inset:9%;width:82%;height:82%;object-fit:cover}
+.d-token .ini{inset:0;display:grid;place-items:center;font-family:var(--font-ui);font-weight:600;letter-spacing:.02em;color:#F3F1EC;text-shadow:0 1px 0 rgba(0,0,0,.35)}
+.d-token .rim{inset:0;background-image:url("/art/token/rim@2x.webp");background-image:-webkit-image-set(url("/art/token/rim@1x.webp") 1x,url("/art/token/rim@2x.webp") 2x,url("/art/token/rim@3x.webp") 3x);background-image:image-set(url("/art/token/rim@1x.webp") 1x,url("/art/token/rim@2x.webp") 2x,url("/art/token/rim@3x.webp") 3x);background-size:100% 100%}
 .d-av{width:26px;height:26px;border-radius:50%;flex:none;display:grid;place-items:center;font:600 9px/1 var(--font-ui);color:#ECEAE4;box-shadow:inset 0 1px 0 rgba(255,255,255,.15)}
 .d-movestrip{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .d-movestrip .k{font:600 10px/1 var(--font-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--sub);margin-right:6px}
@@ -325,7 +333,7 @@ a.d-note:hover{background:var(--hover)}
 .w-r.moved{animation:d-lb-up 420ms cubic-bezier(.2,.8,.2,1) 1 both}
 @keyframes d-lb-up{from{transform:translateY(62px)}to{transform:none}}
 .w-foot{display:flex;align-items:center;justify-content:space-between;margin:16px 12px 0;font:400 11.5px/1 var(--font-mono);color:var(--faint)}
-@media (max-width:900px){.w-list{grid-template-columns:1fr}.w-top{gap:8px;padding:6px 0 0}.w-rk{font-size:34px}.w-in .d-av{display:none}}
+@media (max-width:900px){.w-list{grid-template-columns:1fr}.w-top{gap:8px;padding:6px 0 0}.w-rk{font-size:34px}.w-in .d-token{display:none}}
 .w-trio{display:grid;grid-template-columns:1.05fr .95fr 1.25fr;gap:16px}
 @media (max-width:1100px){.w-trio{grid-template-columns:1fr}}
 .w-you{display:flex;gap:20px;align-items:center}

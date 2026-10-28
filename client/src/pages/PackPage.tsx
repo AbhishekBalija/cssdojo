@@ -1,7 +1,8 @@
 import { Link, useParams } from "@tanstack/react-router";
 import { SOLVED_AT, type PackBoardRow, type PackChallengeTile, type PackDetail } from "@cssdojo/shared";
 import { BeltBand, BeltChip, BigCountdown, CLOTH, Hang, I, Mountain } from "@/components/Craft";
-import { avatarColor, beltLine as packBeltLine } from "@/components/PackCard";
+import { beltLine as packBeltLine } from "@/components/PackCard";
+import { Token } from "@/components/Token";
 import { ago } from "@/components/Shell";
 import { EmptyState } from "@/components/States";
 import { HoverThumb } from "@/components/HoverThumb";
@@ -75,7 +76,7 @@ function Row({ r, live }: { r: PackBoardRow; live: boolean }) {
       <span className="rn" style={{ color: r.rank <= 3 ? "var(--warn)" : undefined }}>
         {r.rank}
       </span>
-      <span className="av" style={{ background: r.me ? "var(--line-strong)" : avatarColor(r.player.handle) }} />
+      <Token handle={r.player.handle} image={r.player.image} me={r.me} size={22} />
       <span style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 0 }}>
         <Link to="/u/$handle" params={{ handle: r.player.handle }} className="nm">
           {r.player.handle}
@@ -94,7 +95,7 @@ function Podium({ rows }: { rows: PackBoardRow[] }) {
   const step = (r: PackBoardRow | undefined, h: number, place: number) =>
     r ? (
       <span className="step" key={place}>
-        <i className="av" style={{ background: avatarColor(r.player.handle), width: place === 1 ? 34 : 28, height: place === 1 ? 34 : 28 }} />
+        <Token handle={r.player.handle} image={r.player.image} me={r.me} size={place === 1 ? 34 : 28} />
         <span className="who">{r.player.handle}</span>
         <span className={`blk p${place}`} style={{ height: h }}>
           <b>{place}</b>

@@ -1,6 +1,6 @@
 # Rendered assets: spec
 
-Status: in progress, 2026-10-28. Done: brass rail, streak tag, belt pillars, cloth banners. Next: belt knot and band. Replaces the hand-drawn SVG and CSS objects (belt knot, belt band, brass rail, streak tag, belt pillars) with images rendered in Blender, because brass shine and cloth folds need real light and reflections.
+Status: in progress, 2026-10-28. Done: brass rail, streak tag, belt pillars, cloth banners, player tokens. Next: belt knot and band. Replaces the hand-drawn SVG and CSS objects (belt knot, belt band, brass rail, streak tag, belt pillars) with images rendered in Blender, because brass shine and cloth folds need real light and reflections.
 
 ## Art direction (same for every asset, so they read as one set)
 
@@ -28,7 +28,7 @@ Sizes are CSS pixels as used today. Every asset is exported at 1x, 2x and 3x. So
 | Brass rail | `Hang` above pack cards | full card width x about 26 | Left cap (ball + collar), seamless rod tile, right cap, hook, wire tile (repeat-y), wire end. Joined in CSS so it fits any width |
 | Streak tag | header, `Shell.tsx` | 72 x 132 including the cord | One sprite with an empty face. The number is live text |
 | Belt pillars | Wall, `Leaderboards.tsx` | 55 to 92 wide (capped), heights rise in equal steps and scale with the width | Square black marble plinth, one whole image per belt at its own height (veins would distort if stretched). No belt on the plinth; the detailed belt knot is its own asset. Labels on a plaque row below |
-| Avatar ring | boards, LIVE line | 20 to 40 | Later. Ring only; the face stays generated per player |
+| Player token | boards, Packs page, pack cards, Wall, cloth banners | 18 to 38 | Brass rim + neutral grey enamel face, 48 px canvas. CSS blends the player colour into the face (overlay), so one render covers everyone. Initials live; a photo replaces the enamel |
 
 ## Cloth banners (live WebGL)
 

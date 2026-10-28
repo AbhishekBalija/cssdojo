@@ -1,0 +1,20 @@
+{
+  "canvas": {
+    "width": 48,
+    "height": 48
+  },
+  "pieces": {
+    "face": {
+      "width": 48,
+      "height": 48,
+      "bytes2x": 1752
+    },
+    "rim": {
+      "width": 48,
+      "height": 48,
+      "bytes2x": 3762
+    }
+  },
+  "faceRadius": 19.2,
+  "rimRadius": 23.5
+}

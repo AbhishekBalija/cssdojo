@@ -4,8 +4,8 @@ import { useId, useRef, useState, type ReactNode } from "react";
 import { CLOTH, GlideTabs, Page, RailArt, untilLabel, useNow } from "@/components/Craft";
 import { ClothLayer } from "@/components/cloth/ClothLayer";
 import { useChallenges } from "@/components/KataStage";
-import { avatarColor } from "@/components/PackCard";
-import { ago, initials } from "@/components/Shell";
+import { Token } from "@/components/Token";
+import { ago } from "@/components/Shell";
 import { staticUrl } from "@/lib/api";
 import { packName, useChallengeBoard, usePack, usePacks, useStreakBoard, useWall } from "@/lib/dojo";
 import { useMe } from "@/lib/me";
@@ -49,14 +49,7 @@ function Frame({ tab, children }: { tab: Tab; children: ReactNode }) {
 }
 
 export function Avatar({ p, me, size = 26 }: { p: PlayerTag; me?: boolean; size?: number }) {
-  if (p.image) return <img src={p.image} alt="" width={size} height={size} style={{ borderRadius: "50%", flex: "none" }} />;
-  if (me)
-    return (
-      <span className="d-av" style={{ width: size, height: size, background: "var(--line-strong)" }}>
-        {initials(p.handle)}
-      </span>
-    );
-  return <span className="d-av" style={{ width: size, height: size, background: avatarColor(p.handle) }} />;
+  return <Token handle={p.handle} image={p.image} me={me} size={size} />;
 }
 
 function Pennant({ belt }: { belt: Belt | null }) {
