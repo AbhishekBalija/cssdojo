@@ -1,0 +1,48 @@
+{
+  "canvas": {
+    "width": 120,
+    "height": 300
+  },
+  "pieces": {
+    "top-white": {
+      "width": 120,
+      "height": 86,
+      "bytes2x": 1706
+    },
+    "top-yellow": {
+      "width": 120,
+      "height": 86,
+      "bytes2x": 2102
+    },
+    "top-green": {
+      "width": 120,
+      "height": 86,
+      "bytes2x": 1938
+    },
+    "top-brown": {
+      "width": 120,
+      "height": 86,
+      "bytes2x": 1930
+    },
+    "top-black": {
+      "width": 120,
+      "height": 86,
+      "bytes2x": 1464
+    },
+    "body": {
+      "width": 120,
+      "height": 194,
+      "bytes2x": 1780
+    },
+    "base": {
+      "width": 120,
+      "height": 20,
+      "bytes2x": 652
+    }
+  },
+  "plinthWidth": 100,
+  "medalCentre": {
+    "x": "50%",
+    "y": "32.9%"
+  }
+}

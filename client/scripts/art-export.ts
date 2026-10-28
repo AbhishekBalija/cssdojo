@@ -19,9 +19,12 @@ interface Crop {
   name: string;
   /** Render layer file in design/renders/<asset>/. */
   layer: string;
-  /** Left edge and width in CSS px. The crop always keeps the full canvas height. */
+  /** Left edge and width in CSS px. */
   x: number;
   width: number;
+  /** Top edge and height in CSS px. Defaults to the full canvas height. */
+  y?: number;
+  height?: number;
   flip?: boolean;
 }
 
@@ -70,17 +73,38 @@ const STREAK: AssetSpec = {
   },
 };
 
+// The belt pillars: canvas 120 x 300 (the plinth is 100 wide, centred). Every belt gets its own
+// top (top face and the tied belt); the stone body and the brass foot are shared. The body is
+// a smooth gradient, so the CSS stretches it to any height without a visible join.
+const BELTS = ["white", "yellow", "green", "brown", "black"] as const;
+const PILLAR: AssetSpec = {
+  asset: "pillar",
+  canvas: { width: 120, height: 300 },
+  crops: [
+    ...BELTS.map((b): Crop => ({ name: `top-${b}`, layer: b, x: 0, width: 120, y: 0, height: 86 })),
+    { name: "body", layer: "white", x: 0, width: 120, y: 86, height: 194 },
+    { name: "base", layer: "white", x: 0, width: 120, y: 280, height: 20 },
+  ],
+  meta: {
+    // Plinth is 100 of the 120 px canvas, so the image is 120% of the pillar's width.
+    plinthWidth: 100,
+    // Centre of the top face, in the top piece: where the medal sits.
+    medalCentre: { x: "50%", y: "32.9%" },
+  },
+};
+
 async function exportAsset(spec: AssetSpec): Promise<void> {
   const outDir = path.join(OUT, spec.asset);
   await mkdir(outDir, { recursive: true });
   const sizes: Record<string, { width: number; height: number; bytes2x: number }> = {};
   for (const crop of spec.crops) {
     const source = path.join(RENDERS, spec.asset, `${crop.layer}.png`);
+    const cropHeight = crop.height ?? spec.canvas.height;
     const region = {
       left: crop.x * RENDER_SCALE,
-      top: 0,
+      top: (crop.y ?? 0) * RENDER_SCALE,
       width: crop.width * RENDER_SCALE,
-      height: spec.canvas.height * RENDER_SCALE,
+      height: cropHeight * RENDER_SCALE,
     };
     let bytes2x = 0;
     for (const n of DENSITIES) {
@@ -88,12 +112,12 @@ async function exportAsset(spec: AssetSpec): Promise<void> {
       if (crop.flip) img = img.flop();
       const file = path.join(outDir, `${crop.name}@${n}x.webp`);
       const info = await img
-        .resize(crop.width * n, spec.canvas.height * n, { kernel: "lanczos3" })
+        .resize(crop.width * n, cropHeight * n, { kernel: "lanczos3" })
         .webp({ quality: 82, alphaQuality: 90, effort: 6, smartSubsample: true })
         .toFile(file);
       if (n === 2) bytes2x = info.size;
     }
-    sizes[crop.name] = { width: crop.width, height: spec.canvas.height, bytes2x };
+    sizes[crop.name] = { width: crop.width, height: cropHeight, bytes2x };
   }
   await writeFile(path.join(outDir, "layers.json"), `${JSON.stringify({ canvas: spec.canvas, pieces: sizes, ...spec.meta }, null, 2)}\n`);
   for (const [name, s] of Object.entries(sizes)) {
@@ -105,3 +129,4 @@ async function exportAsset(spec: AssetSpec): Promise<void> {
 
 await exportAsset(RAIL);
 await exportAsset(STREAK);
+await exportAsset(PILLAR);

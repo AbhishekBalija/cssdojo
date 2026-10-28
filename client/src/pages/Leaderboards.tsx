@@ -190,49 +190,26 @@ export function Moves({ moves }: { moves: EventView[] }) {
   );
 }
 
+/** One belt's stone plinth on the Wall, rendered in Blender (docs/design/rendered-assets.md). */
 function Cylinder({ belt, h, count }: { belt: Belt; h: number; count: number }) {
-  const tone: Record<Belt, [string, string]> = { white: ["#B9B3A8", "#FBF8F1"], yellow: ["#B38A1C", "#F5D468"], green: ["#1E6B44", "#56C48A"], brown: ["#6A4029", "#C98A5A"], black: ["#25272D", "#C3C7D0"] };
-  const [dk, lt] = tone[belt];
-  const id = useId();
+  const art = (piece: string) => `/art/pillar/${piece}@1x.webp 1x, /art/pillar/${piece}@2x.webp 2x, /art/pillar/${piece}@3x.webp 3x`;
   return (
-    <div className="w-ped">
-      <svg className="cyl" viewBox={`0 0 100 ${h}`} preserveAspectRatio="none" style={{ height: h }} aria-hidden="true">
-        <defs>
-          <linearGradient id={`${id}b`} x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0" stopColor={dk} stopOpacity=".55" />
-            <stop offset=".32" stopColor={lt} stopOpacity=".42" />
-            <stop offset=".62" stopColor={dk} stopOpacity=".35" />
-            <stop offset="1" stopColor="#0C0D10" stopOpacity=".7" />
-          </linearGradient>
-          <linearGradient id={`${id}f`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#fff" />
-            <stop offset="1" stopColor="#fff" stopOpacity="0" />
-          </linearGradient>
-          <mask id={`${id}m`}>
-            <rect x="0" y="0" width="100" height={h} fill={`url(#${id}f)`} />
-          </mask>
-          <radialGradient id={`${id}t`} cx=".4" cy=".4" r=".8">
-            <stop offset="0" stopColor={lt} />
-            <stop offset="1" stopColor={dk} />
-          </radialGradient>
-        </defs>
-        <g mask={`url(#${id}m)`}>
-          <path d={`M2 22 V${h} H98 V22Z`} fill={`url(#${id}b)`} />
-          <path d={`M2 22 V${h}`} stroke={lt} strokeOpacity=".35" />
-          <path d={`M98 22 V${h}`} stroke="#000" strokeOpacity=".4" />
-        </g>
-        <ellipse cx="50" cy="22" rx="48" ry="10" fill={`url(#${id}t)`} />
-        <ellipse cx="50" cy="22" rx="48" ry="10" fill="none" stroke={lt} strokeOpacity=".8" />
-        <path d="M2 22 A48 10 0 0 0 98 22" fill="none" stroke="#000" strokeOpacity=".35" />
-      </svg>
-      <span className="medal" style={{ ["--m" as string]: lt, bottom: h - 28 }}>
-        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
-          <path d="M3 10.5h6.5M14.5 10.5H21" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-          <rect x="9.5" y="8" width="5" height="5" rx="1" fill="currentColor" />
-          <path d="M11 13l-2.5 6M13 13l2.5 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-        </svg>
+    <div className="w-ped" style={{ height: h, ["--m" as string]: CLOTH[belt].acc }}>
+      <span className="w-plinth" aria-hidden="true">
+        <span className="w-plinth-top">
+          <img src={`/art/pillar/top-${belt}@2x.webp`} srcSet={art(`top-${belt}`)} alt="" decoding="async" />
+          <span className="medal">
+            <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+              <path d="M3 10.5h6.5M14.5 10.5H21" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+              <rect x="9.5" y="8" width="5" height="5" rx="1" fill="currentColor" />
+              <path d="M11 13l-2.5 6M13 13l2.5 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+            </svg>
+          </span>
+        </span>
+        <span className="w-plinth-body" />
+        <span className="w-plinth-base" />
       </span>
-      <div className="pl" style={{ bottom: h - 80 }}>
+      <div className="pl">
         <b>{belt[0]?.toUpperCase() + belt.slice(1)}</b>
         <span>
           {fmt(count)} player{count === 1 ? "" : "s"}

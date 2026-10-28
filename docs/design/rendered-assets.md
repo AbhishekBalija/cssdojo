@@ -1,6 +1,6 @@
 # Rendered assets: spec
 
-Status: in progress, 2026-10-28. Done: brass rail, streak tag. Next: pillars, belt knot and band. Replaces the hand-drawn SVG and CSS objects (belt knot, belt band, brass rail, streak tag, belt pillars) with images rendered in Blender, because brass shine and cloth folds need real light and reflections.
+Status: in progress, 2026-10-28. Done: brass rail, streak tag, belt pillars. Next: belt knot and band. Replaces the hand-drawn SVG and CSS objects (belt knot, belt band, brass rail, streak tag, belt pillars) with images rendered in Blender, because brass shine and cloth folds need real light and reflections.
 
 ## Art direction (same for every asset, so they read as one set)
 
@@ -27,7 +27,7 @@ Sizes are CSS pixels as used today. Every asset is exported at 1x, 2x and 3x. So
 | Belt band | `BeltBand` across the top of cards | full card width x 22 | One seamless horizontal tile per belt (5), repeated with `background-repeat: repeat-x` |
 | Brass rail | `Hang` above pack cards | full card width x about 26 | Left cap (ball + collar), seamless rod tile, right cap, hook, wire tile (repeat-y), wire end. Joined in CSS so it fits any width |
 | Streak tag | header, `Shell.tsx` | 72 x 132 including the cord | One sprite with an empty face. The number is live text |
-| Belt pillars | Wall, `Leaderboards.tsx` | about 110 wide, 94 to 206 tall in 28px steps | Top (with the belt tied on) + seamless body tile + base per belt, so one set covers every height |
+| Belt pillars | Wall, `Leaderboards.tsx` | 55 to 92 wide (capped), 94 to 206 tall in 28px steps | Square stone plinth: a top per belt (top face and tied belt), one shared body that stretches, one shared base with a brass foot. Labels on a plaque row below |
 | Avatar ring | boards, LIVE line | 20 to 40 | Later. Ring only; the face stays generated per player |
 
 ## Export and budgets
