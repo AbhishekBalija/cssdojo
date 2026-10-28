@@ -1,7 +1,7 @@
 <!-- golden max=89.9 reason="missing hover state" -->
 <div class="stage">
   <div class="wrap">
-    <div class="tip" role="tooltip">Saved to your shelf</div>
+    <div class="tip" role="tooltip">Saved to your shelf<svg class="arrow" viewBox="0 0 12 6" width="12" height="6" aria-hidden="true"><path d="M0 0h12L6 6z" fill="#F2E8CF"/></svg></div>
     <button class="btn">Save</button>
   </div>
 </div>
@@ -10,7 +10,7 @@
   .stage { height: 300px; display: grid; place-items: center; background: #1F3A34; }
   .wrap { display: flex; flex-direction: column; align-items: center; gap: 14px; }
   .tip { position: relative; padding: 8px 14px; border-radius: 8px; background: #F2E8CF; color: #1F3A34; font: 600 12px/20px "Onest", sans-serif; }
-  .tip::after { content: ""; position: absolute; left: 50%; bottom: -6px; width: 10px; height: 10px; margin-left: -6px; background: #F2E8CF; transform: rotate(45deg); border-radius: 0 0 2px 0; }
+  .arrow { position: absolute; left: 50%; top: 100%; margin-left: -6px; display: block; }
   .btn { font: 700 14px/20px "Onest", sans-serif; color: #1F3A34; background: #8FB9A8; border: 0; border-radius: 8px; padding: 10px 24px; cursor: pointer; }
   .btn:focus-visible { outline: 2px solid #F2E8CF; outline-offset: 4px; }
 </style>

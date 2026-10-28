@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { BELTS, type Belt } from "./belts";
-import { MAX_CODE_BYTES } from "./challenge";
+import { FRAMES, MAX_CODE_BYTES } from "./challenge";
 import { ScoreResultSchema } from "./score";
 
 // Request and response shapes shared by the API and the client.
@@ -39,6 +39,12 @@ export const SubmissionViewSchema = z.object({
   beltsEarned: z.array(z.enum(BELTS)).optional(),
   /** Points, Wall moves, pack progress, badges and streak from this Submit. */
   ranking: z.custom<SubmitRanking>().optional(),
+  /**
+   * What the scorer counted as wrong, per frame: a 400x300 PNG data URL, red
+   * where the shape differs and amber where only the colour does. Only sent
+   * for a few minutes after scoring; it is not stored.
+   */
+  maps: z.partialRecord(z.enum(FRAMES), z.string()).optional(),
 });
 export type SubmissionView = z.infer<typeof SubmissionViewSchema>;
 

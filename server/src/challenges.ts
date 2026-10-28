@@ -31,6 +31,7 @@ export function toPublic(c: Challenge): PublicChallenge {
     brief: m.brief,
     frames: m.frames,
     hooks: m.hooks,
+    states: m.states,
     checks: m.checks,
     colors: m.colors,
     fonts: m.allow.fonts,

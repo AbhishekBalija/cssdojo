@@ -1,5 +1,5 @@
 import type { Page } from "playwright";
-import type { Box } from "./render";
+import { collapseSelection, type Box } from "./render";
 
 // Canvas replay of the live target. At publish time we record the reference's
 // real interaction frames (hover, press, focus and their transitions) by pausing
@@ -79,6 +79,7 @@ export async function recordReplay(page: Page, hookSelector: string | undefined,
       reached = await page.evaluate((sel) => !!document.activeElement?.matches(sel), focusSelector);
     }
     if (reached) {
+      await collapseSelection(page);
       focus = await sequence(page, async () => undefined);
       focusHover = await sequence(page, () => page.mouse.move(cx, cy));
       focusPress = await sequence(page, () => page.mouse.down());

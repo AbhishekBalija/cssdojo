@@ -159,6 +159,7 @@ export class Renderer {
       } else if (frame === "focus") {
         const sel = spec.states.focus ? spec.hooks[spec.states.focus] : undefined;
         if (sel) out.focusReached = await tabTo(page, sel);
+        await collapseSelection(page);
       }
       out.frames[frame] = await shot(page);
       await page.close();
@@ -170,6 +171,20 @@ export class Renderer {
 async function shot(page: Page): Promise<PNG> {
   const buf = await page.screenshot({ animations: "disabled", caret: "hide", clip: { x: 0, y: 0, ...VIEWPORT } });
   return PNG.sync.read(buf);
+}
+
+/**
+ * Tabbing into a text field selects its value, which paints a blue highlight
+ * no player can style or expect. Put the caret at the end instead (the caret
+ * itself is hidden in screenshots).
+ */
+export async function collapseSelection(page: Page): Promise<void> {
+  const isField = await page.evaluate(() => {
+    const el = document.activeElement;
+    return el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement;
+  });
+  // End works on every field type (setSelectionRange throws on type="email").
+  if (isField) await page.keyboard.press("End");
 }
 
 /** Presses Tab until the element matching `selector` has keyboard focus (so :focus-visible applies). */

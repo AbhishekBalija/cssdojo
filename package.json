@@ -12,7 +12,7 @@
     "client"
   ],
   "scripts": {
-    "dev": "bun run --filter @cssdojo/server dev & bun run --filter @cssdojo/client dev",
+    "dev": "bun --env-file=.env.local run --filter @cssdojo/server dev & bun run --filter @cssdojo/client dev",
     "build": "bun run --filter @cssdojo/client build",
     "lint": "eslint .",
     "typecheck": "tsc -p shared && tsc -p scorer && tsc -p server && tsc -p client",
@@ -21,8 +21,8 @@
     "golden": "bun run scorer/src/golden.ts",
     "targets": "bun run scorer/src/build-targets.ts",
     "db:generate": "bun run --filter @cssdojo/server db:generate",
-    "db:migrate": "bun run --filter @cssdojo/server db:migrate",
-    "db:seed": "bun run --filter @cssdojo/server db:seed",
+    "db:migrate": "bun --env-file=.env.local run --filter @cssdojo/server db:migrate",
+    "db:seed": "bun --env-file=.env.local run --filter @cssdojo/server db:seed",
     "ci": "bun run lint && bun run typecheck && bun run test",
     "brand": "bun run client/scripts/brand.ts"
   },

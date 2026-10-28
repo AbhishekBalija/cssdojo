@@ -18,6 +18,9 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - Interaction polish (`motion/approved-polish.md`): stacked toasts, rolling digits, gliding tabs, page and theme fades, a streak tag that swings only when it grows, mismatch (hold D), onion skin (hold G), a measuring crosshair, states playback, hover frames on tiles, full-screen confetti on a first solve, an optional solve sound and a quiet "Saved" label.
 - Settings: handle, notifications, theme, reduce motion, sound and editor ligatures.
 
+### Documentation
+- Handoff for local agents: `docs/context.md` (decisions, hosting, open PRs, open items) and a fuller `.agents/AGENTS.md`, with root `CLAUDE.md` as a symlink to it so Claude Code loads it.
+
 ### Removed
 - Unused exports and the unused `codemirror` meta package (found by `bunx fallow`).
 
@@ -25,6 +28,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - Daily kata is for fun and streaks only: kata solves no longer count toward belts or belt badges.
 - Play screen: the challenge description is gone and the outcome checks fold into one line with a pass count.
 - Reset in the editor now offers Undo; toasts clear when you move to another challenge.
+- Nine targets with layout mishaps fixed: ticket stub and boarding pass text no longer sits on the card edge, profile card no longer fills the canvas, breadcrumbs fit with room for the focus ring, text link ring no longer touches the next word, accordion focus ring follows the rounded card, avatar initials are no longer cut, tabs lose the ghost hover underline. The scorer puts the caret at the end after tabbing into a field instead of showing the value selected.
+- Icons are given, never drawn: the ticks in Done chip and Stepper, the tooltip arrow and the breadcrumb separators now ship as inline SVG in the starter. A test fails if a reference uses an `<svg>` its starter lacks.
 - Client deploys to Vercel and proxies `/api` and `/static` to the Render API, so sign-in cookies are first-party. New API settings `AUTH_URL` and `PAGES_REDIRECT_TO_CLIENT` (see `docs/guides/vercel.md`).
 - Every challenge now uses a standard value scale (Tailwind-like: 0, 1, 2, even values to 14, then steps of 4; a type scale for fonts; fixed border widths and radii). 223 odd values such as 27px or 3px were snapped. A test fails on any new off-scale value.
 - Scoring is fairer on colour: inside the shape, a wrong colour is scored by the colour term only, not counted again as missing shape. A right-shaped answer with the wrong focus fill now scores about 86. Colour cost is `C^2` with `C = 1 - deltaE / 12`.
@@ -40,6 +45,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - Profile kata chart: scores under 70 sat on the 70 line, days before you joined showed "missed", and labels overlapped the axis.
 - Guests who solve a challenge with nothing else to show are told to sign in instead of "Nothing moved this time".
 - Signing out resets the "Get started" list; My attempts and the challenge leaderboard show a loading state; "No belt yet" and "1 player" wording on boards; no request for pack 0.
+- Mismatch now tells the truth: the :hover and :focus preview marks only what the scorer hovers or tabs to (7 challenges showed false red), and after a Submit the scorer's own map (red = shape, amber = colour) replaces the live overlay until the code changes. A Submit whose stage background colour differs from the target now says so.
+- `bun run dev`, `db:migrate` and `db:seed` did not see the root `.env.local`: `bun run --filter` executes inside the package folder, where bun does not look up parent env files. They now pass `--env-file=.env.local`.
 - The player middleware ran once per route group, so a guest's first POST could create several guest rows. It now runs once per request.
 - A Submit more than 24 days after first opening a challenge overflowed the solve-time column and failed to record.
 - Scoring: untouched starter code no longer passes the outcome checks. Checks only count once every required part is placed roughly like the target (starter on #001 went from 32.9 with 5/5 checks to 2.9 with 0/5). Golden set now caps starter answers at 15.

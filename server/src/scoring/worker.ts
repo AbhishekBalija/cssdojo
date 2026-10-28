@@ -5,7 +5,7 @@ import { getChallenge, renderer, targetFor } from "../challenges";
 import type { Db } from "../db/client";
 import { submissions } from "../db/schema";
 import { recordScore } from "../progress";
-import { scoreEvents } from "./events";
+import { rememberMaps, scoreEvents } from "./events";
 
 const IDLE_WAIT_MS = 5 * 60_000;
 
@@ -19,7 +19,7 @@ async function processOne(db: Db, queue: ScoreQueue): Promise<boolean> {
     if (!challenge) throw new Error(`unknown challenge ${sub.challengeId}`);
     await db.update(submissions).set({ status: "running" }).where(eq(submissions.id, sub.id));
 
-    const result: ScoreResult = await scoreAnswer(renderer, await targetFor(challenge), sub.code);
+    const result: ScoreResult = await scoreAnswer(renderer, await targetFor(challenge), sub.code, (maps) => rememberMaps(sub.id, maps));
     const scored = result.status === "scored";
     await db
       .update(submissions)
