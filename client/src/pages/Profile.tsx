@@ -49,13 +49,14 @@ export function BigBelt({ belt, have }: { belt: Belt; have: number }) {
 
 function KataChart({ kata, joined }: { kata: ProfileView["kata"]; joined: string }) {
   const id = useId();
-  const W = 500,
+  // A narrow drawing keeps the text readable when the chart shrinks on a phone.
+  const W = 360,
     H = 170,
-    x0 = 34;
+    x0 = 30;
   // The scale starts at 70, or lower when a score falls below it, so every point sits where it really is.
   const low = Math.min(70, ...kata.map((k) => (k.score === null ? 100 : Math.floor(k.score / 10) * 10)));
   const y = (s: number) => 20 + ((100 - s) / (100 - low)) * 120;
-  const ticks = [100, Math.round((100 + low) / 20) * 10, low];
+  const ticks = [100, Math.round((100 + low) / 10) * 5, low];
   const joinDay = joined.slice(0, 10);
   const step = (W - x0 - 10) / Math.max(1, kata.length - 1);
   const pts = kata.map((k, i) => (k.score === null ? null : ([x0 + i * step, y(k.score)] as const)));
@@ -72,7 +73,7 @@ function KataChart({ kata, joined }: { kata: ProfileView["kata"]; joined: string
       </defs>
       {ticks.map((v, i) => (
         <g key={v}>
-          <text x="0" y={y(v) + 3} fontSize="9" fill="var(--faint)" fontFamily="Martian Mono">
+          <text x="0" y={y(v) + 3} fontSize="10" fill="var(--faint)" fontFamily="Martian Mono">
             {v}
           </text>
           <path d={`M${x0 - 8} ${y(v)} H${W}`} stroke="var(--line)" strokeDasharray={i === 1 ? "3 3" : undefined} />
@@ -95,9 +96,12 @@ function KataChart({ kata, joined }: { kata: ProfileView["kata"]; joined: string
         return (
           <g key={k.date}>
             {mark}
-            <text x={today ? x + 6 : x} y="162" fontSize="9" fill="var(--faint)" textAnchor={today ? "end" : "middle"} fontFamily="Martian Mono">
-              {today ? "today" : Number(k.date.slice(8))}
-            </text>
+            {/* Every second day gets a label (counting back from today) so labels never touch. */}
+            {(kata.length - 1 - i) % 2 === 0 ? (
+              <text x={today ? x + 6 : x} y="162" fontSize="10" fill="var(--faint)" textAnchor={today ? "end" : "middle"} fontFamily="Martian Mono">
+                {today ? "today" : Number(k.date.slice(8))}
+              </text>
+            ) : null}
           </g>
         );
       })}

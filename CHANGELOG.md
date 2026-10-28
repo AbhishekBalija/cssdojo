@@ -36,6 +36,9 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - Scoring is fairer on colour: inside the shape, a wrong colour is scored by the colour term only, not counted again as missing shape. A right-shaped answer with the wrong focus fill now scores about 86. Colour cost is `C^2` with `C = 1 - deltaE / 12`.
 
 ### Fixed
+- Battle Packs: the whole pack card opens the pack, not only the title.
+- Pack page: the START / Next chip next to a challenge title is gone, the Play button is the one action.
+- Kata chart: y-axis ticks are evenly spaced, the drawing is narrower so the text stays readable on a phone, and day labels show every second day so they never touch.
 - Light theme: cards, pack banners and the today / next highlight used heavy dark-theme shadows. They now have lighter ones.
 - The pixel label on the Output slider picked up the close button's `.x` style.
 - Pack countdowns under a day show seconds, so the clock visibly ticks.
