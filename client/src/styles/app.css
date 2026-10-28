@@ -165,8 +165,8 @@ kbd{font:500 9px/1 var(--font-mono);padding:3px 4px;border-radius:4px;border:1px
 .frame .handle.h{left:0;right:0;height:2px;translate:0 -1px}
 .frame .px{position:absolute;font:500 10.5px/1 var(--font-mono);background:var(--accent);color:var(--on-accent);padding:4px 6px;border-radius:5px;pointer-events:none;display:none;white-space:nowrap;font-variant-numeric:tabular-nums}
 .frame.sliding .px{display:block}
-.frame .px.x{bottom:8px;translate:-50% 0}
-.frame .px.y{right:8px;translate:0 -50%}
+.frame .px.px-x{bottom:8px;translate:-50% 0}
+.frame .px.px-y{right:8px;translate:0 -50%}
 .frame.sliding #out{opacity:.92}
 .frame.diff .over{mix-blend-mode:difference;clip-path:none!important}
 .frame.diff .handle,.frame.diff .px{display:none!important}
@@ -245,7 +245,7 @@ kbd{font:500 9px/1 var(--font-mono);padding:3px 4px;border-radius:4px;border:1px
   .switch button[aria-selected="true"]{background:var(--line-strong);color:var(--fg)}
   .status{display:none}
   .pane-h kbd,.ed-foot kbd,.keys{display:none}
-  .frame .px.y{left:auto;right:6px}
+  .frame .px.px-y{left:auto;right:6px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 /* ---------- additions for the app (not on the single play page) ---------- */

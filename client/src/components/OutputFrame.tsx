@@ -152,7 +152,7 @@ export function OutputFrame({
       {sliding ? (
         <>
           <div className={`handle ${pos.vertical ? "h" : "v"}`} style={pos.vertical ? { top: pos.y } : { left: pos.x }} />
-          <span className={`px ${pos.vertical ? "y" : "x"}`} style={pos.vertical ? { top: pos.y } : { left: pos.x }}>
+          <span className={`px ${pos.vertical ? "px-y" : "px-x"}`} style={pos.vertical ? { top: pos.y } : { left: pos.x }}>
             {Math.round((pos.vertical ? pos.y : pos.x) / k)}
           </span>
         </>
