@@ -1,0 +1,44 @@
+{
+  "id": "k-109-unread-badge",
+  "number": 109,
+  "title": "Unread badge",
+  "belt": "white",
+  "kind": "kata",
+  "kataDay": 9,
+  "brief": "A rounded pill with a small dot and the text 3 unread, in plum on lavender.",
+  "frames": [
+    "rest"
+  ],
+  "hooks": {
+    "badge": ".badge"
+  },
+  "states": {},
+  "checks": [
+    "hooks-present",
+    "text-contrast-aa",
+    "real-text"
+  ],
+  "colors": [
+    "#EAE4F5",
+    "#4A2C7A",
+    "#FFFFFF",
+    "#E0457B"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "Shopify Polaris Badge",
+      "url": "https://polaris.shopify.com/components/feedback-indicators/badge",
+      "note": "Took the compact tone-based pill with a leading status marker; used a plum fill, a pink dot and our own sizing."
+    },
+    {
+      "source": "Atlassian Lozenge",
+      "url": "https://atlassian.design/components/lozenge/examples",
+      "note": "Took the bold-text-on-solid-fill treatment; shape and colour are redesigned."
+    }
+  ]
+}

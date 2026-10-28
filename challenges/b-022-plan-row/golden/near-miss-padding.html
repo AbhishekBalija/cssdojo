@@ -1,0 +1,30 @@
+<!-- golden max=89.9 reason="row padding 6px short" -->
+<div class="stage">
+  <div class="plan">
+    <div class="plan-info">
+      <div class="plan-head">
+        <h2 class="plan-name">Team</h2>
+        <span class="plan-badge">Most popular</span>
+      </div>
+      <p class="plan-desc">10 seats included</p>
+    </div>
+    <p class="plan-price">$24<span>/mo</span></p>
+    <button class="plan-select">Choose</button>
+  </div>
+</div>
+<style>
+  body { margin: 0; }
+  .stage { height: 300px; display: grid; place-items: center; background: #1E1B2E; }
+  .plan { display: flex; align-items: center; gap: 20px; width: 372px; box-sizing: border-box; padding: 12px 20px; background: #2A2640; border: 1px solid #433D66; border-radius: 16px; }
+  .plan-info { flex: 1; }
+  .plan-head { display: flex; align-items: center; gap: 10px; }
+  .plan-name { margin: 0; font: 700 18px/24px "Onest", sans-serif; color: #F4F1FF; }
+  .plan-badge { padding: 2px 8px; border-radius: 999px; background: #F7C948; color: #2A2200; font: 700 12px/16px "Onest", sans-serif; white-space: nowrap; }
+  .plan-desc { margin: 4px 0 0; font: 400 12px/20px "Onest", sans-serif; color: #B9B3DB; }
+  .plan-price { margin: 0; font: 700 24px/32px "Onest", sans-serif; color: #FFFFFF; }
+  .plan-price span { font: 400 12px/20px "Onest", sans-serif; color: #B9B3DB; }
+  .plan-select { height: 40px; padding: 0 20px; border: 0; border-radius: 8px; background: #F7C948; color: #2A2200; font: 700 14px/20px "Onest", sans-serif; cursor: pointer; }
+  .plan:hover { border-color: #F7C948; background: #322D52; }
+  .plan:has(.plan-select:focus-visible) { border-color: #FFFFFF; background: #322D52; }
+  .plan-select:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 2px; }
+</style>

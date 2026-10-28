@@ -1,0 +1,44 @@
+{
+  "id": "w-003-status-pill",
+  "number": 3,
+  "title": "Status pill",
+  "belt": "white",
+  "kind": "challenge",
+  "brief": "A small rounded status label with a coloured dot and a short word, tinted to show that something went well.",
+  "frames": [
+    "rest"
+  ],
+  "hooks": {
+    "pill": ".pill",
+    "dot": ".dot"
+  },
+  "states": {},
+  "checks": [
+    "hooks-present",
+    "text-contrast-aa",
+    "real-text"
+  ],
+  "colors": [
+    "#F6F4EE",
+    "#E1F3E8",
+    "#12623A",
+    "#1E9B5A"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "Shopify Polaris Badge",
+      "url": "https://polaris.shopify.com/components/feedback-indicators/badge",
+      "note": "Took the tinted background with a matching dark text and a leading status marker; ours is a plain dot in a full pill."
+    },
+    {
+      "source": "Atlassian Badge and Lozenge",
+      "url": "https://atlassian.design/components/badge",
+      "note": "Took the idea of semantic tints for status; sizes and colours are ours."
+    }
+  ]
+}

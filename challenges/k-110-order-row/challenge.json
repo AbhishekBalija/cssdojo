@@ -1,0 +1,48 @@
+{
+  "id": "k-110-order-row",
+  "number": 110,
+  "title": "Order summary",
+  "belt": "green",
+  "kind": "kata",
+  "kataDay": 10,
+  "brief": "An order summary card: two line items with quantity and price, a shipping line, a rule, and a bold total.",
+  "frames": [
+    "rest"
+  ],
+  "hooks": {
+    "order": ".order",
+    "total": ".total"
+  },
+  "states": {},
+  "checks": [
+    "hooks-present",
+    "text-contrast-aa",
+    "real-text"
+  ],
+  "colors": [
+    "#E3EEE8",
+    "#FFFFFF",
+    "#17332A",
+    "#5B7068",
+    "#CFE0D7",
+    "#1F7A57"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest",
+      "Martian Mono"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "Shopify Polaris Text style and line items",
+      "url": "https://polaris.shopify.com/components/layout-and-structure/box",
+      "note": "Took the pattern of left aligned names, muted meta and right aligned amounts in a stacked list; layout and palette redesigned."
+    },
+    {
+      "source": "Stripe style checkout summaries on Dribbble",
+      "url": "https://dribbble.com/tags/order-summary",
+      "note": "Took the idea of a ruled total row with heavier type; all values and styling are ours."
+    }
+  ]
+}

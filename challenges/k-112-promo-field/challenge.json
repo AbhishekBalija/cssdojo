@@ -1,0 +1,55 @@
+{
+  "id": "k-112-promo-field",
+  "number": 112,
+  "title": "Promo code field",
+  "belt": "green",
+  "kind": "kata",
+  "kataDay": 12,
+  "brief": "A labelled promo code input with helper text and an Apply button beside it. The input gets a clear ring on focus.",
+  "frames": [
+    "rest",
+    "focus"
+  ],
+  "hooks": {
+    "label": ".label",
+    "input": ".code",
+    "apply": ".apply",
+    "helper": ".helper"
+  },
+  "states": {
+    "focus": "input"
+  },
+  "checks": [
+    "hooks-present",
+    "focus-visible",
+    "text-contrast-aa",
+    "target-size",
+    "semantic-control",
+    "real-text"
+  ],
+  "colors": [
+    "#F2EEE3",
+    "#FFFFFF",
+    "#1F2A44",
+    "#586079",
+    "#BFC4D4",
+    "#2F4BD8"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "Shopify Polaris TextField",
+      "url": "https://polaris.shopify.com/components/selection-and-input/text-field",
+      "note": "Took the label above, helper text below structure; the inline Apply action and the palette are ours."
+    },
+    {
+      "source": "Radix Themes Text Field",
+      "url": "https://www.radix-ui.com/themes/docs/components/text-field",
+      "note": "Took the idea of a solid focus ring directly on the field; shapes and colours redesigned."
+    }
+  ]
+}

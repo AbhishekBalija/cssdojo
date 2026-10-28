@@ -1,0 +1,46 @@
+{
+  "id": "w-006-key-cap",
+  "number": 6,
+  "title": "Key caps",
+  "belt": "white",
+  "kind": "challenge",
+  "brief": "A keyboard shortcut hint: two raised key caps joined by a plus sign, with a short caption underneath.",
+  "frames": [
+    "rest"
+  ],
+  "hooks": {
+    "key": ".key",
+    "caption": ".caption"
+  },
+  "states": {},
+  "checks": [
+    "hooks-present",
+    "text-contrast-aa",
+    "real-text"
+  ],
+  "colors": [
+    "#E4E8F2",
+    "#FFFFFF",
+    "#C5CAD8",
+    "#2B2F42",
+    "#4D5470"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest",
+      "Martian Mono"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "MDN kbd element",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/kbd",
+      "note": "Took the semantic kbd element for key names; the styling is ours."
+    },
+    {
+      "source": "GitHub Primer kbd styling",
+      "url": "https://primer.style/components/label",
+      "note": "Took the thicker bottom edge that suggests a pressable key; the monospace face, size and palette are our own."
+    }
+  ]
+}

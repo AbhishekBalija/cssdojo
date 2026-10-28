@@ -1,0 +1,49 @@
+{
+  "id": "k-106-soft-switch",
+  "number": 106,
+  "title": "Soft switch",
+  "belt": "white",
+  "kind": "kata",
+  "kataDay": 6,
+  "brief": "A toggle switch in the on position with the label Quiet mode beside it. A bold ring shows when it is reached by keyboard.",
+  "frames": [
+    "rest",
+    "focus"
+  ],
+  "hooks": {
+    "switch": ".switch"
+  },
+  "states": {
+    "focus": "switch"
+  },
+  "checks": [
+    "hooks-present",
+    "focus-visible",
+    "text-contrast-aa",
+    "target-size",
+    "semantic-control",
+    "real-text"
+  ],
+  "colors": [
+    "#2B2D42",
+    "#8D99AE",
+    "#EDF2F4"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "Radix UI Switch",
+      "url": "https://www.radix-ui.com/primitives/docs/components/switch",
+      "note": "Took the track and thumb structure with a checked state; our thumb sits on a muted blue-grey track and the focus ring is a wide cream halo."
+    },
+    {
+      "source": "GitHub Primer toggle switch",
+      "url": "https://primer.style/components/toggle-switch",
+      "note": "Took the label beside the switch as one clickable row."
+    }
+  ]
+}

@@ -1,0 +1,162 @@
+import { useEffect, useRef, useState } from "react";
+import { sanitizeCode, wrapDocument, type FrameName } from "@cssdojo/shared";
+import { staticUrl } from "@/lib/api";
+
+// The player's live output at 1:1 (400x300), with the target's recorded PNG
+// frame laid over it for slide-and-compare and diff. No target CSS is used.
+
+export type PreviewState = FrameName;
+
+/** Lets a state be previewed without a real mouse or keyboard: :hover also matches .dj-hover, etc. */
+function prepForStates(code: string): string {
+  return code
+    .replace(/:hover/g, ":is(:hover,.dj-hover)")
+    .replace(/:focus-visible/g, ":is(:focus-visible,.dj-focus)")
+    .replace(/:focus-within/g, ":is(:focus-within,.dj-focus-within)")
+    .replace(/:focus(?![-\w])/g, ":is(:focus,.dj-focus)");
+}
+
+const FOCUSABLE = "a[href], button, input, select, textarea, summary, [tabindex]:not([tabindex='-1'])";
+
+/**
+ * Marks the same elements the scorer puts in a state. The scorer moves the
+ * mouse to the centre of the hover hook, so :hover matches the element under
+ * that point and its ancestors. It tabs to the focus hook, so :focus matches
+ * that one element and :focus-within its ancestors.
+ */
+function applyState(d: Document, state: PreviewState, hoverSel: string | undefined, focusSel: string | undefined) {
+  d.querySelectorAll(".dj-hover, .dj-focus, .dj-focus-within").forEach((el) => el.classList.remove("dj-hover", "dj-focus", "dj-focus-within"));
+  const find = (sel: string | undefined) => {
+    if (!sel) return null;
+    try {
+      return d.querySelector(sel);
+    } catch {
+      return null;
+    }
+  };
+  if (state === "hover") {
+    const hook = find(hoverSel);
+    if (!hook) return;
+    const r = hook.getBoundingClientRect();
+    let el: Element | null = d.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2) ?? hook;
+    for (; el && el !== d.documentElement; el = el.parentElement) el.classList.add("dj-hover");
+  } else if (state === "focus") {
+    const hook = find(focusSel);
+    const target = hook && (hook.matches(FOCUSABLE) ? hook : hook.querySelector(FOCUSABLE));
+    if (!target) return;
+    target.classList.add("dj-focus");
+    for (let el: Element | null = target; el && el !== d.documentElement; el = el.parentElement) el.classList.add("dj-focus-within");
+  }
+}
+
+function fontBase(): string {
+  return new URL(staticUrl("/fonts"), location.href).href.replace(/\/$/, "");
+}
+
+export function OutputFrame({
+  code,
+  challengeId,
+  hooks,
+  states,
+  state,
+  slide,
+  diff,
+  scoreMap,
+  onion = false,
+  onSlide,
+}: {
+  code: string;
+  challengeId: string;
+  /** The challenge's hooks and which of them the scorer hovers and tabs to. */
+  hooks: Record<string, string>;
+  states: { hover?: string | undefined; focus?: string | undefined };
+  state: PreviewState;
+  slide: boolean;
+  diff: boolean;
+  /** What the scorer counted wrong in this state on your last Submit, shown instead of the live mismatch while the code is unchanged. */
+  scoreMap?: string | undefined;
+  /** The target at 30% over your output. */
+  onion?: boolean;
+  onSlide?: () => void;
+}) {
+  const frameRef = useRef<HTMLDivElement>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [srcDoc, setSrcDoc] = useState("");
+  const [pos, setPos] = useState<{ x: number; y: number; vertical: boolean } | null>(null);
+
+  useEffect(() => {
+    const t = setTimeout(() => setSrcDoc(wrapDocument(prepForStates(sanitizeCode(code).code), fontBase())), 150);
+    return () => clearTimeout(t);
+  }, [code]);
+
+  // Apply the previewed state to every element once the document loads.
+  useEffect(() => {
+    const f = iframeRef.current;
+    if (!f) return;
+    const hoverSel = states.hover ? hooks[states.hover] : undefined;
+    const focusSel = states.focus ? hooks[states.focus] : undefined;
+    const apply = () => {
+      try {
+        const d = f.contentDocument;
+        if (d) applyState(d, state, hoverSel, focusSel);
+      } catch {
+        /* cross-origin: ignore */
+      }
+    };
+    apply();
+    f.addEventListener("load", apply);
+    return () => f.removeEventListener("load", apply);
+  }, [state, srcDoc, hooks, states]);
+
+  useEffect(() => {
+    if (!pos) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Shift") setPos((p) => (p ? { ...p, vertical: e.type === "keydown" } : p));
+    };
+    addEventListener("keydown", onKey);
+    addEventListener("keyup", onKey);
+    return () => {
+      removeEventListener("keydown", onKey);
+      removeEventListener("keyup", onKey);
+    };
+  }, [pos]);
+
+  const move = (e: React.PointerEvent) => {
+    if (!slide || diff || !frameRef.current) return;
+    const r = frameRef.current.getBoundingClientRect();
+    setPos({ x: Math.max(0, Math.min(r.width, e.clientX - r.left)), y: Math.max(0, Math.min(r.height, e.clientY - r.top)), vertical: e.shiftKey });
+    onSlide?.();
+  };
+
+  const k = frameRef.current ? frameRef.current.clientWidth / 400 || 1 : 1;
+  const sliding = !!pos && slide && !diff;
+  const clip = sliding ? (pos.vertical ? `inset(${pos.y}px 0 0 0)` : `inset(0 0 0 ${pos.x}px)`) : "inset(0 0 0 100%)";
+  const targetSrc = staticUrl(`/targets/${challengeId}/${state}.png`);
+
+  return (
+    <div ref={frameRef} className={`frame${sliding ? " sliding" : ""}${diff ? " diff" : ""}`} onPointerMove={move} onPointerDown={move} onPointerLeave={() => setPos(null)} data-testid="output-frame">
+      <div className="clip">
+        <iframe ref={iframeRef} title="Your output" sandbox="allow-same-origin" srcDoc={srcDoc} style={k === 1 ? undefined : { transform: `scale(${k})` }} />
+        <div className="over" style={{ clipPath: clip }}>
+          <img src={targetSrc} alt="" width={400} height={300} style={{ width: "100%", height: "100%", display: "block" }} draggable={false} />
+        </div>
+        {/* Mismatch: where your output and the target differ shows red. After a
+            Submit, the scorer's own map replaces it until the code changes. */}
+        {scoreMap ? <img className={`smap${diff ? " on" : ""}`} src={scoreMap} alt="" width={400} height={300} draggable={false} aria-hidden="true" data-testid="score-map" /> : null}
+        <div className={`mm${diff && !scoreMap ? " on" : ""}`} aria-hidden="true">
+          <img src={targetSrc} alt="" width={400} height={300} draggable={false} />
+          <span className="tint" />
+        </div>
+        <img className={`onion${onion ? " on" : ""}`} src={targetSrc} alt="" width={400} height={300} draggable={false} aria-hidden="true" />
+      </div>
+      {sliding ? (
+        <>
+          <div className={`handle ${pos.vertical ? "h" : "v"}`} style={pos.vertical ? { top: pos.y } : { left: pos.x }} />
+          <span className={`px ${pos.vertical ? "px-y" : "px-x"}`} style={pos.vertical ? { top: pos.y } : { left: pos.x }}>
+            {Math.round((pos.vertical ? pos.y : pos.x) / k)}
+          </span>
+        </>
+      ) : null}
+    </div>
+  );
+}

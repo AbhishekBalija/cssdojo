@@ -1,0 +1,57 @@
+{
+  "id": "b-023-rating-buttons",
+  "number": 23,
+  "title": "Rating buttons",
+  "belt": "brown",
+  "kind": "challenge",
+  "brief": "A one to five rating scale on butter yellow: outlined square buttons, 4 selected in solid ink, a yellow tint on hover and an orange ring on keyboard focus.",
+  "frames": [
+    "rest",
+    "hover",
+    "focus"
+  ],
+  "hooks": {
+    "group": ".rate-btns",
+    "selected": ".rate-4",
+    "other": ".rate-2"
+  },
+  "states": {
+    "hover": "other",
+    "focus": "other"
+  },
+  "checks": [
+    "hooks-present",
+    "hover-changes",
+    "focus-visible",
+    "text-contrast-aa",
+    "target-size",
+    "semantic-control",
+    "real-text"
+  ],
+  "colors": [
+    "#FFF1B8",
+    "#FFFFFF",
+    "#2B2400",
+    "#FFE27A",
+    "#FFD43B",
+    "#5C4F00",
+    "#D9480F"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "GOV.UK Design System radios",
+      "url": "https://design-system.service.gov.uk/components/radios/",
+      "note": "Took the heavy dark outline and high-contrast focus colour on choice controls; ours is a horizontal numeric scale of square buttons."
+    },
+    {
+      "source": "Primer button group",
+      "url": "https://primer.style/product/components/button-group/",
+      "note": "Took the row of equal buttons with one selected; spacing, ink-on-butter palette and end labels are ours."
+    }
+  ]
+}

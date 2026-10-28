@@ -1,0 +1,23 @@
+<!-- golden max=89.9 reason="chevron badge 6px too small" -->
+<div class="stage">
+  <div class="acc">
+    <button class="acc-header" aria-expanded="true">
+      <span class="acc-title">Shipping and returns</span>
+      <span class="acc-chevron"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3.5 6l4.5 4.5L12.5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></span>
+    </button>
+    <div class="acc-panel"><p>Orders ship within 2 business days. Returns are free for 30 days.</p></div>
+  </div>
+</div>
+<style>
+  body { margin: 0; }
+  .stage { height: 300px; display: grid; place-items: center; background: #F4E4DA; }
+  .acc { width: 340px; background: #FFFFFF; border-radius: 16px; overflow: hidden; box-shadow: 0 1px 4px rgba(80, 30, 10, 0.16); }
+  .acc-header { display: flex; align-items: center; justify-content: space-between; width: 100%; box-sizing: border-box; padding: 16px 20px; border: 0; border-radius: 16px 16px 0 0; background: #FFFFFF; color: #3B1F14; font: 600 16px/24px "Onest", sans-serif; text-align: left; cursor: pointer; }
+  .acc-chevron { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: #FBE9E1; color: #B5441F; }
+  .acc-header[aria-expanded="true"] .acc-chevron svg { transform: rotate(180deg); }
+  .acc-header:hover { background: #FBEBE3; }
+  .acc-header:hover .acc-chevron { background: #F2C4AE; }
+  .acc-header:focus-visible { background: #F9DFD2; outline: 2px solid #B5441F; outline-offset: -4px; }
+  .acc-panel { padding: 0 20px 20px; }
+  .acc-panel p { margin: 0; font: 400 14px/24px "Onest", sans-serif; color: #5A3A2C; }
+</style>

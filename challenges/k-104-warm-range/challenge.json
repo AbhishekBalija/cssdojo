@@ -1,0 +1,44 @@
+{
+  "id": "k-104-warm-range",
+  "number": 104,
+  "title": "Warm range",
+  "belt": "green",
+  "kind": "kata",
+  "kataDay": 4,
+  "brief": "A labelled range slider look: Warmth with the value 70 percent, a dark track filled in coral up to a round thumb, and scale numbers below.",
+  "frames": [
+    "rest"
+  ],
+  "hooks": {
+    "range": ".range",
+    "thumb": ".thumb"
+  },
+  "states": {},
+  "checks": [
+    "hooks-present",
+    "text-contrast-aa",
+    "real-text"
+  ],
+  "colors": [
+    "#E07A5F",
+    "#3D405B",
+    "#F4F1DE"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "Material Design 3 sliders",
+      "url": "https://m3.material.io/components/sliders/overview",
+      "note": "Took a labelled slider with a value readout and a filled active track; our thumb is a ringed dot and the track is thin and flat."
+    },
+    {
+      "source": "Radix UI Slider",
+      "url": "https://www.radix-ui.com/primitives/docs/components/slider",
+      "note": "Took the track, range and thumb as three separate parts; we added scale ticks and a bold value."
+    }
+  ]
+}

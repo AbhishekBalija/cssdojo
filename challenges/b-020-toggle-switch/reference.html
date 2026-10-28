@@ -1,0 +1,25 @@
+<div class="stage">
+  <label class="toggle">
+    <input class="toggle-input" type="checkbox" checked>
+    <span class="toggle-text">
+      <span class="toggle-title">Weekly summary email</span>
+      <span class="toggle-sub">Every Monday at 8:00 AM</span>
+    </span>
+  </label>
+</div>
+<style>
+  body { margin: 0; }
+  .stage { height: 300px; display: grid; place-items: center; background: #DCE8F5; }
+  .toggle { display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 340px; box-sizing: border-box; padding: 20px 20px; background: #FFFFFF; border-radius: 12px; cursor: pointer; box-shadow: 0 1px 4px rgba(27, 26, 61, 0.14); }
+  .toggle-text { display: flex; flex-direction: column; gap: 2px; }
+  .toggle-title { font: 600 14px/20px "Onest", sans-serif; color: #1B1A3D; }
+  .toggle-sub { font: 400 12px/20px "Onest", sans-serif; color: #565880; }
+  .toggle-input { appearance: none; -webkit-appearance: none; order: 2; flex: none; position: relative; margin: 0; width: 48px; height: 28px; border-radius: 12px; background: #B4BCCB; cursor: pointer; }
+  .toggle-input::before { content: ""; position: absolute; top: 4px; left: 4px; width: 24px; height: 24px; border-radius: 50%; background: #FFFFFF; box-shadow: 0 1px 2px rgba(20, 20, 60, 0.3); }
+  .toggle-input:checked { background: #3730A3; }
+  .toggle-input:checked::before { transform: translateX(20px); }
+  .toggle:hover { background: #EEF0FF; }
+  .toggle:hover .toggle-input:checked { background: #2B2580; }
+  .toggle:has(.toggle-input:focus-visible) { box-shadow: 0 0 0 4px #3730A3; }
+  .toggle-input:focus-visible { outline: 2px solid #3730A3; outline-offset: 2px; }
+</style>

@@ -1,0 +1,55 @@
+{
+  "id": "x-029-mini-player",
+  "number": 29,
+  "title": "Mini player",
+  "belt": "black",
+  "kind": "challenge",
+  "brief": "A compact audio player: art tile, track and artist, a progress bar with times, and previous, play and next buttons. The play button reacts to hover and focus.",
+  "frames": [
+    "rest",
+    "hover",
+    "focus"
+  ],
+  "hooks": {
+    "player": ".player",
+    "play": ".play"
+  },
+  "states": {
+    "hover": "play",
+    "focus": "play"
+  },
+  "checks": [
+    "hooks-present",
+    "hover-changes",
+    "focus-visible",
+    "text-contrast-aa",
+    "target-size",
+    "semantic-control",
+    "real-text"
+  ],
+  "colors": [
+    "#1C1F3A",
+    "#F5EFE6",
+    "#FF6B4A",
+    "#4A4D6B",
+    "#E1D8C8"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest",
+      "Martian Mono"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "Material Design 3 sliders",
+      "url": "https://m3.material.io/components/sliders/overview",
+      "note": "Took the thick rounded progress track with a filled part and a round handle; we used a short fill with a small dot and a cream card."
+    },
+    {
+      "source": "Dribbble music player UI",
+      "url": "https://dribbble.com/tags/music-player",
+      "note": "Took the layout of art on the left and the centred transport controls; art is pure CSS shapes and the palette is ours."
+    }
+  ]
+}

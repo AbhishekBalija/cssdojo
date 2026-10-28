@@ -1,0 +1,56 @@
+{
+  "id": "k-111-like-button",
+  "number": 111,
+  "title": "Like button",
+  "belt": "brown",
+  "kind": "kata",
+  "kataDay": 11,
+  "brief": "A pill button with a heart icon and a count. It tints on hover and shows a clear ring for keyboard focus.",
+  "frames": [
+    "rest",
+    "hover",
+    "focus"
+  ],
+  "hooks": {
+    "like": ".like",
+    "count": ".count"
+  },
+  "states": {
+    "hover": "like",
+    "focus": "like"
+  },
+  "checks": [
+    "hooks-present",
+    "hover-changes",
+    "focus-visible",
+    "text-contrast-aa",
+    "target-size",
+    "semantic-control",
+    "real-text"
+  ],
+  "colors": [
+    "#FBF5F0",
+    "#FFFFFF",
+    "#3A1F24",
+    "#C2334D",
+    "#FFDDE3",
+    "#E6CFC8"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "Primer social count button",
+      "url": "https://primer.style/components/button",
+      "note": "Took the idea of an icon beside a count inside one control; shape, colour and states are redesigned."
+    },
+    {
+      "source": "Material Design 3 icon buttons",
+      "url": "https://m3.material.io/components/icon-buttons/overview",
+      "note": "Took the tinted hover layer idea; implemented as a flat colour swap with our own palette."
+    }
+  ]
+}

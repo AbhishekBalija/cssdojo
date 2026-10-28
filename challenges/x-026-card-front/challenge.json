@@ -1,0 +1,56 @@
+{
+  "id": "x-026-card-front",
+  "number": 26,
+  "title": "Card front",
+  "belt": "black",
+  "kind": "challenge",
+  "brief": "The front of a payment card: chip with etched lines, contactless arcs, a spaced number in mono type, holder and expiry, plus a Copy number button underneath.",
+  "frames": [
+    "rest",
+    "hover",
+    "focus"
+  ],
+  "hooks": {
+    "card": ".card",
+    "button": ".btn"
+  },
+  "states": {
+    "hover": "button",
+    "focus": "button"
+  },
+  "checks": [
+    "hooks-present",
+    "hover-changes",
+    "focus-visible",
+    "text-contrast-aa",
+    "target-size",
+    "semantic-control",
+    "real-text"
+  ],
+  "colors": [
+    "#F0EAD6",
+    "#264653",
+    "#E9C46A",
+    "#F4F1DE",
+    "#A9C1C8",
+    "#E76F51"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest",
+      "Martian Mono"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "Dribbble credit card UI",
+      "url": "https://dribbble.com/tags/credit-card-ui",
+      "note": "Took the chip with etched lines and the contactless arcs placed at the top corners; the generic mark, palette and copy button are ours, no real brand logos."
+    },
+    {
+      "source": "GitHub Primer button",
+      "url": "https://primer.style/components/button",
+      "note": "Took the idea of a quiet secondary button with a darker hover and an offset focus ring."
+    }
+  ]
+}

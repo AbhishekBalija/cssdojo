@@ -1,0 +1,57 @@
+{
+  "id": "b-019-segmented-control",
+  "number": 19,
+  "title": "Segmented control",
+  "belt": "brown",
+  "kind": "challenge",
+  "brief": "A three-way view switcher in a soft track. The active segment is a white raised pill, the others tint on hover, and keyboard focus draws a green ring.",
+  "frames": [
+    "rest",
+    "hover",
+    "focus"
+  ],
+  "hooks": {
+    "group": ".seg",
+    "active": ".seg-board",
+    "other": ".seg-timeline"
+  },
+  "states": {
+    "hover": "other",
+    "focus": "other"
+  },
+  "checks": [
+    "hooks-present",
+    "hover-changes",
+    "focus-visible",
+    "text-contrast-aa",
+    "target-size",
+    "semantic-control",
+    "real-text"
+  ],
+  "colors": [
+    "#F4F1EA",
+    "#E4DFD2",
+    "#CFC8B2",
+    "#FFFFFF",
+    "#4A4538",
+    "#1B2A26",
+    "#1F6F5C"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "Primer SegmentedControl",
+      "url": "https://primer.style/product/components/segmented-control/",
+      "note": "Took the grouped buttons where the selected one is lifted from a shared track; ours has a rounded pill track and a soft shadow."
+    },
+    {
+      "source": "Carbon content switcher",
+      "url": "https://carbondesignsystem.com/components/content-switcher/usage/",
+      "note": "Took the idea of one selected segment and hover on the rest; the project-view labels and green focus ring are ours."
+    }
+  ]
+}

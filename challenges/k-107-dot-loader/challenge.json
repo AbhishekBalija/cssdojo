@@ -1,0 +1,44 @@
+{
+  "id": "k-107-dot-loader",
+  "number": 107,
+  "title": "Dot loader",
+  "belt": "white",
+  "kind": "kata",
+  "kataDay": 7,
+  "brief": "One frozen frame of a three dot loader: two small olive dots with a larger terracotta dot in the middle, and a caption below.",
+  "frames": [
+    "rest"
+  ],
+  "hooks": {
+    "loader": ".loader"
+  },
+  "states": {},
+  "checks": [
+    "hooks-present",
+    "text-contrast-aa",
+    "real-text"
+  ],
+  "colors": [
+    "#FFE8D6",
+    "#6B705C",
+    "#CB997E",
+    "#3F4238"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "Carbon loading component",
+      "url": "https://carbondesignsystem.com/components/loading/usage/",
+      "note": "Took the idea that a loader is a short caption plus a quiet motion mark; ours freezes a frame of three dots."
+    },
+    {
+      "source": "Dribbble loader animations",
+      "url": "https://dribbble.com/tags/loader",
+      "note": "Took the bouncing dots idea with the middle one scaled up; the earthy palette is ours."
+    }
+  ]
+}

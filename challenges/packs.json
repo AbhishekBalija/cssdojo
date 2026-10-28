@@ -1,0 +1,77 @@
+[
+  {
+    "number": 1,
+    "title": "First moves",
+    "description": "One element, a few properties. Start here.",
+    "belt": "white",
+    "challenges": [
+      "w-001-primary-button",
+      "w-002-outline-button",
+      "w-003-status-pill",
+      "w-004-text-link",
+      "w-005-avatar-initials",
+      "w-006-key-cap"
+    ],
+    "opensAt": "2026-10-25T00:00:00Z"
+  },
+  {
+    "number": 2,
+    "title": "Small signals",
+    "description": "Badges, toasts and labels that carry state.",
+    "belt": "yellow",
+    "challenges": [
+      "y-007-bell-badge",
+      "y-008-toast",
+      "y-009-price-tag",
+      "y-010-search-field",
+      "y-011-breadcrumbs",
+      "y-012-progress-label"
+    ],
+    "opensAt": "2026-10-25T00:00:00Z"
+  },
+  {
+    "number": 3,
+    "title": "Rows and fields",
+    "description": "Lists, inputs and cards with a few parts each.",
+    "belt": "green",
+    "challenges": [
+      "g-013-notification-row",
+      "g-014-email-field",
+      "g-015-file-chip",
+      "g-016-stat-card",
+      "g-017-profile-card",
+      "g-018-shipping-option"
+    ],
+    "opensAt": "2026-10-25T00:00:00Z"
+  },
+  {
+    "number": 4,
+    "title": "States",
+    "description": "Controls with hover, focus and selected states.",
+    "belt": "brown",
+    "challenges": [
+      "b-019-segmented-control",
+      "b-020-toggle-switch",
+      "b-021-tabs",
+      "b-022-plan-row",
+      "b-023-rating-buttons",
+      "b-024-accordion-header"
+    ],
+    "opensAt": "2026-10-25T00:00:00Z"
+  },
+  {
+    "number": 5,
+    "title": "Fine detail",
+    "description": "Notches, layered shadows and precise type.",
+    "belt": "black",
+    "challenges": [
+      "x-025-ticket-stub",
+      "x-026-card-front",
+      "x-027-command-item",
+      "x-028-stepper",
+      "x-029-mini-player",
+      "x-030-date-tile"
+    ],
+    "opensAt": "2026-10-25T00:00:00Z"
+  }
+]

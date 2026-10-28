@@ -1,0 +1,27 @@
+/* CSS Dojo tokens v1, approved 2026-10-25. Dark is the default. Accent: lilac. */
+:root {
+  --bg: #0C0D10;  --panel: #131519;  --line: #22252C;  --line-strong: #2E323A;
+  --fg: #ECEAE4;  --sub: #8F939C;  --faint: #6A6E78;
+  --accent: #A99CFF;  --on-accent: #0C0D10;
+  --pass: #5ED39A;  --fail: #FF7A70;  --warn: #F2C07B;
+  --code-tag: #A99CFF;  --code-selector: #F59AC5;  --code-property: #8FB2FF;  --code-value: #F2C07B;
+  --belt-white: #ECEAE4;  --belt-yellow: #F2C94C;  --belt-green: #4CAF7A;  --belt-brown: #8A5A3C;  --belt-black: #0C0D10;
+  --font-ui: "Onest", system-ui, sans-serif;
+  --font-mono: "Martian Mono", ui-monospace, monospace;
+  --font-art: "Instrument Serif", Georgia, serif;
+  --space-1: 4px;  --space-2: 8px;  --space-3: 12px;  --space-4: 16px;
+  --space-5: 24px;  --space-6: 32px;  --space-7: 48px;  --space-8: 64px;
+  --radius-sm: 4px;  --radius: 8px;  --radius-lg: 12px;  --radius-pill: 999px;
+  color-scheme: dark;
+}
+[data-theme="light"] {
+  --bg: #F1F2F4;  --panel: #FFFFFF;  --line: #E0E2E7;  --line-strong: #CDD0D7;
+  --fg: #121318;  --sub: #5D616B;  --faint: #80848E;
+  --accent: #5F4AE6;  --on-accent: #FFFFFF;
+  --pass: #127A52;  --fail: #C2362E;  --warn: #9A520F;
+  --code-tag: #5F4AE6;  --code-selector: #B2367A;  --code-property: #3B62D6;  --code-value: #9A520F;
+  color-scheme: light;
+}
+/* Type scale: display 48/52 Onest 500 -0.025em · art-title 32/36 Instrument Serif italic · h1 28/34 Onest 600
+   h2 20/26 Onest 600 · body 15/24 Onest 400 · small 13/20 · stat 22/24 Onest 500 tabular
+   code 12.5/23 Martian Mono 400 · label 10.5 Martian Mono 500 caps +0.08em */

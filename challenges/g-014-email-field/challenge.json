@@ -1,0 +1,53 @@
+{
+  "id": "g-014-email-field",
+  "number": 14,
+  "title": "Email field",
+  "belt": "green",
+  "kind": "challenge",
+  "brief": "A labelled email input with a helper line underneath. The border and a ring change when the field gets keyboard focus.",
+  "frames": [
+    "rest",
+    "focus"
+  ],
+  "hooks": {
+    "label": ".field-label",
+    "input": ".field-input",
+    "helper": ".field-help"
+  },
+  "states": {
+    "focus": "input"
+  },
+  "checks": [
+    "hooks-present",
+    "focus-visible",
+    "text-contrast-aa",
+    "target-size",
+    "semantic-control",
+    "real-text"
+  ],
+  "colors": [
+    "#F6F1E7",
+    "#FFFFFF",
+    "#2B2A33",
+    "#B9B2A2",
+    "#6A6455",
+    "#3B5BDB"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "Carbon text input",
+      "url": "https://carbondesignsystem.com/components/text-input/usage/",
+      "note": "Took the label, field, helper text stack; ours has a rounded bordered box instead of Carbon's bottom-line field."
+    },
+    {
+      "source": "Primer text input",
+      "url": "https://primer.style/product/components/text-input/",
+      "note": "Took the idea of a blue border plus ring on focus; the palette and sizes are ours."
+    }
+  ]
+}

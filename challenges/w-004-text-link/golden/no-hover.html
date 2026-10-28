@@ -1,0 +1,19 @@
+<!-- golden max=89.9 reason="missing hover state" -->
+<div class="stage">
+  <p class="copy">Your invoice is ready.<br><a class="link" href="#">View the receipt</a> before Friday.</p>
+</div>
+<style>
+  body { margin: 0; }
+  .stage { height: 300px; display: grid; place-items: center; background: #FBF6EC; }
+  .copy { margin: 0; width: 300px; text-align: center; font: 400 16px/28px "Onest", sans-serif; color: #3A3A33; }
+  .link {
+    color: #B4350F;
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+    border-radius: 2px;
+    margin: 0 4px;
+  }
+  .link:focus-visible { outline: 2px solid #B4350F; outline-offset: 2px; }
+</style>

@@ -1,0 +1,28 @@
+<!-- golden max=89.9 reason="missing hover state" -->
+<div class="stage">
+  <div class="tabs-card">
+    <div class="tabs" role="tablist">
+      <button class="tab tab-overview" role="tab" aria-selected="false">Overview</button>
+      <button class="tab tab-activity" role="tab" aria-selected="true">Activity</button>
+      <button class="tab tab-settings" role="tab" aria-selected="false">Settings</button>
+    </div>
+    <div class="tab-panel">
+      <p class="tab-panel-title">Recent activity</p>
+      <p class="tab-panel-text">12 changes by 4 people in the last 7 days.</p>
+    </div>
+  </div>
+</div>
+<style>
+  body { margin: 0; }
+  .stage { height: 300px; display: grid; place-items: center; background: #F7E8EC; }
+  .tabs-card { width: 340px; background: #FFFFFF; border-radius: 16px; overflow: hidden; box-shadow: 0 1px 4px rgba(80, 20, 50, 0.14); }
+  .tabs { display: flex; padding: 0 12px; border-bottom: 1px solid #EBD6DE; }
+  .tab { position: relative; height: 48px; padding: 0 14px; border: 0; background: transparent; color: #6B4A58; font: 600 14px/20px "Onest", sans-serif; cursor: pointer; }
+  .tab::after { content: ""; position: absolute; left: 14px; right: 14px; bottom: -1px; height: 4px; border-radius: 2px 2px 0 0; background: transparent; }
+  .tab[aria-selected="true"] { color: #B4235A; }
+  .tab[aria-selected="true"]::after { background: #B4235A; }
+  .tab:focus-visible { background: #FBE9EF; outline: 2px solid #B4235A; outline-offset: -4px; }
+  .tab-panel { padding: 20px 24px 24px; }
+  .tab-panel-title { margin: 0; font: 600 14px/24px "Onest", sans-serif; color: #2D1B24; }
+  .tab-panel-text { margin: 2px 0 0; font: 400 14px/20px "Onest", sans-serif; color: #6B4A58; }
+</style>

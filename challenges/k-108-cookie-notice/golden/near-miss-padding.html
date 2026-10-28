@@ -1,0 +1,23 @@
+<!-- golden max=89.9 reason="notice padding 12px instead of 20px" -->
+<div class="stage">
+  <div class="notice">
+    <h2>We use cookies</h2>
+    <p>Cookies help us remember your cart and keep the shop fast. Choose what you are happy with.</p>
+    <div class="actions">
+      <button class="accept">Accept all</button>
+      <button class="decline">Decline</button>
+    </div>
+  </div>
+</div>
+<style>
+  body { margin: 0; }
+  .stage { height: 300px; display: grid; place-items: center; background: #F4EBDD; font-family: "Onest", sans-serif; }
+  .notice { width: 332px; box-sizing: border-box; padding: 12px; background: #FFFFFF; border: 1px solid #E5D5BD; border-radius: 12px; color: #3B2A1A; }
+  h2 { margin: 0; font: 600 16px/24px "Onest", sans-serif; }
+  p { margin: 6px 0 0; font: 400 12px/20px "Onest", sans-serif; color: #6A5640; }
+  .actions { display: flex; gap: 8px; margin-top: 16px; }
+  .accept, .decline { font: 600 14px/20px "Onest", sans-serif; padding: 10px 16px; border-radius: 8px; cursor: pointer; }
+  .accept { color: #FFFFFF; background: #B4491F; border: 1px solid #B4491F; }
+  .accept:hover { background: #8F3714; border-color: #8F3714; }
+  .decline { color: #3B2A1A; background: transparent; border: 1px solid #D9C6A8; }
+</style>

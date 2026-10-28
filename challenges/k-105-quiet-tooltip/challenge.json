@@ -1,0 +1,53 @@
+{
+  "id": "k-105-quiet-tooltip",
+  "number": 105,
+  "title": "Quiet tooltip",
+  "belt": "green",
+  "kind": "kata",
+  "kataDay": 5,
+  "brief": "A cream tooltip bubble with a small arrow, sitting above a Save button. The button brightens on hover and shows a ring on focus.",
+  "frames": [
+    "rest",
+    "hover",
+    "focus"
+  ],
+  "hooks": {
+    "tip": ".tip",
+    "button": ".btn"
+  },
+  "states": {
+    "hover": "button",
+    "focus": "button"
+  },
+  "checks": [
+    "hooks-present",
+    "hover-changes",
+    "focus-visible",
+    "text-contrast-aa",
+    "target-size",
+    "semantic-control",
+    "real-text"
+  ],
+  "colors": [
+    "#1F3A34",
+    "#F2E8CF",
+    "#8FB9A8"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "Shopify Polaris tooltip",
+      "url": "https://polaris.shopify.com/",
+      "note": "Took the short single-line bubble placed above its trigger; ours is cream on deep green with a diamond arrow."
+    },
+    {
+      "source": "Radix UI Tooltip",
+      "url": "https://www.radix-ui.com/primitives/docs/components/tooltip",
+      "note": "Took the arrow centred under the bubble, pointing at the trigger."
+    }
+  ]
+}

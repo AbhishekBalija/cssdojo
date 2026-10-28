@@ -1,0 +1,21 @@
+<!-- golden min=99.5 max=100 reason="flex column centring, same look" -->
+<div class="stage">
+  <div class="profile">
+    <div class="profile-avatar">AO</div>
+    <h2 class="profile-name">Amara Okafor</h2>
+    <p class="profile-role">Product designer, Lagos</p>
+    <p class="profile-stats"><span><b>128</b> posts</span><span><b>4.2k</b> followers</span></p>
+    <button class="profile-follow">Follow</button>
+  </div>
+</div>
+<style>
+  body { margin: 0; }
+  .stage { height: 300px; display: grid; place-items: center; background: #E7E4F5; }
+  .profile { width: 260px; box-sizing: border-box; padding: 20px; background: #FFFFFF; border-radius: 16px; display: flex; flex-direction: column; align-items: center; box-shadow: 0 1px 4px rgba(30, 27, 51, 0.12); }
+  .profile-avatar { display: grid; place-items: center; width: 56px; height: 56px; margin: 0 auto 12px; border-radius: 50%; background: #5B3FD6; color: #FFFFFF; font: 600 20px/1 "Onest", sans-serif; }
+  .profile-name { margin: 0; font: 700 20px/28px "Onest", sans-serif; color: #1E1B33; }
+  .profile-role { margin: 2px 0 0; font: 400 14px/20px "Onest", sans-serif; color: #5E5A78; }
+  .profile-stats { display: flex; justify-content: center; gap: 20px; margin: 12px 0 16px; align-self: auto; font: 400 12px/20px "Onest", sans-serif; color: #5E5A78; }
+  .profile-stats b { font-weight: 700; color: #1E1B33; }
+  .profile-follow { width: 100%; height: 40px; border: 0; border-radius: 8px; background: #5B3FD6; color: #FFFFFF; font: 600 14px/20px "Onest", sans-serif; cursor: pointer; }
+</style>

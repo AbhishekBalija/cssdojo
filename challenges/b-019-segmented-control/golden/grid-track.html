@@ -1,0 +1,18 @@
+<!-- golden min=99.5 max=100 reason="grid track, same look" -->
+<div class="stage">
+  <div class="seg" role="group" aria-label="Project view">
+    <button class="seg-btn seg-list" aria-pressed="false">List</button>
+    <button class="seg-btn seg-board" aria-pressed="true">Board</button>
+    <button class="seg-btn seg-timeline" aria-pressed="false">Timeline</button>
+  </div>
+</div>
+<style>
+  body { margin: 0; }
+  .stage { height: 300px; display: grid; place-items: center; background: #F4F1EA; }
+  .seg { display: inline-grid; grid-auto-flow: column; gap: 2px; padding: 4px; background: #E4DFD2; border-radius: 12px; }
+  .seg-btn { height: 36px; padding: 0 20px; border: 0; border-radius: 8px; background: transparent; color: #4A4538; font: 600 14px/20px "Onest", sans-serif; cursor: pointer; }
+  .seg-btn[aria-pressed="true"] { background: #FFFFFF; color: #1B2A26; box-shadow: 0 1px 4px rgba(40, 34, 20, 0.22); }
+  .seg-btn:hover:not([aria-pressed="true"]) { background: #CFC8B2; color: #1B2A26; }
+  .seg:has(.seg-btn:focus-visible) { box-shadow: 0 0 0 4px #A9D8CC; }
+  .seg-btn:focus-visible { outline: 2px solid #1F6F5C; outline-offset: 2px; }
+</style>

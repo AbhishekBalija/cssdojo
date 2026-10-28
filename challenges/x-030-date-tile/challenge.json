@@ -1,0 +1,54 @@
+{
+  "id": "x-030-date-tile",
+  "number": 30,
+  "title": "Date tile",
+  "belt": "black",
+  "kind": "challenge",
+  "brief": "A tear-off calendar tile: red month band with two punch holes, a big day number, and a zigzag-edged RSVP strip below a perforation. The whole tile is a button that lifts on hover.",
+  "frames": [
+    "rest",
+    "hover",
+    "focus"
+  ],
+  "hooks": {
+    "tile": ".tile"
+  },
+  "states": {
+    "hover": "tile",
+    "focus": "tile"
+  },
+  "checks": [
+    "hooks-present",
+    "hover-changes",
+    "focus-visible",
+    "text-contrast-aa",
+    "target-size",
+    "semantic-control",
+    "real-text"
+  ],
+  "colors": [
+    "#D8E2DC",
+    "#FFFFFF",
+    "#C1121F",
+    "#1D3557",
+    "#FFE8EA"
+  ],
+  "allow": {
+    "fonts": [
+      "Onest",
+      "Instrument Serif"
+    ]
+  },
+  "inspiration": [
+    {
+      "source": "Dribbble calendar date UI",
+      "url": "https://dribbble.com/tags/calendar-ui",
+      "note": "Took the coloured month band with punch holes above a big day number; the zigzag tear-off strip with the perforation and the lift on hover are our own."
+    },
+    {
+      "source": "Atlassian Design System",
+      "url": "https://atlassian.design/components/button/examples",
+      "note": "Took the pattern of a whole card acting as one button, with a visible keyboard focus ring offset from the edge."
+    }
+  ]
+}
