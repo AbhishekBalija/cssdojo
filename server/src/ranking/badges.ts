@@ -2,7 +2,7 @@ import { and, eq, gte, sql } from "drizzle-orm";
 import { BADGES, SOLVED_AT, badgeById, longestRun, type BadgeView, type Belt } from "@cssdojo/shared";
 import type { Db } from "../db/client";
 import { answerLocks, bestScores, playerBadges, playerBelts, players } from "../db/schema";
-import { listPacks } from "../packs";
+import { listPacks, visibleChallenges } from "../packs";
 import { addEvent, notify } from "./notify";
 import { kataDates } from "./standings";
 
@@ -43,7 +43,7 @@ async function facts(db: Db, playerId: string): Promise<Facts> {
 
 function clearedPacks(f: Facts): number[] {
   return listPacks()
-    .filter((p) => p.challenges.every((id) => f.solvedIds.has(id)))
+    .filter((p) => visibleChallenges(p).every((id) => f.solvedIds.has(id)))
     .map((p) => p.number);
 }
 
@@ -51,7 +51,7 @@ function clearedPacks(f: Facts): number[] {
 function progressOf(f: Facts): Record<string, number> {
   const unaided = [...f.solvedIds].filter((id) => !f.lockedIds.has(id)).length;
   const cleared = clearedPacks(f).length;
-  const bestPackSolves = Math.max(0, ...listPacks().map((p) => p.challenges.filter((id) => f.solvedIds.has(id)).length));
+  const bestPackSolves = Math.max(0, ...listPacks().map((p) => visibleChallenges(p).filter((id) => f.solvedIds.has(id)).length));
   return {
     "pack-cleared": bestPackSolves,
     "two-packs": cleared,

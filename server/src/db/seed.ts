@@ -18,7 +18,9 @@ export async function seed(): Promise<{ challenges: number; kata: number; packs:
     await db
       .insert(packs)
       .values({ number: p.number, title: p.title, description: p.description, belt: p.belt, opensAt: p.opens, endsAt: p.ends })
-      .onConflictDoUpdate({ target: packs.number, set: { title: p.title, description: p.description, belt: p.belt, opensAt: p.opens, endsAt: p.ends } });
+      // Dates are only written for a new pack. Later the database owns them, so a date
+      // an admin changed is not reset on the next deploy.
+      .onConflictDoUpdate({ target: packs.number, set: { title: p.title, description: p.description, belt: p.belt } });
   }
   for (const c of all) {
     const packNumber = packOf(c.meta.id)?.number ?? null;

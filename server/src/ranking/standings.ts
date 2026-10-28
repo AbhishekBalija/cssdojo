@@ -1,4 +1,4 @@
-import { and, eq, gte, inArray, isNotNull, sql } from "drizzle-orm";
+import { and, eq, gte, inArray, isNotNull, isNull, or, sql, type SQL } from "drizzle-orm";
 import { BELTS, SOLVED_AT, type Belt, type PlayerTag } from "@cssdojo/shared";
 import type { Db } from "../db/client";
 import { bestScores, challenges, events, kataDays, playerBelts, players, user } from "../db/schema";
@@ -41,6 +41,14 @@ export async function playerTags(db: Db, playerIds: string[]): Promise<Map<strin
   return out;
 }
 
+/**
+ * Players who can appear on a board: signed in and not hidden by an admin. A hidden
+ * player still sees themself (`viewer`), so they are not told they were hidden.
+ */
+export function onBoards(viewer?: string | null): SQL | undefined {
+  return and(isNotNull(players.userId), viewer ? or(isNull(players.hiddenAt), eq(players.id, viewer)) : isNull(players.hiddenAt));
+}
+
 /** Points-then-time order shared by every board. */
 export function byPointsThenTime(a: Standing, b: Standing): number {
   return b.points - a.points || a.reachedAt.getTime() - b.reachedAt.getTime();
@@ -50,7 +58,7 @@ export function byPointsThenTime(a: Standing, b: Standing): number {
  * Totals of signed-in players over pack challenges on the library board.
  * Pass a pack number to limit it to that pack.
  */
-export async function standings(db: Db, packNumber?: number): Promise<Standing[]> {
+export async function standings(db: Db, packNumber?: number, viewer?: string | null): Promise<Standing[]> {
   const rows = await db
     .select({
       playerId: bestScores.playerId,
@@ -60,7 +68,7 @@ export async function standings(db: Db, packNumber?: number): Promise<Standing[]
     })
     .from(bestScores)
     .innerJoin(challenges, eq(challenges.id, bestScores.challengeId))
-    .innerJoin(players, and(eq(players.id, bestScores.playerId), isNotNull(players.userId)))
+    .innerJoin(players, and(eq(players.id, bestScores.playerId), onBoards(viewer)))
     .where(
       and(
         eq(bestScores.board, "library"),
@@ -72,11 +80,11 @@ export async function standings(db: Db, packNumber?: number): Promise<Standing[]
 }
 
 /** One challenge's library board: best score, then whoever reached it first. Signed-in players only. */
-export async function challengeStandings(db: Db, challengeId: string): Promise<Standing[]> {
+export async function challengeStandings(db: Db, challengeId: string, viewer?: string | null): Promise<Standing[]> {
   const rows = await db
     .select({ playerId: bestScores.playerId, score: bestScores.score, points: bestScores.points, reachedAt: bestScores.updatedAt })
     .from(bestScores)
-    .innerJoin(players, and(eq(players.id, bestScores.playerId), isNotNull(players.userId)))
+    .innerJoin(players, and(eq(players.id, bestScores.playerId), onBoards(viewer)))
     .where(and(eq(bestScores.challengeId, challengeId), eq(bestScores.board, "library")));
   return rows
     .sort((a, b) => b.score - a.score || a.reachedAt.getTime() - b.reachedAt.getTime())

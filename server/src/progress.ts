@@ -2,7 +2,7 @@ import { and, eq, gte, inArray, isNotNull, sql } from "drizzle-orm";
 import { BELTS, MAX_POINTS, SOLVED_AT, SOLVES_PER_BELT, pointsFor, utcDate, type Belt, type SubmitRanking } from "@cssdojo/shared";
 import type { Db } from "./db/client";
 import { answerLocks, bestScores, challengeOpens, challenges, kataDays, playerBelts, players, submissions, user } from "./db/schema";
-import { packLabel, packOf, stateOf } from "./packs";
+import { packLabel, packOf, stateOf, visibleChallenges } from "./packs";
 import { syncBadges } from "./ranking/badges";
 import { announceMove, diffBoard, type BoardMove } from "./ranking/moves";
 import { challengeStandings, playerTags, rankOf, standings, totalPoints } from "./ranking/standings";
@@ -125,8 +125,9 @@ export async function recordScore(db: Db, submissionId: string): Promise<ScoreOu
       .where(and(eq(submissions.playerId, s.playerId), eq(submissions.challengeId, s.challengeId), isNotNull(submissions.score)));
     if ((tries?.n ?? 0) === 1) extra.push("sharp-eye");
   }
-  const solvedInPack = pack ? await packSolved(db, s.playerId, pack.challenges) : 0;
-  if (pack && newBest && stateOf(pack) === "live" && solvedInPack === pack.challenges.length) extra.push("live-finisher");
+  const inPack = pack ? visibleChallenges(pack) : [];
+  const solvedInPack = pack ? await packSolved(db, s.playerId, inPack) : 0;
+  if (pack && newBest && stateOf(pack) === "live" && solvedInPack === inPack.length) extra.push("live-finisher");
   const badgesEarned = await syncBadges(db, s.playerId, extra);
 
   const today = `kata:${utcDate(s.createdAt)}`;

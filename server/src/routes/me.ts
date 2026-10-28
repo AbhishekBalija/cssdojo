@@ -21,7 +21,7 @@ import { env } from "../env";
 import { withPlayer, type PlayerVars } from "../lib/player";
 import { solvedPerBelt } from "../progress";
 import { badgeViews, syncBadges } from "../ranking/badges";
-import { kataDates, rankOf, standings, totalPoints } from "../ranking/standings";
+import { kataDates, onBoards, rankOf, standings, totalPoints } from "../ranking/standings";
 import { tickPacks } from "../ranking/tick";
 import { packStandings, unreadCount } from "./ranking";
 import { listPacks, stateOf } from "../packs";
@@ -37,7 +37,7 @@ meRoutes.get("/me", async (c) => {
   // Signing in is itself a badge, and belts or streaks may have landed since the last check.
   if (playerId && u) await syncBadges(db, playerId);
   const dates = playerId ? await kataDates(db, playerId) : [];
-  const wall = await standings(db);
+  const wall = await standings(db, undefined, playerId);
   const detail = streakDetail(dates);
   const out: MeView = {
     player: { id: playerId ?? "", guest: !u },
@@ -63,7 +63,7 @@ async function leaderboard(challengeId: string, board: string, playerId: string 
     .from(bestScores)
     .innerJoin(players, eq(players.id, bestScores.playerId))
     .innerJoin(user, eq(user.id, players.userId))
-    .where(and(eq(bestScores.challengeId, challengeId), eq(bestScores.board, board)))
+    .where(and(eq(bestScores.challengeId, challengeId), eq(bestScores.board, board), onBoards(playerId)))
     .orderBy(sql`${bestScores.score} desc`, asc(bestScores.solveMs))
     .limit(limit);
   return rows.map((r, i) => ({ rank: i + 1, handle: r.handle ?? r.name, image: r.image, score: r.score, solveMs: r.solveMs, me: r.playerId === playerId }));
@@ -85,6 +85,7 @@ async function rankings(playerId: string | null, limit = 100): Promise<RankingRo
     from players p
     join "user" u on u.id = p.user_id
     join best_scores b on b.player_id = p.id and b.board = 'library'
+    where p.hidden_at is null or p.id = ${playerId}
     group by p.id, u.handle, u.name, u.image`);
   const top = (belts: Belt[] | null) => (belts && belts.length ? BELTS.filter((b) => belts.includes(b)).at(-1) ?? null : null);
   return [...rows]
@@ -156,7 +157,7 @@ meRoutes.get("/profile/:handle", async (c) => {
     joined: u.createdAt.toISOString(),
     streak: streakFrom(dates, today),
     points: p ? await totalPoints(db, p.id) : 0,
-    wallRank: p ? rankOf(await standings(db), p.id) : null,
+    wallRank: p ? rankOf(await standings(db, undefined, c.get("playerId")), p.id) : null,
     solved: solved?.n ?? 0,
     longestStreak: longestRun(dates),
     badges: await badgeViews(db, p?.id ?? null),

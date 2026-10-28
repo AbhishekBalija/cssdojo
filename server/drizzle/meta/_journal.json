@@ -15,6 +15,13 @@
       "when": 1793039967201,
       "tag": "0001_ranking",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793178207417,
+      "tag": "0002_admin",
+      "breakpoints": true
     }
   ]
 }

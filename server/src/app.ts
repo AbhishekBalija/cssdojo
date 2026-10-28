@@ -3,6 +3,7 @@ import { serveStatic } from "hono/bun";
 import { APP_VERSION } from "@cssdojo/shared";
 import { allowedOrigins, env } from "./env";
 import { cors } from "hono/cors";
+import { adminRoutes } from "./routes/admin";
 import { api } from "./routes/api";
 import { authRoutes } from "./routes/auth";
 import { meRoutes } from "./routes/me";
@@ -22,6 +23,8 @@ app.route("/api", authRoutes);
 app.route("/api", api);
 app.route("/api", meRoutes);
 app.route("/api", rankingRoutes);
+// Mounted on its own path so its admin check never runs for other routes.
+app.route("/api/admin", adminRoutes);
 
 // Rendered targets (PNG frames, thumbnails, replay JSON) and the bundled fonts.
 // They are public files, and the preview iframe has an opaque ("null") origin, so
