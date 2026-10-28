@@ -17,6 +17,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - Play screen: a slim header with the pack, belt, a target picker and Prev / Next; CSS completions and folded markup in the editor; a result card after a new best or first solve; a belt earned card; a Solutions page that asks before locking your points.
 - Interaction polish (`motion/approved-polish.md`): stacked toasts, rolling digits, gliding tabs, page and theme fades, a streak tag that swings only when it grows, mismatch (hold D), onion skin (hold G), a measuring crosshair, states playback, hover frames on tiles, full-screen confetti on a first solve, an optional solve sound and a quiet "Saved" label.
 - Settings: handle, notifications, theme, reduce motion, sound and editor ligatures.
+- Test database: set `TEST_DATABASE_URL` and an `.env.test` (see CONTRIBUTING), then `bun run db:test:migrate`, `db:test:seed` and `dev:test` keep test data out of the dev database. `bun run test` now loads `.env.local`, so the Postgres tests run locally.
 
 ### Documentation
 - Handoff for local agents: `docs/context.md` (decisions, hosting, open PRs, open items) and a fuller `.agents/AGENTS.md`, with root `CLAUDE.md` as a symlink to it so Claude Code loads it.

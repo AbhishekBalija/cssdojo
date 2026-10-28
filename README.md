@@ -19,6 +19,7 @@ Develop with hot reload:
 cp .env.example .env.local
 docker compose up db -d
 bun run db:migrate && bun run db:seed
+bun run targets             # once: renders the target images the UI and scorer need
 bun run dev                 # API :8787, client :5173
 ```
 
