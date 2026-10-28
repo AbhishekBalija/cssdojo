@@ -73,24 +73,21 @@ const STREAK: AssetSpec = {
   },
 };
 
-// The belt pillars: canvas 120 x 300 (the plinth is 100 wide, centred). Every belt gets its own
-// top (top face and the tied belt); the stone body and the brass foot are shared. The body is
-// a smooth gradient, so the CSS stretches it to any height without a visible join.
-const BELTS = ["white", "yellow", "green", "brown", "black"] as const;
+// The belt pillars: black marble plinths, one whole image per belt, each rendered at its own height
+// so the veins never stretch. Canvas is 120 wide (the plinth is the middle 100). Heights come from
+// the renders: 4x pixel height / 4. medalY is the top face centre as a share of the image height.
+const PILLARS = {
+  white: { height: 121.5, medalY: 0.1012 },
+  yellow: { height: 150.5, medalY: 0.0817 },
+  green: { height: 179.25, medalY: 0.0685 },
+  brown: { height: 208.25, medalY: 0.059 },
+  black: { height: 237.25, medalY: 0.0518 },
+};
 const PILLAR: AssetSpec = {
   asset: "pillar",
-  canvas: { width: 120, height: 300 },
-  crops: [
-    ...BELTS.map((b): Crop => ({ name: `top-${b}`, layer: b, x: 0, width: 120, y: 0, height: 86 })),
-    { name: "body", layer: "white", x: 0, width: 120, y: 86, height: 194 },
-    { name: "base", layer: "white", x: 0, width: 120, y: 280, height: 20 },
-  ],
-  meta: {
-    // Plinth is 100 of the 120 px canvas, so the image is 120% of the pillar's width.
-    plinthWidth: 100,
-    // Centre of the top face, in the top piece: where the medal sits.
-    medalCentre: { x: "50%", y: "32.9%" },
-  },
+  canvas: { width: 120, height: 237.25 },
+  crops: Object.entries(PILLARS).map(([belt, p]): Crop => ({ name: belt, layer: belt, x: 0, width: 120, y: 0, height: p.height })),
+  meta: { plinthWidth: 100, pillars: PILLARS },
 };
 
 async function exportAsset(spec: AssetSpec): Promise<void> {
@@ -112,7 +109,7 @@ async function exportAsset(spec: AssetSpec): Promise<void> {
       if (crop.flip) img = img.flop();
       const file = path.join(outDir, `${crop.name}@${n}x.webp`);
       const info = await img
-        .resize(crop.width * n, cropHeight * n, { kernel: "lanczos3" })
+        .resize(Math.round(crop.width * n), Math.round(cropHeight * n), { kernel: "lanczos3" })
         .webp({ quality: 82, alphaQuality: 90, effort: 6, smartSubsample: true })
         .toFile(file);
       if (n === 2) bytes2x = info.size;

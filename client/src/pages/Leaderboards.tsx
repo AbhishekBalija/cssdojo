@@ -190,24 +190,31 @@ export function Moves({ moves }: { moves: EventView[] }) {
   );
 }
 
-/** One belt's stone plinth on the Wall, rendered in Blender (docs/design/rendered-assets.md). */
-function Cylinder({ belt, h, count }: { belt: Belt; h: number; count: number }) {
-  const art = (piece: string) => `/art/pillar/${piece}@1x.webp 1x, /art/pillar/${piece}@2x.webp 2x, /art/pillar/${piece}@3x.webp 3x`;
+// Pillar renders (client/public/art/pillar/layers.json): image height on a 120-wide canvas, and the
+// top face centre as a share of that height, where the medal sits.
+const PILLAR_ART: Record<Belt, { height: number; medalY: number }> = {
+  white: { height: 121.5, medalY: 0.1012 },
+  yellow: { height: 150.5, medalY: 0.0817 },
+  green: { height: 179.25, medalY: 0.0685 },
+  brown: { height: 208.25, medalY: 0.059 },
+  black: { height: 237.25, medalY: 0.0518 },
+};
+
+/** One belt's black marble plinth on the Wall, rendered in Blender (docs/design/rendered-assets.md). */
+function Cylinder({ belt, count }: { belt: Belt; count: number }) {
+  const art = PILLAR_ART[belt];
+  const src = (n: number) => `/art/pillar/${belt}@${n}x.webp`;
   return (
-    <div className="w-ped" style={{ height: h, ["--m" as string]: CLOTH[belt].acc }}>
-      <span className="w-plinth" aria-hidden="true">
-        <span className="w-plinth-top">
-          <img src={`/art/pillar/top-${belt}@2x.webp`} srcSet={art(`top-${belt}`)} alt="" decoding="async" />
-          <span className="medal">
-            <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
-              <path d="M3 10.5h6.5M14.5 10.5H21" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-              <rect x="9.5" y="8" width="5" height="5" rx="1" fill="currentColor" />
-              <path d="M11 13l-2.5 6M13 13l2.5 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-            </svg>
-          </span>
+    <div className="w-ped" style={{ ["--m" as string]: CLOTH[belt].acc }}>
+      <span className="w-plinth" aria-hidden="true" style={{ aspectRatio: `120 / ${art.height}` }}>
+        <img src={src(2)} srcSet={`${src(1)} 1x, ${src(2)} 2x, ${src(3)} 3x`} alt="" decoding="async" />
+        <span className="medal" style={{ top: `${art.medalY * 100}%` }}>
+          <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+            <path d="M3 10.5h6.5M14.5 10.5H21" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+            <rect x="9.5" y="8" width="5" height="5" rx="1" fill="currentColor" />
+            <path d="M11 13l-2.5 6M13 13l2.5 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+          </svg>
         </span>
-        <span className="w-plinth-body" />
-        <span className="w-plinth-base" />
       </span>
       <div className="pl">
         <b>{belt[0]?.toUpperCase() + belt.slice(1)}</b>
@@ -324,8 +331,8 @@ function Trio({ w }: { w: WallView }) {
           <span>Belts on the wall</span>
         </h3>
         <div className="w-peds">
-          {BELTS.map((b, i) => (
-            <Cylinder key={b} belt={b} h={94 + i * 28} count={w.belts[b]} />
+          {BELTS.map((b) => (
+            <Cylinder key={b} belt={b} count={w.belts[b]} />
           ))}
         </div>
       </section>

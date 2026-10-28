@@ -1,48 +1,56 @@
 {
   "canvas": {
     "width": 120,
-    "height": 300
+    "height": 237.25
   },
   "pieces": {
-    "top-white": {
+    "white": {
       "width": 120,
-      "height": 86,
-      "bytes2x": 1706
+      "height": 121.5,
+      "bytes2x": 4062
     },
-    "top-yellow": {
+    "yellow": {
       "width": 120,
-      "height": 86,
-      "bytes2x": 2102
+      "height": 150.5,
+      "bytes2x": 4534
     },
-    "top-green": {
+    "green": {
       "width": 120,
-      "height": 86,
-      "bytes2x": 1938
+      "height": 179.25,
+      "bytes2x": 5490
     },
-    "top-brown": {
+    "brown": {
       "width": 120,
-      "height": 86,
-      "bytes2x": 1930
+      "height": 208.25,
+      "bytes2x": 6020
     },
-    "top-black": {
+    "black": {
       "width": 120,
-      "height": 86,
-      "bytes2x": 1464
-    },
-    "body": {
-      "width": 120,
-      "height": 194,
-      "bytes2x": 1780
-    },
-    "base": {
-      "width": 120,
-      "height": 20,
-      "bytes2x": 652
+      "height": 237.25,
+      "bytes2x": 7090
     }
   },
   "plinthWidth": 100,
-  "medalCentre": {
-    "x": "50%",
-    "y": "32.9%"
+  "pillars": {
+    "white": {
+      "height": 121.5,
+      "medalY": 0.1012
+    },
+    "yellow": {
+      "height": 150.5,
+      "medalY": 0.0817
+    },
+    "green": {
+      "height": 179.25,
+      "medalY": 0.0685
+    },
+    "brown": {
+      "height": 208.25,
+      "medalY": 0.059
+    },
+    "black": {
+      "height": 237.25,
+      "medalY": 0.0518
+    }
   }
 }
