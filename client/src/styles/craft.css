@@ -132,11 +132,19 @@
 /* lit rod a card hangs from */
 .d-hang{position:relative;padding-top:22px}
 .d-hang .lamp{position:absolute;left:50%;top:-34px;width:220px;height:110px;margin-left:-110px;background:radial-gradient(closest-side,rgba(255,206,130,.30),rgba(255,180,90,.07) 60%,transparent);pointer-events:none}
-.d-hang .rod{position:absolute;left:-6px;right:-6px;top:0;height:4px;border-radius:4px;background:linear-gradient(180deg,#C9B48C,#7A6748 60%,#4E4230);box-shadow:0 2px 3px rgba(0,0,0,.5)}
-.d-hang .rod:before,.d-hang .rod:after{content:"";position:absolute;top:-2px;width:8px;height:8px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#E6D4AE,#7A6748)}
-.d-hang .rod:before{left:-4px}.d-hang .rod:after{right:-4px}
-.d-hang .hook{position:absolute;left:50%;top:-9px;width:9px;height:10px;margin-left:-5.5px;border:1.5px solid #9C8A6A;border-bottom:0;border-radius:6px 6px 0 0;box-shadow:0 0 8px rgba(255,200,120,.6)}
-.d-hang .cord{position:absolute;top:3px;width:1.5px;height:21px;background:linear-gradient(#9C8A6A,#5A4E3A)}
+/* Brass rail rendered in Blender (docs/design/rendered-assets.md). Pieces are 50px tall and share one
+   canvas, so they line up when stacked; the rod's centre line sits 17px from the top. One CSS shadow
+   on the wrapper covers the whole rail, so the pieces never shade each other twice. */
+.d-rail{position:absolute;left:0;right:0;top:-15px;height:50px;pointer-events:none;z-index:2;filter:drop-shadow(1px 3px 2px rgba(0,0,0,.55)) drop-shadow(3px 7px 7px rgba(0,0,0,.32))}
+[data-theme="light"] .d-rail{filter:drop-shadow(1px 2px 1.5px rgba(40,36,28,.30)) drop-shadow(3px 6px 6px rgba(40,36,28,.14))}
+.d-rail>span{position:absolute;top:0;height:50px;background-repeat:no-repeat;background-size:100% 100%}
+.d-rail .d-rail-cap{width:32px}
+.d-rail .d-rail-cap.l{left:-24px;background-image:url("/art/rail/cap-left@2x.webp");background-image:-webkit-image-set(url("/art/rail/cap-left@1x.webp") 1x,url("/art/rail/cap-left@2x.webp") 2x,url("/art/rail/cap-left@3x.webp") 3x);background-image:image-set(url("/art/rail/cap-left@1x.webp") 1x,url("/art/rail/cap-left@2x.webp") 2x,url("/art/rail/cap-left@3x.webp") 3x)}
+.d-rail .d-rail-cap.r{right:-24px;background-image:url("/art/rail/cap-right@2x.webp");background-image:-webkit-image-set(url("/art/rail/cap-right@1x.webp") 1x,url("/art/rail/cap-right@2x.webp") 2x,url("/art/rail/cap-right@3x.webp") 3x);background-image:image-set(url("/art/rail/cap-right@1x.webp") 1x,url("/art/rail/cap-right@2x.webp") 2x,url("/art/rail/cap-right@3x.webp") 3x)}
+.d-rail .d-rail-rod{left:8px;right:8px;background-repeat:repeat-x;background-size:1px 50px;background-image:url("/art/rail/rod@2x.webp");background-image:-webkit-image-set(url("/art/rail/rod@1x.webp") 1x,url("/art/rail/rod@2x.webp") 2x,url("/art/rail/rod@3x.webp") 3x);background-image:image-set(url("/art/rail/rod@1x.webp") 1x,url("/art/rail/rod@2x.webp") 2x,url("/art/rail/rod@3x.webp") 3x)}
+.d-rail .d-rail-hook{left:50%;width:16px;margin-left:-8px;background-image:url("/art/rail/hook@2x.webp");background-image:-webkit-image-set(url("/art/rail/hook@1x.webp") 1x,url("/art/rail/hook@2x.webp") 2x,url("/art/rail/hook@3x.webp") 3x);background-image:image-set(url("/art/rail/hook@1x.webp") 1x,url("/art/rail/hook@2x.webp") 2x,url("/art/rail/hook@3x.webp") 3x)}
+/* The wire swings from its sleeve on the rod if it is ever animated (pivot from layers.json). */
+.d-rail .d-rail-wire{width:12px;margin-left:-6px;transform-origin:50% 36%;background-image:url("/art/rail/wire@2x.webp");background-image:-webkit-image-set(url("/art/rail/wire@1x.webp") 1x,url("/art/rail/wire@2x.webp") 2x,url("/art/rail/wire@3x.webp") 3x);background-image:image-set(url("/art/rail/wire@1x.webp") 1x,url("/art/rail/wire@2x.webp") 2x,url("/art/rail/wire@3x.webp") 3x)}
 
 /* framed challenge tile */
 .d-tile{position:relative;display:block;padding:5px;border-radius:12px;background:linear-gradient(180deg,var(--d-tile-a),var(--d-tile-b));border:1px solid var(--d-tile-line);box-shadow:inset 0 1px 0 rgba(255,255,255,.04);text-decoration:none;color:var(--fg);transition:border-color .15s,translate .15s}

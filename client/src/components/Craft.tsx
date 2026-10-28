@@ -66,14 +66,18 @@ export function Hang({ children, cords = true, lamp = true }: { children: ReactN
   return (
     <div className="d-hang">
       {lamp ? <span className="lamp" /> : null}
-      <span className="hook" />
-      <span className="rod" />
-      {cords ? (
-        <>
-          <span className="cord" style={{ left: "22%" }} />
-          <span className="cord" style={{ right: "22%" }} />
-        </>
-      ) : null}
+      <span className="d-rail" aria-hidden="true">
+        {cords ? (
+          <>
+            <span className="d-rail-wire" style={{ left: "22%" }} />
+            <span className="d-rail-wire" style={{ left: "78%" }} />
+          </>
+        ) : null}
+        <span className="d-rail-cap l" />
+        <span className="d-rail-rod" />
+        <span className="d-rail-cap r" />
+        <span className="d-rail-hook" />
+      </span>
       {children}
     </div>
   );

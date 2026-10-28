@@ -12,3 +12,6 @@ coverage/
 .env
 .env.*
 !.env.example
+
+# Blender render output (4x PNGs). The cut WebP files in client/public/art/ are committed.
+design/renders/

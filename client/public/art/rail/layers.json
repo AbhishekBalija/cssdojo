@@ -1,0 +1,38 @@
+{
+  "canvas": {
+    "width": 360,
+    "height": 50
+  },
+  "pieces": {
+    "cap-left": {
+      "width": 32,
+      "height": 50,
+      "bytes2x": 844
+    },
+    "cap-right": {
+      "width": 32,
+      "height": 50,
+      "bytes2x": 854
+    },
+    "rod": {
+      "width": 1,
+      "height": 50,
+      "bytes2x": 196
+    },
+    "hook": {
+      "width": 16,
+      "height": 50,
+      "bytes2x": 654
+    },
+    "wire": {
+      "width": 12,
+      "height": 50,
+      "bytes2x": 608
+    }
+  },
+  "rodCentreY": 17,
+  "wirePivot": {
+    "x": "50%",
+    "y": "36%"
+  }
+}
