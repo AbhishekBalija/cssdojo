@@ -37,7 +37,7 @@ CSSBattle does not show its admin tools, so the panel below is our own design bu
 - **Upcoming pack:** change the open and end dates.
 - **Live pack:** extend the end date only. Never move the open date back or end it early.
 - **Finished pack:** read only. Its final standings are frozen.
-- Kata: see the next 30 days of the cycle and swap two upcoming days. Past and today's kata are read only.
+- Kata order is not changed here. `db:seed` rebuilds the kata cycle from each kata's `kataDay` on every deploy, so a swap made in the panel would be undone. Kata order is content and changes by PR.
 
 ### 2. Challenges
 
@@ -51,7 +51,7 @@ CSSBattle does not show its admin tools, so the panel below is our own design bu
 - Player page: belt, points, Wall rank, recent submissions with scores and code.
 - **Hide from boards** (for cheating or abuse): the player can still play, but no board or LIVE line shows them. Undo is one click.
 - **Reset handle**: clears an offensive handle and makes the player pick a new one.
-- **Void a submission**: it stops counting, and the player's best score, points and badges are recalculated from the remaining submissions.
+- **Void a submission**: it stops counting. The player's best score and points are rebuilt from the remaining submissions (only ones from before a solutions lock), and belts they no longer qualify for are taken back. Badges already earned stay: they are only ever added.
 
 ### 4. Health and stats
 
@@ -90,6 +90,14 @@ flowchart LR
   API -->|"every write"| L["admin_actions"]
   DB --> App["Player app"]
 ```
+
+## How it is built
+
+- Routes live in `server/src/routes/admin.ts`, mounted at `/api/admin` behind `requireAdmin` (`server/src/admin/guard.ts`). Non-admins get a 404, so the routes do not show they exist.
+- Pack dates and hidden challenges are read on almost every request, so they stay in memory (`server/src/packs.ts`). `server/src/admin/overrides.ts` loads them from Postgres at start, right after each admin change, and every minute (for a separate worker process). See ADR 0008.
+- A hidden player is left out of every board, the LIVE line and pack finals, except on their own views, so they are not told.
+- A hidden kata means no kata that day. The cycle does not shift.
+- The client page is `client/src/pages/Admin.tsx` at `/admin?tab=...`. The sidebar shows the Admin link only to admins.
 
 ## Rough size
 
