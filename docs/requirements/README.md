@@ -8,3 +8,4 @@ The source specs are Claude Docs owned by the maintainer:
 
 This folder holds the in-repo summary so contributors do not need those links.
 See `mvp.md` for the MVP requirement list.
+See `admin.md` for the admin panel (draft).

@@ -90,6 +90,17 @@ OAuth cannot run in CI, so Playwright signs in through `POST /api/test-login`, b
 **Q: Why is the API URL the main app link, not the static site?**
 `onrender.com` is on the public suffix list, so a client on one subdomain and the API on another are different sites. The session cookie would have to be sent cross-site (`SameSite=None; Secure`), which Safari and Firefox block by default. Partitioned cookies do not help either: the OAuth callback sets the cookie with the API as the top-level site, so it would never be sent from the client's site. The API container serves the built client too, so on the API URL everything is same-origin and the cookie stays `Lax`. The static site still works in browsers that allow third-party cookies.
 
+## Admin
+
+**Q: How is the admin panel protected?**
+One Hono middleware (`requireAdmin`) sits in front of every `/api/admin/*` route. It checks that the signed-in user's email is in `ADMIN_EMAILS` and that GitHub or Google verified it. Everyone else gets a 404, so the routes do not reveal they exist. The client hides the Admin link too, but that is only for looks: the server is the gate.
+
+**Q: Why hide things instead of deleting them?**
+Soft delete: a `hidden_at` timestamp instead of a `DELETE`. Scores, points and history stay, and undo is one update. Every admin write also adds an audit row with before and after values and a reason, so any change can be traced.
+
+**Q: What happens when a cheating Submit is voided?**
+The Submit gets `voided_at`, then the best score for that challenge is rebuilt from the player's other Submits (only ones made before a solutions lock). Points follow the best. Belts are earned in order, so if the player drops below 5 solves of a belt, that belt and every belt above it are taken back.
+
 ## Deploy and maintenance
 
 ### Same origin through a proxy

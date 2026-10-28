@@ -7,3 +7,4 @@ export * from "./sanitize";
 export * from "./api";
 export * from "./kata";
 export * from "./ranking";
+export * from "./admin";

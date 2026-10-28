@@ -1,5 +1,5 @@
 import { zValidator } from "@hono/zod-validator";
-import { and, count, desc, eq, inArray, isNull, sql } from "drizzle-orm";
+import { and, count, desc, eq, getTableColumns, inArray, isNotNull, isNull, or, sql } from "drizzle-orm";
 import { Hono } from "hono";
 import {
   ANNOUNCER_KINDS,
@@ -35,8 +35,8 @@ import { getChallenge } from "../challenges";
 import { db } from "../db/client";
 import { account, answerLocks, bestScores, events, kataDays, kataSchedule, notifications, packFollows, playerSettings, players, submissions, user } from "../db/schema";
 import { withPlayer, type PlayerVars } from "../lib/player";
-import { getPack, isHidden, listPacks, stateOf, type Pack } from "../packs";
-import { challengeStandings, movedLastDay, playerTags, rankOf, standings, topBelts, type Standing } from "../ranking/standings";
+import { getPack, isHidden, listPacks, stateOf, visibleChallenges, type Pack } from "../packs";
+import { challengeStandings, movedLastDay, onBoards, playerTags, rankOf, standings, topBelts, type Standing } from "../ranking/standings";
 import { frozenResults, tickPacks } from "../ranking/tick";
 
 export const rankingRoutes = new Hono<{ Variables: PlayerVars }>();
@@ -51,11 +51,17 @@ function background(id: string): string {
 
 // ---------- Battle Packs ----------
 
-/** Standings of a pack: frozen results once finished, live totals before that. */
-export async function packStandings(pack: Pack): Promise<Standing[]> {
+/**
+ * Standings of a pack: frozen results once finished, live totals before that.
+ * Players an admin hid are left out, except for the viewer themself.
+ */
+export async function packStandings(pack: Pack, viewer?: string | null): Promise<Standing[]> {
   const frozen = await frozenResults(db, pack.number);
-  if (!frozen) return standings(db, pack.number);
-  return frozen.map((r) => ({ playerId: r.playerId, points: r.points, solved: r.solved, reachedAt: new Date(0) }));
+  if (!frozen) return standings(db, pack.number, viewer);
+  const hidden = new Set((await db.select({ id: players.id }).from(players).where(isNotNull(players.hiddenAt))).map((r) => r.id));
+  return frozen
+    .filter((r) => !hidden.has(r.playerId) || r.playerId === viewer)
+    .map((r) => ({ playerId: r.playerId, points: r.points, solved: r.solved, reachedAt: new Date(0) }));
 }
 
 async function packSummary(pack: Pack, playerId: string | null, now: Date): Promise<PackSummary & { ranked: Standing[] }> {
@@ -65,20 +71,21 @@ async function packSummary(pack: Pack, playerId: string | null, now: Date): Prom
   if (state === "upcoming") {
     return { ...base, belt: null, challenges: [], players: 0, me: playerId ? { solved: 0, tried: 0, points: 0, rank: null, notify } : null, ranked: [] };
   }
+  const visible = visibleChallenges(pack);
   const rows = await db
-    .select({ playerId: bestScores.playerId, challengeId: bestScores.challengeId, score: bestScores.score, points: bestScores.points, at: bestScores.updatedAt, handle: user.handle, name: user.name })
+    .select({ playerId: bestScores.playerId, challengeId: bestScores.challengeId, score: bestScores.score, points: bestScores.points, at: bestScores.updatedAt, handle: user.handle, name: user.name, hidden: players.hiddenAt })
     .from(bestScores)
     .innerJoin(players, eq(players.id, bestScores.playerId))
     .leftJoin(user, eq(user.id, players.userId))
-    .where(and(eq(bestScores.board, "library"), inArray(bestScores.challengeId, pack.challenges)));
+    .where(and(eq(bestScores.board, "library"), inArray(bestScores.challengeId, visible)));
   const locks = playerId
-    ? new Set((await db.select({ id: answerLocks.challengeId }).from(answerLocks).where(and(eq(answerLocks.playerId, playerId), inArray(answerLocks.challengeId, pack.challenges)))).map((r) => r.id))
+    ? new Set((await db.select({ id: answerLocks.challengeId }).from(answerLocks).where(and(eq(answerLocks.playerId, playerId), inArray(answerLocks.challengeId, visible)))).map((r) => r.id))
     : new Set<string>();
-  const tiles: PackChallengeTile[] = pack.challenges.map((id) => {
+  const tiles: PackChallengeTile[] = visible.map((id) => {
     const ch = getChallenge(id);
     const mine = rows.find((r) => r.playerId === playerId && r.challengeId === id);
     const top = rows
-      .filter((r) => r.challengeId === id && r.name !== null)
+      .filter((r) => r.challengeId === id && r.name !== null && r.hidden === null)
       .sort((a, b) => b.score - a.score || a.at.getTime() - b.at.getTime())[0];
     return {
       id,
@@ -91,7 +98,7 @@ async function packSummary(pack: Pack, playerId: string | null, now: Date): Prom
       top: top ? { handle: top.handle ?? top.name ?? "player", score: top.score } : null,
     };
   });
-  const ranked = await packStandings(pack);
+  const ranked = await packStandings(pack, playerId);
   const mine = rows.filter((r) => r.playerId === playerId);
   return {
     ...base,
@@ -169,7 +176,7 @@ rankingRoutes.post("/packs/:number/notify", zValidator("json", PackNotifySchema)
 rankingRoutes.get("/boards/wall", async (c) => {
   const playerId = c.get("playerId");
   const page = Math.max(1, Math.min(1000, Number(c.req.query("page") ?? 1) || 1));
-  const ranked = await standings(db);
+  const ranked = await standings(db, undefined, playerId);
   const slice = ranked.slice((page - 1) * PAGE, page * PAGE);
   const myIndex = playerId ? ranked.findIndex((s) => s.playerId === playerId) : -1;
   const extra = [myIndex, myIndex - 1].filter((i) => i >= 0).map((i) => ranked[i] as Standing);
@@ -201,14 +208,14 @@ rankingRoutes.get("/boards/wall", async (c) => {
 rankingRoutes.get("/boards/pack/:number", async (c) => {
   const pack = packFrom(c.req.param("number"));
   if (!pack || stateOf(pack) === "upcoming") return c.json({ error: "No such Battle Pack" }, 404);
-  return c.json(await packBoard(pack, await packStandings(pack), c.get("playerId")));
+  return c.json(await packBoard(pack, await packStandings(pack, c.get("playerId")), c.get("playerId")));
 });
 
 rankingRoutes.get("/boards/challenge/:id", async (c) => {
   const id = c.req.param("id");
   if (!getChallenge(id) || isHidden(id)) return c.json({ error: "Challenge not found" }, 404);
   const playerId = c.get("playerId");
-  const ranked = await challengeStandings(db, id);
+  const ranked = await challengeStandings(db, id, playerId);
   const page = ranked.slice(0, PAGE);
   const mine = playerId ? ranked.find((s) => s.playerId === playerId && !page.includes(s)) : undefined;
   const shown = mine ? [...page, mine] : page;
@@ -242,7 +249,7 @@ rankingRoutes.get("/boards/streaks", async (c) => {
     .select({ playerId: kataDays.playerId, date: kataDays.date })
     .from(kataDays)
     .innerJoin(players, eq(players.id, kataDays.playerId))
-    .where(sql`${players.userId} is not null`);
+    .where(onBoards(playerId));
   const byPlayer = new Map<string, string[]>();
   for (const r of rows) byPlayer.set(r.playerId, [...(byPlayer.get(r.playerId) ?? []), r.date]);
   const today = utcDate();
@@ -269,9 +276,11 @@ function currentStart(dates: string[], today: string, current: number): string {
 
 async function eventViews(board: string | null, limit = 20): Promise<EventView[]> {
   const rows = await db
-    .select()
+    .select(getTableColumns(events))
     .from(events)
-    .where(board ? eq(events.board, board) : inArray(events.kind, [...ANNOUNCER_KINDS]))
+    // Moves by a player an admin hid are not shown to anyone.
+    .leftJoin(players, eq(players.id, events.playerId))
+    .where(and(board ? eq(events.board, board) : inArray(events.kind, [...ANNOUNCER_KINDS]), or(isNull(events.playerId), isNull(players.hiddenAt))))
     .orderBy(desc(events.createdAt))
     .limit(limit);
   const tags = await playerTags(db, rows.map((r) => r.playerId).filter((id): id is string => !!id));

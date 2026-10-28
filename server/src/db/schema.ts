@@ -88,6 +88,8 @@ export const players = pgTable("players", {
   userId: text("user_id")
     .unique()
     .references(() => user.id, { onDelete: "cascade" }),
+  /** Set by an admin: the player still plays, but no board or live line shows them. */
+  hiddenAt: timestamp("hidden_at"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
@@ -100,6 +102,8 @@ export const challenges = pgTable("challenges", {
   kind: challengeKindEnum("kind").notNull(),
   /** The Battle Pack this challenge belongs to (from challenges/packs.json). Null for kata. */
   packNumber: integer("pack_number"),
+  /** Set by an admin to pull a broken challenge. Scores and points already earned stay. */
+  hiddenAt: timestamp("hidden_at"),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
@@ -153,6 +157,9 @@ export const submissions = pgTable(
     error: text("error"),
     /** Points, Wall moves and badges this Submit caused, for the result screen. */
     ranking: jsonb("ranking"),
+    /** Set by an admin: the Submit no longer counts toward bests, points or belts. */
+    voidedAt: timestamp("voided_at"),
+    voidedBy: text("voided_by").references(() => user.id, { onDelete: "set null" }),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     finishedAt: timestamp("finished_at"),
   },
@@ -363,3 +370,25 @@ export const playerSettings = pgTable("player_settings", {
   showLive: boolean("show_live").notNull().default(true),
   handleChangedAt: timestamp("handle_changed_at"),
 });
+
+// ---------- Admin ----------
+
+/** Every admin write, with the reason, so any change can be traced and undone. */
+export const adminActions = pgTable(
+  "admin_actions",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    adminId: text("admin_id")
+      .notNull()
+      .references(() => user.id),
+    /** For example "pack.dates", "challenge.hide", "player.void". */
+    action: text("action").notNull(),
+    /** What was changed: a pack number, challenge id, player id or submission id. */
+    target: text("target").notNull(),
+    before: jsonb("before"),
+    after: jsonb("after"),
+    reason: text("reason").notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [index("admin_actions_created").on(t.createdAt)],
+);

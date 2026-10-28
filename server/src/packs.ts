@@ -27,6 +27,34 @@ function load(): Pack[] {
 const all = load();
 const byChallenge = new Map(all.flatMap((p) => p.challenges.map((id) => [id, p] as const)));
 
+// packs.json gives a new pack its first dates. After that the database owns them, so an
+// admin can move a date without a deploy. `admin/overrides.ts` copies the stored dates
+// and hidden challenges in here at start and after every admin change.
+const adminHidden = new Set<string>();
+
+/** Uses the stored dates for a pack. Unknown pack numbers are ignored. */
+export function setPackDates(number: number, opens: Date, ends: Date): void {
+  const p = all.find((x) => x.number === number);
+  if (!p) return;
+  p.opens = opens;
+  p.ends = ends;
+}
+
+/** Replaces the set of challenges an admin has hidden. */
+export function setAdminHidden(ids: Iterable<string>): void {
+  adminHidden.clear();
+  for (const id of ids) adminHidden.add(id);
+}
+
+export function isAdminHidden(challengeId: string): boolean {
+  return adminHidden.has(challengeId);
+}
+
+/** A pack's challenges without the ones an admin has hidden. */
+export function visibleChallenges(pack: Pack): string[] {
+  return pack.challenges.filter((id) => !adminHidden.has(id));
+}
+
 export function listPacks(): Pack[] {
   return all;
 }
@@ -43,8 +71,9 @@ export function stateOf(pack: Pack, now: Date = new Date()): PackState {
   return packState(pack, now);
 }
 
-/** Challenges in packs that have not opened yet are hidden and cannot be played. */
+/** Hidden challenges cannot be played: pulled by an admin, or in a pack that has not opened yet. */
 export function isHidden(challengeId: string, now: Date = new Date()): boolean {
+  if (adminHidden.has(challengeId)) return true;
   const p = packOf(challengeId);
   return !!p && stateOf(p, now) === "upcoming";
 }

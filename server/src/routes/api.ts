@@ -277,6 +277,8 @@ api.get("/kata/today", async (c) => {
   const day = kataDayFor(date, schedule.length);
   const entry = schedule[day - 1];
   if (!entry) return c.json({ error: "No kata yet" }, 404);
+  // An admin pulled today's kata: skip the day rather than shift the whole cycle.
+  if (isHidden(entry.challengeId)) return c.json({ error: "No kata today" }, 404);
   const out: KataToday = { date, day, cycleLength: schedule.length, challengeId: entry.challengeId, resetsAt: nextResetAt().toISOString() };
   return c.json(out);
 });

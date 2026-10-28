@@ -6,6 +6,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 ## [Unreleased]
 
 ### Added
+- Admin panel at `/admin` for emails in `ADMIN_EMAILS` (spec in `docs/requirements/admin.md`), with separate Battle Packs and Daily kata tabs: change Battle Pack dates (upcoming packs freely, live packs only longer), hide or unhide a broken challenge, find a player, hide them from boards, reset a handle, void a Submit (best score, points and belts are rebuilt), health and 30-day stats, and an audit log with a reason for every change.
+- Migration `0002_admin`: `hidden_at` on challenges and players, `voided_at` and `voided_by` on submissions, and the `admin_actions` table.
 - Ranking (rules in `docs/requirements/ranking.md`): points per Battle Pack challenge by belt (white 200 up to black 1000, `max * ((score - 50) / 50)^2`), the Wall (all-time points), ties to whoever got there first.
 - Battle Packs: 5 packs of 6 challenges in `challenges/packs.json`. Upcoming packs hide their challenges, live packs run 28 days, finished packs keep frozen final standings and stay playable.
 - Opening solutions locks your points on that challenge (`POST /api/challenges/:id/solutions/open`), then shows the top five answers and our reference. Solutions no longer need a 90.
@@ -26,6 +28,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - Unused exports and the unused `codemirror` meta package (found by `bunx fallow`).
 
 ### Changed
+- Pack dates now live in Postgres. `packs.json` only sets a new pack's first dates, so `db:seed` no longer resets a date changed in the admin panel.
+- Postgres tests run one file at a time (a separate Vitest project), since they share the test database.
 - Daily kata is for fun and streaks only: kata solves no longer count toward belts or belt badges.
 - Play screen: the challenge description is gone and the outcome checks fold into one line with a pass count.
 - Reset in the editor now offers Undo; toasts clear when you move to another challenge.
