@@ -20,7 +20,7 @@ import { useMe } from "@/lib/me";
 import { playSolveSound } from "@/lib/sound";
 import { storage } from "@/lib/storage";
 import { markTask } from "@/lib/tasks";
-import { toast } from "@/lib/toast";
+import { clearToasts, toast } from "@/lib/toast";
 
 // The play screen: editor | your output | target, as approved in
 // brand/play-final-2026-10-25.html. Scores come from the server scorer.
@@ -44,7 +44,12 @@ type Moment = { kind: "result"; view: SubmissionView; result: Extract<ScoreResul
 export function Play({ challengeId, board, kataLabel }: { challengeId: string; board: string; kataLabel?: string }) {
   const qc = useQueryClient();
   const me = useMe();
-  const challenge = useQuery({ queryKey: ["challenge", challengeId], queryFn: () => api<PublicChallenge>(`/challenges/${challengeId}`) });
+  // A 404 will not fix itself, so show "not here" at once instead of retrying for several seconds.
+  const challenge = useQuery({
+    queryKey: ["challenge", challengeId],
+    queryFn: () => api<PublicChallenge>(`/challenges/${challengeId}`),
+    retry: (count, err) => !(err instanceof ApiError && err.status === 404) && count < 3,
+  });
   const progress = useQuery({ queryKey: ["progress", challengeId], queryFn: () => api<ChallengeProgress>(`/challenges/${challengeId}/progress`) });
   const pack = usePackOf(challengeId);
 
@@ -87,6 +92,8 @@ export function Play({ challengeId, board, kataLabel }: { challengeId: string; b
   useEffect(() => {
     void api(`/challenges/${challengeId}/open`, { method: "POST", json: { board } }).catch(() => undefined);
   }, [challengeId, board]);
+  // Toasts (and their Undo) belong to this challenge, so drop them on the way out.
+  useEffect(() => () => clearToasts(), [challengeId, board]);
 
   useEffect(() => {
     const t = setInterval(() => setResetIn(untilReset()), 30_000);
@@ -293,9 +300,16 @@ export function Play({ challengeId, board, kataLabel }: { challengeId: string; b
               type="button"
               onClick={() => {
                 if (!c) return;
+                const before = code;
                 onChange(c.starter);
                 editor.current?.setValue(c.starter);
-                toast("Code reset to the starter");
+                toast("Code reset to the starter", {
+                  label: "Undo",
+                  run: () => {
+                    onChange(before);
+                    editor.current?.setValue(before);
+                  },
+                });
               }}
             >
               Reset
@@ -550,7 +564,6 @@ export function Play({ challengeId, board, kataLabel }: { challengeId: string; b
                   <Belt belt={c.belt} />
                 </div>
               ) : null}
-              {c ? <p className="brief">{c.brief}</p> : null}
               {c ? (
                 <div className="sec">
                   <span className="lbl">Colors</span>
@@ -571,8 +584,12 @@ export function Play({ challengeId, board, kataLabel }: { challengeId: string; b
                   </div>
                 </div>
               ) : null}
-              <div className="sec">
-                <span className="lbl">Outcome checks</span>
+              {/* Collapsed by default to keep the panel calm. The summary still shows how many checks pass. */}
+              <details className="sec checks-fold">
+                <summary className="lbl">
+                  Outcome checks
+                  <span className="cnt">{result?.status === "scored" ? `${checks.filter((x) => x.pass).length} of ${checks.length} pass` : `${checks.length} checks`}</span>
+                </summary>
                 <div className="checks" data-testid="checks">
                   {checks.map((ch, i) => {
                     const cls = ch.pending ? "pending" : ch.pass ? "pass" : "miss";
@@ -587,7 +604,7 @@ export function Play({ challengeId, board, kataLabel }: { challengeId: string; b
                     );
                   })}
                 </div>
-              </div>
+              </details>
               {progress.data?.note ? (
                 <div className="sec">
                   <span className="lbl">A nudge</span>
@@ -729,6 +746,8 @@ function LeaderboardDialog({ challengeId, board, title, onClose }: { challengeId
             <span className="s">{r.score}</span>
           </div>
         ))}
+        {q.isLoading ? <div className="empty-note d-wait">Loading scores…</div> : null}
+        {q.isError ? <div className="empty-note">Could not load scores. Close and try again.</div> : null}
         {q.data && q.data.length === 0 ? <div className="empty-note">No signed-in scores yet. Be the first.</div> : null}
       </div>
       <span className="note">Best score first. Ties are broken by solve time, from first open to your best Submit.</span>
@@ -756,6 +775,8 @@ function AttemptsDialog({ challengeId, title, onClose, onLoad }: { challengeId: 
             </div>
           );
         })}
+        {q.isLoading ? <div className="empty-note d-wait">Loading attempts…</div> : null}
+        {q.isError ? <div className="empty-note">Could not load attempts. Close and try again.</div> : null}
         {q.data && q.data.length === 0 ? <div className="empty-note">No attempts yet. Submit once and it shows up here.</div> : null}
       </div>
       <span className="note">Load any attempt back into the editor.</span>

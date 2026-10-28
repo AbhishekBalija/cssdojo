@@ -45,7 +45,6 @@ export function PackCard({ p }: { p: PackSummary }) {
   const tried = p.challenges.filter((x) => x.best !== null && x.best < SOLVED_AT).length;
   const line = beltLine(belt, solved, me.data?.belts ?? []);
   const leaders = [...new Set(p.challenges.flatMap((x) => (x.top ? [x.top.handle] : [])))].slice(0, 3);
-  const first = p.challenges.find((x) => x.best === null || x.best < SOLVED_AT) ?? p.challenges[0];
   const cta = solved === p.challenges.length ? "Improve scores" : solved + tried === 0 ? "Play" : "Continue";
   return (
     <article className="d-banded" style={{ ["--bm" as string]: c.md, ["--ba" as string]: c.acc, display: "grid", gridTemplateColumns: "minmax(0,300px) minmax(0,1fr)", gap: 28 }}>
@@ -64,7 +63,7 @@ export function PackCard({ p }: { p: PackSummary }) {
           <BeltChip belt={belt} />
         </span>
         <h2 style={{ margin: 0, font: "italic 400 30px/34px var(--font-art)", color: "var(--d-title)" }}>
-          <Link to="/packs/$n" params={{ n: String(p.number) }} style={{ color: "inherit", textDecoration: "none" }}>
+          <Link to="/packs/$n" params={{ n: String(p.number) }} className="d-packtitle">
             {packName(p.number)}
             <br />
             {p.title}
@@ -96,11 +95,10 @@ export function PackCard({ p }: { p: PackSummary }) {
               </span>
             ) : null}
           </Link>
-          {first ? (
-            <Link to="/c/$id" params={{ id: first.id }} className={`d-btn ${cta === "Improve scores" ? "sec" : "pri"}`} style={{ flex: 1 }}>
-              {cta}
-            </Link>
-          ) : null}
+          {/* The main button opens the pack screen. The thumbnails stay as shortcuts into each challenge. */}
+          <Link to="/packs/$n" params={{ n: String(p.number) }} className={`d-btn ${cta === "Improve scores" ? "sec" : "pri"}`} style={{ flex: 1 }}>
+            {cta}
+          </Link>
         </span>
       </div>
       <div className="d-grid3">

@@ -13,6 +13,9 @@ import { useMe } from "@/lib/me";
 // one Battle Pack's board, one challenge's board, and streaks.
 
 const fmt = (n: number) => n.toLocaleString("en-US");
+// Number columns: full width on desktop, narrower on phones so player names still fit.
+const num = (px: number) => `clamp(48px, 13vw, ${px}px)`;
+const playersLabel = (n: number) => `${fmt(n)} ${n === 1 ? "player" : "players"}`;
 type Tab = "wall" | "pack" | "challenge" | "streaks";
 
 function Tabs({ tab }: { tab: Tab }) {
@@ -121,9 +124,16 @@ function Banner({ r, place }: { r: WallRow; place: number }) {
           </span>
         </div>
       </div>
+      {/* The banner cloth falls back to white, but the label must not claim a belt the player has not earned. */}
       <span className="d-chip" style={{ marginTop: 12 }}>
-        <span className="bd" style={{ background: c.acc }} />
-        {belt} belt
+        {r.player.belt ? (
+          <>
+            <span className="bd" style={{ background: c.acc }} />
+            {r.player.belt} belt
+          </>
+        ) : (
+          "No belt yet"
+        )}
       </span>
     </div>
   );
@@ -360,7 +370,7 @@ export function WallBoard() {
       {w ? <Moves moves={w.moves} /> : null}
       <section className="d-card w-board">
         <div className="w-meta">
-          {w ? `${fmt(w.players)} players` : "Loading"}
+          {w ? playersLabel(w.players) : "Loading"}
           <i>·</i>ranked by all-time points<i>·</i>ties go to whoever got there first
         </div>
         {w === null ? <p className="note">The Wall opens with the first Battle Pack.</p> : null}
@@ -451,8 +461,8 @@ export function PackBoardPage() {
   const cols: [string, string][] = [
     ["#", "36px"],
     ["Player", "minmax(0,1fr)"],
-    ["Solved", "80px"],
-    ["Points", "90px"],
+    ["Solved", num(80)],
+    ["Points", num(90)],
   ];
   const mine = p?.board.find((r) => r.me);
   return (
@@ -473,7 +483,7 @@ export function PackBoardPage() {
         {p ? (
           <span className="d-mono" style={{ fontSize: 12, color: "var(--sub)", display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
             {p.state === "live" ? <span className="d-chip ok d-lvdot">Live</span> : <span className="d-chip">Final</span>}
-            {p.state === "live" ? `ends in ${untilLabel(p.endsAt, now)}` : "board frozen at the end"} · {fmt(p.players)} players · ties go to whoever got there first
+            {p.state === "live" ? `ends in ${untilLabel(p.endsAt, now)}` : "board frozen at the end"} · {playersLabel(p.players)} · ties go to whoever got there first
           </span>
         ) : null}
       </div>
@@ -519,9 +529,9 @@ export function ChallengeBoardPage() {
   const cols: [string, string][] = [
     ["#", "36px"],
     ["Player", "minmax(0,1fr)"],
-    ["Match", "80px"],
-    ["Points", "80px"],
-    ["Chars", "70px"],
+    ["Match", num(80)],
+    ["Points", num(80)],
+    ["Chars", num(70)],
   ];
   return (
     <Frame tab="challenge">
@@ -539,7 +549,7 @@ export function ChallengeBoardPage() {
           </label>
           <span className="d-mono" style={{ fontSize: 12, color: "var(--sub)" }}>
             {pack ? `${packName(pack.number)} · ` : ""}
-            {q.data ? `${q.data.length} players · ` : ""}ties go to whoever got there first
+            {q.data ? `${playersLabel(q.data.length)} · ` : ""}ties go to whoever got there first
           </span>
         </span>
       </div>
@@ -572,8 +582,8 @@ export function StreakBoardPage() {
   const cols: [string, string][] = [
     ["#", "36px"],
     ["Player", "minmax(0,1fr)"],
-    ["Current", "80px"],
-    ["Longest", "80px"],
+    ["Current", num(80)],
+    ["Longest", num(80)],
   ];
   const rows = q.data ?? [];
   const top = rows.filter((r) => r.rank <= 10);

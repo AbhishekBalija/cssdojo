@@ -6,6 +6,10 @@ test("guest submits the untouched starter and it scores low with every check fai
   await expect(page.getByTestId("submit")).toBeVisible();
   await page.getByTestId("submit").click();
   await expect(page.getByTestId("last-score")).toContainText("0/5", { timeout: 30_000 });
+  // Close the result card. Outcome checks start folded; the summary shows the count and opens the list.
+  await page.keyboard.press("Escape");
+  await expect(page.getByText("0 of 5 pass")).toBeVisible();
+  await page.locator("summary", { hasText: "Outcome checks" }).click();
   await expect(page.getByTestId("checks")).toBeVisible();
   const score = Number(await page.getByTestId("last-score").locator(".v .d-rollnum").getAttribute("aria-label"));
   expect(score).toBeLessThan(15);

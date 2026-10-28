@@ -47,12 +47,16 @@ export function BigBelt({ belt, have }: { belt: Belt; have: number }) {
   );
 }
 
-function KataChart({ kata }: { kata: ProfileView["kata"] }) {
+function KataChart({ kata, joined }: { kata: ProfileView["kata"]; joined: string }) {
   const id = useId();
   const W = 500,
     H = 170,
-    x0 = 34,
-    y = (s: number) => 20 + ((100 - Math.max(70, s)) / 30) * 120;
+    x0 = 34;
+  // The scale starts at 70, or lower when a score falls below it, so every point sits where it really is.
+  const low = Math.min(70, ...kata.map((k) => (k.score === null ? 100 : Math.floor(k.score / 10) * 10)));
+  const y = (s: number) => 20 + ((100 - s) / (100 - low)) * 120;
+  const ticks = [100, Math.round((100 + low) / 20) * 10, low];
+  const joinDay = joined.slice(0, 10);
   const step = (W - x0 - 10) / Math.max(1, kata.length - 1);
   const pts = kata.map((k, i) => (k.score === null ? null : ([x0 + i * step, y(k.score)] as const)));
   const line = pts.filter((p): p is readonly [number, number] => p !== null);
@@ -66,12 +70,12 @@ function KataChart({ kata }: { kata: ProfileView["kata"] }) {
           <stop offset="1" stopColor="#A99CFF" stopOpacity="0" />
         </linearGradient>
       </defs>
-      {[100, 90, 80].map((v) => (
+      {ticks.map((v, i) => (
         <g key={v}>
           <text x="0" y={y(v) + 3} fontSize="9" fill="var(--faint)" fontFamily="Martian Mono">
             {v}
           </text>
-          <path d={`M${x0 - 8} ${y(v)} H${W}`} stroke="var(--line)" strokeDasharray={v === 90 ? "3 3" : undefined} />
+          <path d={`M${x0 - 8} ${y(v)} H${W}`} stroke="var(--line)" strokeDasharray={i === 1 ? "3 3" : undefined} />
         </g>
       ))}
       <path d={area} fill={`url(#${id})`} />
@@ -79,11 +83,20 @@ function KataChart({ kata }: { kata: ProfileView["kata"] }) {
       {kata.map((k, i) => {
         const p = pts[i];
         const x = x0 + i * step;
+        const today = i === kata.length - 1;
+        // Days before you joined are left blank; a missed day is a small hollow mark on the floor line.
+        const mark = p ? (
+          <circle cx={p[0]} cy={p[1]} r="3.5" fill="var(--bg)" stroke="#A99CFF" strokeWidth="1.5" />
+        ) : k.date < joinDay || today ? null : (
+          <circle cx={x} cy="140" r="2.5" fill="none" stroke="var(--faint)" strokeWidth="1.2">
+            <title>Missed</title>
+          </circle>
+        );
         return (
           <g key={k.date}>
-            {p ? <circle cx={p[0]} cy={p[1]} r="3.5" fill="var(--bg)" stroke="#A99CFF" strokeWidth="1.5" /> : <text x={x} y="16" fontSize="8.5" fill="var(--faint)" textAnchor={i === kata.length - 1 ? "end" : "middle"} fontFamily="Martian Mono">{i === kata.length - 1 ? "today" : "missed"}</text>}
-            <text x={x} y="162" fontSize="9" fill="var(--faint)" textAnchor="middle" fontFamily="Martian Mono">
-              {Number(k.date.slice(8))}
+            {mark}
+            <text x={today ? x + 6 : x} y="162" fontSize="9" fill="var(--faint)" textAnchor={today ? "end" : "middle"} fontFamily="Martian Mono">
+              {today ? "today" : Number(k.date.slice(8))}
             </text>
           </g>
         );
@@ -288,7 +301,7 @@ function ProfileBody({ p, own }: { p: ProfileView; own: boolean }) {
             ) : null
           }
         >
-          {scored.length ? <KataChart kata={p.kata} /> : <p className="note">No kata played in the last 12 days.</p>}
+          {scored.length ? <KataChart kata={p.kata} joined={p.joined} /> : <p className="note">No kata played in the last 12 days.</p>}
         </Card>
         <Card
           icon={

@@ -30,6 +30,12 @@ export function markTask(k: TaskKey): Tasks {
   return next;
 }
 
+/** Starts the list over, for the next person on this browser after a sign-out. */
+export function resetTasks(): void {
+  storage.remove("dojo-tasks");
+  for (const l of listeners) l({});
+}
+
 export function onTasks(l: (t: Tasks) => void): () => void {
   listeners.add(l);
   return () => listeners.delete(l);

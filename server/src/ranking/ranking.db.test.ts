@@ -102,6 +102,13 @@ describe.skipIf(!enabled)("ranking against Postgres", () => {
     expect(out.ranking).toMatchObject({ points: 0, maxPoints: 0, wall: null, pack: null, streakCounted: true });
   });
 
+  it("never counts a daily kata solve toward belts", async () => {
+    const today = new Date().toISOString().slice(0, 10);
+    const before = await m.progress.solvedPerBelt(db, ids.ben as string);
+    await submit("ben", "k-101-pill-button", 100, `kata:${today}`);
+    expect(await m.progress.solvedPerBelt(db, ids.ben as string)).toEqual(before);
+  });
+
   it("freezes final pack standings from Submits made before it ended", async () => {
     const pack = m.packs.getPack(1);
     if (!pack) throw new Error("pack 1 missing");

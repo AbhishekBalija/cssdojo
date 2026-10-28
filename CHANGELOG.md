@@ -25,6 +25,9 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - Unused exports and the unused `codemirror` meta package (found by `bunx fallow`).
 
 ### Changed
+- Daily kata is for fun and streaks only: kata solves no longer count toward belts or belt badges.
+- Play screen: the challenge description is gone and the outcome checks fold into one line with a pass count.
+- Reset in the editor now offers Undo; toasts clear when you move to another challenge.
 - Nine targets with layout mishaps fixed: ticket stub and boarding pass text no longer sits on the card edge, profile card no longer fills the canvas, breadcrumbs fit with room for the focus ring, text link ring no longer touches the next word, accordion focus ring follows the rounded card, avatar initials are no longer cut, tabs lose the ghost hover underline. The scorer puts the caret at the end after tabbing into a field instead of showing the value selected.
 - Icons are given, never drawn: the ticks in Done chip and Stepper, the tooltip arrow and the breadcrumb separators now ship as inline SVG in the starter. A test fails if a reference uses an `<svg>` its starter lacks.
 - Client deploys to Vercel and proxies `/api` and `/static` to the Render API, so sign-in cookies are first-party. New API settings `AUTH_URL` and `PAGES_REDIRECT_TO_CLIENT` (see `docs/guides/vercel.md`).
@@ -32,6 +35,16 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - Scoring is fairer on colour: inside the shape, a wrong colour is scored by the colour term only, not counted again as missing shape. A right-shaped answer with the wrong focus fill now scores about 86. Colour cost is `C^2` with `C = 1 - deltaE / 12`.
 
 ### Fixed
+- Play and the main pack card button open the pack screen (`/packs/:n`) instead of the first challenge.
+- Pack countdowns: the chip and big clock styles hit each rolling digit and garbled the numbers.
+- Under 1120px the live target frame was hidden by the header LIVE rule.
+- Phone play: the score cards covered the Editor / Output / Target tabs.
+- Phone: pages scrolled sideways (mountain art), the menu button covered the LIVE label, the streak tag overlapped page titles, and board tables squeezed player names.
+- Light theme: Wall pillar labels were white on white.
+- A missing challenge showed "Loading" for several seconds before the error; 404s no longer retry.
+- Profile kata chart: scores under 70 sat on the 70 line, days before you joined showed "missed", and labels overlapped the axis.
+- Guests who solve a challenge with nothing else to show are told to sign in instead of "Nothing moved this time".
+- Signing out resets the "Get started" list; My attempts and the challenge leaderboard show a loading state; "No belt yet" and "1 player" wording on boards; no request for pack 0.
 - Mismatch now tells the truth: the :hover and :focus preview marks only what the scorer hovers or tabs to (7 challenges showed false red), and after a Submit the scorer's own map (red = shape, amber = colour) replaces the live overlay until the code changes. A Submit whose stage background colour differs from the target now says so.
 - `bun run dev`, `db:migrate` and `db:seed` did not see the root `.env.local`: `bun run --filter` executes inside the package folder, where bun does not look up parent env files. They now pass `--env-file=.env.local`.
 - The player middleware ran once per route group, so a guest's first POST could create several guest rows. It now runs once per request.

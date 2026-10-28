@@ -159,13 +159,13 @@ export async function recordKataDay(db: Db, playerId: string, board: Board, star
   return true;
 }
 
-/** Solved challenges per belt for one player (any board counts). */
+/** Solved challenges per belt for one player. Daily kata is for fun and streaks only, so it never counts toward belts. */
 export async function solvedPerBelt(db: Db, playerId: string): Promise<Record<Belt, number>> {
   const rows = await db
     .select({ belt: challenges.belt, n: sql<number>`count(distinct ${bestScores.challengeId})::int` })
     .from(bestScores)
     .innerJoin(challenges, eq(challenges.id, bestScores.challengeId))
-    .where(and(eq(bestScores.playerId, playerId), sql`${bestScores.score} >= ${SOLVED_AT}`))
+    .where(and(eq(bestScores.playerId, playerId), eq(challenges.kind, "challenge"), sql`${bestScores.score} >= ${SOLVED_AT}`))
     .groupBy(challenges.belt);
   const out = Object.fromEntries(BELTS.map((b) => [b, 0])) as Record<Belt, number>;
   for (const r of rows) out[r.belt] = r.n;

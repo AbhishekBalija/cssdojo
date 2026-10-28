@@ -28,8 +28,9 @@ kbd{font:500 9px/1 var(--font-mono);padding:3px 4px;border-radius:4px;border:1px
 .pick:hover,.pick[aria-expanded="true"]{background:var(--hover);border-color:var(--line)}
 .pick svg{opacity:.6}
 .h-right{margin-left:auto;display:flex;align-items:center;gap:12px}
-.live{display:inline-flex;align-items:center;gap:7px;font:400 11.5px/1 var(--font-mono);color:var(--sub);white-space:nowrap}
-.live::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--pass)}
+/* Header "live" label. The target frame also carries a "live" class, so keep these rules off it. */
+.live:not(.frame){display:inline-flex;align-items:center;gap:7px;font:400 11.5px/1 var(--font-mono);color:var(--sub);white-space:nowrap}
+.live:not(.frame)::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--pass)}
 .icon-btn{width:36px;height:36px;display:grid;place-items:center;border-radius:var(--radius);border:1px solid var(--line-strong);background:transparent;cursor:pointer;color:var(--sub);flex:none}
 .icon-btn:hover{color:var(--fg);background:var(--hover)}
 .btn{font:600 13px/1 var(--font-ui);display:inline-flex;align-items:center;justify-content:center;gap:8px;height:36px;padding:0 14px;border-radius:var(--radius);border:1px solid var(--line-strong);background:var(--panel);color:var(--fg);cursor:pointer;white-space:nowrap;transition:background .15s,translate .15s}
@@ -45,7 +46,7 @@ kbd{font:500 9px/1 var(--font-mono);padding:3px 4px;border-radius:4px;border:1px
 .start:hover{background:var(--hover)}
 .ring{width:18px;height:18px;border-radius:50%;background:conic-gradient(var(--accent) calc(var(--p,0)*1%),var(--line-strong) 0);display:grid;place-items:center}
 .ring::after{content:"";width:12px;height:12px;border-radius:50%;background:var(--panel)}
-@media (max-width:1120px){.live{display:none}}
+@media (max-width:1120px){.live:not(.frame){display:none}}
 @media (max-width:900px){.crumbs .k-daily,.crumbs .sep{display:none}.start .t{display:none}.start{padding:0 7px}}
 @media (max-width:560px){.topbar{gap:10px}.signin{display:none}}
 
@@ -209,6 +210,13 @@ kbd{font:500 9px/1 var(--font-mono);padding:3px 4px;border-radius:4px;border:1px
 .brief{font-size:13px;color:var(--sub);margin:0}
 .sec{display:grid;gap:10px}
 .sec-h{display:flex;align-items:center;gap:8px}
+/* Outcome checks fold: the summary row is the label, a count and a chevron. */
+.checks-fold>summary{display:flex;align-items:center;gap:8px;cursor:pointer;list-style:none;padding:2px 0;border-radius:4px}
+.checks-fold>summary::-webkit-details-marker{display:none}
+.checks-fold>summary::after{content:"";width:6px;height:6px;margin-left:auto;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;rotate:45deg;translate:0 -2px;transition:rotate .15s}
+.checks-fold[open]>summary::after{rotate:225deg;translate:0 2px}
+.checks-fold>summary .cnt{color:var(--sub);letter-spacing:.04em}
+.checks-fold>summary:hover{color:var(--fg)}
 
 /* status bar */
 .status{display:flex;align-items:center;gap:20px;height:36px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));border-top:1px solid var(--line);background:var(--panel);font:400 11px/1 var(--font-mono);color:var(--faint);flex:none;white-space:nowrap;overflow:hidden}
@@ -224,9 +232,11 @@ kbd{font:500 9px/1 var(--font-mono);padding:3px 4px;border-radius:4px;border:1px
 /* phone: one pane at a time, frames scale to fit */
 .switch{display:none}
 @media (max-width:860px){
-  .play-main{grid-template-columns:1fr}
+  /* One row that fills the space above the tab bar, so a long pane scrolls inside itself instead of covering the tabs. */
+  .play-main{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr)}
   .side{display:contents}
   .pane{border-right:0;display:none}
+  .side .pane{min-height:0}
   .pane.on{display:flex}
   .side .pane-b{overflow:auto}
   .frame{width:100%;height:auto;aspect-ratio:4/3}

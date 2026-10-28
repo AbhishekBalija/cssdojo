@@ -48,7 +48,8 @@
   .d-side{position:fixed;left:0;top:0;z-index:20;translate:-100% 0;transition:translate .2s ease}
   .d-shell.nav-open .d-side{translate:0 0;box-shadow:0 0 60px rgba(0,0,0,.6)}
   .d-hamb{display:grid}
-  .d-head{padding:0 16px}
+  /* Leave room for the menu button, which sits over the left of the header. */
+  .d-head{padding:0 16px 0 60px}
 }
 
 /* streak tag hanging from the header */
@@ -91,7 +92,10 @@
 .d-pg>.d-glow,.d-pg>.d-mtn{position:absolute;z-index:0}
 .d-glow{inset:0 0 auto 0;height:420px;background:radial-gradient(900px 420px at 70% -80px,rgba(255,255,255,.035),transparent 70%);pointer-events:none}
 .d-mtn{right:-24px;top:-8px;width:640px;height:240px;max-width:70%;pointer-events:none}
-@media (max-width:700px){.d-pg{padding:28px 16px 48px}}
+/* On narrow screens the mountains sit flush right so the page never scrolls sideways. */
+@media (max-width:1200px){.d-mtn{right:0}}
+/* The streak tag hangs about 75px below the header; start the page under it on phones. */
+@media (max-width:700px){.d-pg{padding:84px 16px 48px}}
 .d-ph{display:flex;flex-direction:column;gap:6px}
 .d-kick{font:600 11px/16px var(--font-mono);letter-spacing:.22em;color:var(--pass);text-transform:uppercase}
 .d-ph h1{margin:0;font:italic 400 72px/76px var(--font-art);letter-spacing:-.015em;color:var(--d-title);-webkit-text-stroke:.9px var(--d-title);text-shadow:0 2px 24px rgba(243,235,221,.08)}
@@ -142,8 +146,9 @@ a.d-tile:hover{border-color:var(--line-strong);translate:0 -1px}
 
 /* countdown digits */
 .d-clock{display:flex;gap:3px;font:500 13px/1 var(--font-mono)}
-.d-clock span{min-width:11px;text-align:center;padding:5px 4px;border-radius:5px;background:var(--d-chip);box-shadow:inset 0 1px 0 rgba(255,255,255,.05);color:var(--fg)}
-.d-clock span.c{background:none;box-shadow:none;color:var(--faint)}
+/* Style only the chip around the rolling digits. A plain "span" selector also hit each digit inside the roll and broke it. */
+.d-clock>.d-rollnum{align-items:center;padding:5px 8px;border-radius:6px;background:var(--d-chip);box-shadow:inset 0 1px 0 rgba(255,255,255,.05);color:var(--fg)}
+.d-clock>.d-rollnum>span:not(.d-roll){color:var(--faint);padding:0 1px}
 
 /* belt-banded article (packs) */
 .d-banded{position:relative;overflow:hidden;padding:46px 24px 24px;border-radius:16px;background:linear-gradient(180deg,color-mix(in srgb,var(--bm) 14%,var(--d-card-a)),var(--d-card-b) 70%);border:1px solid color-mix(in srgb,var(--ba) 26%,var(--d-card-line));box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 24px 48px rgba(0,0,0,.3)}
@@ -203,7 +208,7 @@ a.d-note:hover{background:var(--hover)}
 .d-toast .btns .d-btn{height:32px;font-size:13px}
 @keyframes d-toast-in{from{opacity:0;transform:translateY(10px)}}
 .d-bigclock{display:flex;gap:8px}
-.d-bigclock span{display:flex;flex-direction:column;align-items:center;gap:6px}
+.d-bigclock>span{display:flex;flex-direction:column;align-items:center;gap:6px}
 .d-bigclock b{min-width:40px;text-align:center;padding:8px 6px;border-radius:8px;background:var(--d-chip);border:1px solid var(--d-chip-line);box-shadow:inset 0 1px 0 rgba(255,255,255,.05);font:500 20px/1 var(--font-mono);color:var(--fg)}
 .d-bigclock i{font:500 9.5px/1 var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--faint);font-style:normal}
 @media (max-width:760px){.d-banded{grid-template-columns:1fr!important}}
@@ -308,12 +313,14 @@ a.d-note:hover{background:var(--hover)}
 .w-ped .cyl{display:block;width:100%}
 .w-ped .medal{position:absolute;left:50%;width:26px;height:26px;margin-left:-13px;border-radius:50%;display:grid;place-items:center;color:var(--m);background:radial-gradient(circle at 40% 35%,#24262D,#0E0F12);border:1.5px solid var(--m);box-shadow:0 0 0 3px rgba(0,0,0,.35),0 0 14px color-mix(in srgb,var(--m) 55%,transparent)}
 .w-ped .pl{position:absolute;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center}
-.w-ped .pl b{font:600 13px/18px var(--font-ui);color:#F3F1EC;text-shadow:0 1px 2px rgba(0,0,0,.6)}.w-ped .pl span{font:400 10.5px/14px var(--font-ui);color:#B9BDC6;white-space:nowrap}
+/* Pillar labels follow the theme: light text on the dark wall, dark text on the light one. */
+.w-ped .pl b{font:600 13px/18px var(--font-ui);color:var(--fg)}.w-ped .pl span{font:400 10.5px/14px var(--font-ui);color:var(--sub);white-space:nowrap}
 
 /* plain board tables (pack, challenge, streaks) */
 .t-row{display:grid;align-items:center;gap:12px;height:48px;padding:0 16px;border-radius:10px;font-size:13.5px}
 .t-row.t-head{height:34px;font:500 10px/1 var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--faint);border-bottom:1px solid var(--d-rule);border-radius:0;margin-bottom:6px}
 .t-row .rn{font:500 12px/1 var(--font-mono);color:var(--faint)}
+@media (max-width:700px){.t-row{gap:8px;padding:0 10px}}
 .t-row .num{font:500 12.5px/1 var(--font-mono);color:var(--d-ink);text-align:right}
 .t-row.t-head span:nth-child(n+3){text-align:right}
 .t-row .who{display:flex;align-items:center;gap:10px;min-width:0}
@@ -527,6 +534,9 @@ html[data-ligatures] .cm-content{font-variant-ligatures:normal}
 .d-tst{padding:11px 15px;border-radius:10px;background:var(--fg);color:var(--bg);font:500 13px/1.25 var(--font-ui);box-shadow:0 10px 28px rgba(0,0,0,.28);animation:d-tst-in .2s var(--d-ease) both}
 .d-tst.out{opacity:0;transition:opacity .15s var(--d-ease)}
 @keyframes d-tst-in{from{opacity:0;transform:translateY(8px)}}
+.d-tst{pointer-events:auto;display:flex;align-items:center;gap:14px}
+.d-tst .act{all:unset;cursor:pointer;font-weight:600;color:inherit;text-decoration:underline;text-underline-offset:3px}
+.d-tst .act:focus-visible{outline:2px solid currentColor;outline-offset:2px;border-radius:3px}
 .d-rollnum{display:inline-flex;font-variant-numeric:tabular-nums}
 .d-roll{display:inline-block;height:1em;line-height:1;overflow:hidden;vertical-align:top}
 .d-roll>span{display:flex;flex-direction:column;transition-property:transform;transition-timing-function:var(--d-ease)}
@@ -600,3 +610,7 @@ a:hover>.d-hthumb.has .hchip,.d-hthumb.has:hover .hchip{opacity:1}
   .d-set .field,.d-input{max-width:100%;min-width:0}
   .d-set .v{min-width:0;overflow-wrap:anywhere}
 }
+
+/* pack card title: reads as a heading, but shows it is a link on hover and focus */
+.d-packtitle{color:inherit;text-decoration:none;text-underline-offset:5px;text-decoration-thickness:1px}
+.d-packtitle:hover,.d-packtitle:focus-visible{text-decoration:underline}

@@ -33,7 +33,7 @@ export function usePacks() {
 }
 
 export function usePack(n: number) {
-  return useQuery({ queryKey: ["pack", n], queryFn: () => optional<PackDetail>(`/packs/${n}`), staleTime: 30_000, retry: false });
+  return useQuery({ queryKey: ["pack", n], queryFn: () => optional<PackDetail>(`/packs/${n}`), staleTime: 30_000, retry: false, enabled: n > 0 });
 }
 
 export function useKataMonth(month: string) {
