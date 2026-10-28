@@ -39,11 +39,15 @@ export interface AdminChallengeRow {
   belt: Belt;
   kind: "challenge" | "kata";
   packNumber: number | null;
+  /** Kata only: position in the kata cycle, and the next UTC date it is the daily kata. */
+  kataDay: number | null;
+  nextOn: string | null;
   hidden: boolean;
   /** Golden answers that prove it scores as intended (the golden set needs at least 3). */
   goldenAnswers: number;
+  /** Library board for pack challenges; every day's board for kata. */
   players: number;
-  /** Share of players with a library best of 90 or more, 0 to 1. */
+  /** Share of those players with a best of 90 or more, 0 to 1. */
   passRate: number;
   avgBest: number | null;
 }

@@ -24,12 +24,12 @@ import {
 } from "@/lib/admin";
 import { useMe } from "@/lib/me";
 
-// Admin panel (docs/requirements/admin.md): schedule, challenges, players, health
+// Admin panel (docs/requirements/admin.md): Battle Packs, daily kata, players, health
 // and the audit log. Challenge content is written in git, never here.
 
-export type AdminTab = "schedule" | "challenges" | "players" | "health" | "log";
-export const ADMIN_TABS: AdminTab[] = ["schedule", "challenges", "players", "health", "log"];
-const TAB_LABEL: Record<AdminTab, string> = { schedule: "Schedule", challenges: "Challenges", players: "Players", health: "Health", log: "Audit log" };
+export type AdminTab = "packs" | "kata" | "players" | "health" | "log";
+export const ADMIN_TABS: AdminTab[] = ["packs", "kata", "players", "health", "log"];
+const TAB_LABEL: Record<AdminTab, string> = { packs: "Battle Packs", kata: "Daily kata", players: "Players", health: "Health", log: "Audit log" };
 
 function errorText(e: unknown): string {
   return e instanceof ApiError ? e.message : "Something went wrong. Try again.";
@@ -85,7 +85,65 @@ function utcText(iso: string): string {
   return `${iso.slice(0, 10)} ${iso.slice(11, 16)} UTC`;
 }
 
-// ---------- Schedule ----------
+// ---------- Shared challenge rows ----------
+
+function HideChallenge({ c }: { c: AdminChallengeRow }) {
+  const save = useAdminWrite<AdminHideRequest>("POST", c.hidden ? `${c.title} is back.` : `${c.title} is hidden.`);
+  return (
+    <ActionForm
+      label={c.hidden ? "Unhide" : "Hide"}
+      danger={!c.hidden}
+      pending={save.isPending}
+      error={save.error}
+      onSubmit={(reason) => save.mutate({ path: `/admin/challenges/${c.id}/hidden`, body: { hidden: !c.hidden, reason } })}
+    />
+  );
+}
+
+/** One challenge with its numbers and a Hide / Unhide action. `lead` is the first column (number or kata day). */
+function ChallengeRow({ c, lead, meta }: { c: AdminChallengeRow; lead: ReactNode; meta?: ReactNode }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="a-item">
+      <div className="a-line">
+        <span className="a-c-num a-dim">{lead}</span>
+        <span className="grow a-title">
+          <Link to="/c/$id" params={{ id: c.id }} className="d-lnk">
+            {c.title}
+          </Link>
+          {meta ? <span className="a-dim">{meta}</span> : null}
+          {c.hidden ? <span className="a-tag a-hidden">hidden</span> : null}
+        </span>
+        <span className={`a-c-n a-c-opt${c.goldenAnswers < 3 ? " a-warn" : ""}`}>{c.goldenAnswers}</span>
+        <span className="a-c-n">{c.players}</span>
+        <span className="a-c-n">{Math.round(c.passRate * 100)}%</span>
+        <span className="a-c-n a-c-opt">{c.avgBest ?? "–"}</span>
+        <span className="a-c-btn">
+          <button type="button" className="d-btn sec" onClick={() => setOpen(!open)} aria-expanded={open} aria-label={`${c.hidden ? "Unhide" : "Hide"} ${c.title}`}>
+            {open ? "Close" : c.hidden ? "Unhide" : "Hide"}
+          </button>
+        </span>
+      </div>
+      {open ? <HideChallenge c={c} /> : null}
+    </div>
+  );
+}
+
+function ChallengeHead({ lead }: { lead: string }) {
+  return (
+    <div className="a-line a-head">
+      <span className="a-c-num">{lead}</span>
+      <span className="grow">Challenge</span>
+      <span className="a-c-n a-c-opt">Golden</span>
+      <span className="a-c-n">Players</span>
+      <span className="a-c-n">90+</span>
+      <span className="a-c-n a-c-opt">Avg</span>
+      <span className="a-c-btn" />
+    </div>
+  );
+}
+
+// ---------- Battle Packs ----------
 
 function PackDates({ p }: { p: AdminPackRow }) {
   const [opens, setOpens] = useState(toInput(p.opensAt));
@@ -110,106 +168,86 @@ function PackDates({ p }: { p: AdminPackRow }) {
   );
 }
 
-function Schedule() {
-  const packs = useAdminPacks();
-  const [open, setOpen] = useState<number | null>(null);
-  if (packs.isError) return <ErrorState message={errorText(packs.error)} onRetry={() => void packs.refetch()} />;
-  if (!packs.data) return <p className="a-note">Loading packs…</p>;
+function PackSection({ p, list }: { p: AdminPackRow; list: AdminChallengeRow[] }) {
+  const [editing, setEditing] = useState(false);
   return (
     <section className="d-card">
-      <h3 className="d-ch">Battle Packs</h3>
-      <p className="a-note">Upcoming packs can move. A live pack can only be extended. Finished packs are frozen.</p>
+      <h3 className="d-ch">
+        <span>
+          {p.number}. {p.title}
+        </span>
+        <span className={`a-tag a-${p.state}`}>{p.state}</span>
+        <span className="sp" />
+        <span className="meta">{p.players} players</span>
+      </h3>
+      <div className="a-line">
+        <span className="grow a-dim">
+          {utcText(p.opensAt)} → {utcText(p.endsAt)}
+        </span>
+        {p.state === "finished" ? null : (
+          <button type="button" className="d-btn sec" onClick={() => setEditing(!editing)} aria-expanded={editing} aria-label={`Change dates for pack ${p.number}`}>
+            {editing ? "Close" : p.state === "live" ? "Extend" : "Change dates"}
+          </button>
+        )}
+      </div>
+      {editing ? <PackDates p={p} /> : null}
       <div className="a-table">
-        {packs.data.map((p) => (
-          <div key={p.number} className="a-item">
-            <div className="a-line">
-              <span className="grow a-meta">
-                <b>
-                  {p.number}. {p.title}
-                </b>
-                <span className={`a-tag a-${p.state}`}>{p.state}</span>
-                <span className="a-dim">{p.belt}</span>
-                <span className="a-dim">
-                  {utcText(p.opensAt)} to {utcText(p.endsAt)}
-                </span>
-                <span className="a-dim">{p.players} players</span>
-              </span>
-              {p.state === "finished" ? null : (
-                <button type="button" className="d-btn sec" onClick={() => setOpen(open === p.number ? null : p.number)} aria-expanded={open === p.number} aria-label={`Change dates for pack ${p.number}`}>
-                  {open === p.number ? "Close" : "Change dates"}
-                </button>
-              )}
-            </div>
-            {open === p.number ? <PackDates p={p} /> : null}
-          </div>
+        <ChallengeHead lead="#" />
+        {list.map((c) => (
+          <ChallengeRow key={c.id} c={c} lead={c.number} meta={c.belt} />
         ))}
       </div>
-      <p className="a-note">
-        Kata order comes from each kata&apos;s <code>kataDay</code> in git, so it changes by PR, not here.
-      </p>
     </section>
   );
 }
 
-// ---------- Challenges ----------
-
-function HideChallenge({ c }: { c: AdminChallengeRow }) {
-  const save = useAdminWrite<AdminHideRequest>("POST", c.hidden ? `${c.title} is back.` : `${c.title} is hidden.`);
+function BattlePacks() {
+  const packs = useAdminPacks();
+  const list = useAdminChallenges();
+  const error = packs.error ?? list.error;
+  if (error) return <ErrorState message={errorText(error)} onRetry={() => void Promise.all([packs.refetch(), list.refetch()])} />;
+  if (!packs.data || !list.data) return <p className="a-note">Loading…</p>;
+  const loose = list.data.filter((c) => c.kind === "challenge" && c.packNumber === null);
   return (
-    <ActionForm
-      label={c.hidden ? "Unhide" : "Hide"}
-      danger={!c.hidden}
-      pending={save.isPending}
-      error={save.error}
-      onSubmit={(reason) => save.mutate({ path: `/admin/challenges/${c.id}/hidden`, body: { hidden: !c.hidden, reason } })}
-    />
+    <>
+      {packs.data.map((p) => (
+        <PackSection key={p.number} p={p} list={list.data.filter((c) => c.packNumber === p.number)} />
+      ))}
+      {loose.length ? (
+        <section className="d-card">
+          <h3 className="d-ch">Not in a pack</h3>
+          <div className="a-table">
+            <ChallengeHead lead="#" />
+            {loose.map((c) => (
+              <ChallengeRow key={c.id} c={c} lead={c.number} meta={c.belt} />
+            ))}
+          </div>
+        </section>
+      ) : null}
+    </>
   );
 }
 
-function Challenges() {
+// ---------- Daily kata ----------
+
+function DailyKata() {
   const list = useAdminChallenges();
-  const [open, setOpen] = useState<string | null>(null);
   if (list.isError) return <ErrorState message={errorText(list.error)} onRetry={() => void list.refetch()} />;
-  if (!list.data) return <p className="a-note">Loading challenges…</p>;
+  if (!list.data) return <p className="a-note">Loading…</p>;
+  const kata = list.data.filter((c) => c.kind === "kata").sort((a, b) => (a.kataDay ?? 0) - (b.kataDay ?? 0));
+  const today = new Date().toISOString().slice(0, 10);
+  if (kata.length === 0) return <EmptyState title="No kata yet" />;
   return (
     <section className="d-card">
-      <h3 className="d-ch">Challenges</h3>
-      <p className="a-note">Hiding pulls a broken challenge from play. Points already earned there stay. Fix it as a new challenge in git.</p>
+      <h3 className="d-ch">
+        <span>Kata cycle</span>
+        <span className="sp" />
+        <span className="meta">{kata.length} days, then it loops</span>
+      </h3>
       <div className="a-table">
-        <div className="a-line a-head">
-          <span className="a-c-num">#</span>
-          <span className="grow">Title</span>
-          <span className="a-c-n a-c-opt">Golden</span>
-          <span className="a-c-n">Players</span>
-          <span className="a-c-n">Pass 90+</span>
-          <span className="a-c-n a-c-opt">Avg best</span>
-          <span className="a-c-btn" />
-        </div>
-        {list.data.map((c) => (
-          <div key={c.id} className="a-item">
-            <div className="a-line">
-              <span className="a-c-num a-dim">{c.number}</span>
-              <span className="grow a-title">
-                <Link to="/c/$id" params={{ id: c.id }} className="d-lnk">
-                  {c.title}
-                </Link>
-                <span className="a-dim">
-                  {c.kind === "kata" ? "kata" : c.packNumber ? `pack ${c.packNumber}` : "library"} · {c.belt}
-                </span>
-                {c.hidden ? <span className="a-tag a-hidden">hidden</span> : null}
-              </span>
-              <span className={`a-c-n a-c-opt${c.goldenAnswers < 3 ? " a-warn" : ""}`}>{c.goldenAnswers}</span>
-              <span className="a-c-n">{c.players}</span>
-              <span className="a-c-n">{Math.round(c.passRate * 100)}%</span>
-              <span className="a-c-n a-c-opt">{c.avgBest ?? "–"}</span>
-              <span className="a-c-btn">
-                <button type="button" className="d-btn sec" onClick={() => setOpen(open === c.id ? null : c.id)} aria-expanded={open === c.id} aria-label={`${c.hidden ? "Unhide" : "Hide"} ${c.title}`}>
-                  {open === c.id ? "Close" : c.hidden ? "Unhide" : "Hide"}
-                </button>
-              </span>
-            </div>
-            {open === c.id ? <HideChallenge c={c} /> : null}
-          </div>
+        <ChallengeHead lead="Day" />
+        {kata.map((c) => (
+          <ChallengeRow key={c.id} c={c} lead={c.kataDay ?? "–"} meta={c.nextOn === today ? <span className="a-tag a-live">today</span> : c.nextOn ? `next ${c.nextOn}` : null} />
         ))}
       </div>
     </section>
@@ -502,8 +540,8 @@ export function Admin({ tab }: { tab: AdminTab }) {
   return (
     <Page kicker="Admin" title={TAB_LABEL[tab]} tabs={tabs}>
       <div className="a-col">
-        {tab === "schedule" ? <Schedule /> : null}
-        {tab === "challenges" ? <Challenges /> : null}
+        {tab === "packs" ? <BattlePacks /> : null}
+        {tab === "kata" ? <DailyKata /> : null}
         {tab === "players" ? <Players /> : null}
         {tab === "health" ? <Health /> : null}
         {tab === "log" ? <Log /> : null}

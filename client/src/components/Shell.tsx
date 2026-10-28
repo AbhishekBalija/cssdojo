@@ -175,7 +175,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
           Settings
         </Link>
         {isAdmin.data ? (
-          <Link to="/admin" search={{ tab: "schedule" }} className="d-nav">
+          <Link to="/admin" search={{ tab: "packs" }} className="d-nav">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z" />
             </svg>

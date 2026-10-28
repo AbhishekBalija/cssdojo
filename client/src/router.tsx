@@ -96,7 +96,7 @@ const admin = createRoute({
   getParentRoute: () => shell,
   path: "/admin",
   validateSearch: (s: Record<string, unknown>): { tab: AdminTab } => ({
-    tab: ADMIN_TABS.find((t) => t === s.tab) ?? "schedule",
+    tab: ADMIN_TABS.find((t) => t === s.tab) ?? "packs",
   }),
   component: AdminRoute,
 });

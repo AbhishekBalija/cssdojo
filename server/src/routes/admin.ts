@@ -7,6 +7,8 @@ import {
   AdminReasonOnlySchema,
   PackDatesSchema,
   SOLVED_AT,
+  addDays,
+  kataDayFor,
   utcDate,
   type AdminActionRow,
   type AdminChallengeRow,
@@ -21,7 +23,7 @@ import { requireAdmin, type AdminVars } from "../admin/guard";
 import { voidSubmission } from "../admin/void";
 import { listChallenges } from "../challenges";
 import { db } from "../db/client";
-import { adminActions, bestScores, challenges, packs, playerBelts, playerSettings, players, scoreJobs, submissions, user } from "../db/schema";
+import { adminActions, bestScores, challenges, kataSchedule, packs, playerBelts, playerSettings, players, scoreJobs, submissions, user } from "../db/schema";
 import { getPack, listPacks, setPackDates, stateOf } from "../packs";
 import { rankOf, standings } from "../ranking/standings";
 
@@ -85,17 +87,24 @@ adminRoutes.put("/packs/:number/dates", zValidator("json", PackDatesSchema), asy
 // ---------- Challenges ----------
 
 adminRoutes.get("/challenges", async (c) => {
-  const stats = await db
-    .select({
-      id: bestScores.challengeId,
-      players: sql<number>`count(*)::int`,
-      passed: sql<number>`(count(*) filter (where ${bestScores.score} >= ${SOLVED_AT}))::int`,
-      avg: sql<number | null>`avg(${bestScores.score})::float`,
-    })
-    .from(bestScores)
-    .where(eq(bestScores.board, "library"))
-    .groupBy(bestScores.challengeId);
-  const byId = new Map(stats.map((s) => [s.id, s]));
+  // One best per player: the library board for pack challenges, and the highest of
+  // the day boards for kata (a kata comes back each cycle with a new day board).
+  const stats = await db.execute<{ id: string; players: number; passed: number; avg: number | null }>(sql`
+    select challenge_id as id, count(*)::int as players,
+      (count(*) filter (where best >= ${SOLVED_AT}))::int as passed, avg(best)::float as avg
+    from (
+      select b.challenge_id, b.player_id, max(b.score) as best
+      from ${bestScores} b join ${challenges} c on c.id = b.challenge_id
+      where (c.kind = 'challenge' and b.board = 'library') or (c.kind = 'kata' and b.board like 'kata:%')
+      group by b.challenge_id, b.player_id
+    ) per_player
+    group by challenge_id`);
+  const byId = new Map([...stats].map((s) => [s.id, s]));
+  // Where each kata sits in the cycle, and the next date it comes round.
+  const schedule = await db.select().from(kataSchedule).orderBy(kataSchedule.day);
+  const today = utcDate();
+  const todayDay = kataDayFor(today, schedule.length);
+  const kata = new Map(schedule.map((k) => [k.challengeId, { day: k.day, nextOn: addDays(today, (k.day - todayDay + schedule.length) % schedule.length) }]));
   const hidden = new Set((await db.select({ id: challenges.id }).from(challenges).where(isNotNull(challenges.hiddenAt))).map((r) => r.id));
   const out: AdminChallengeRow[] = listChallenges()
     .map((ch) => {
@@ -107,6 +116,8 @@ adminRoutes.get("/challenges", async (c) => {
         belt: ch.meta.belt,
         kind: ch.meta.kind,
         packNumber: listPacks().find((p) => p.challenges.includes(ch.meta.id))?.number ?? null,
+        kataDay: kata.get(ch.meta.id)?.day ?? null,
+        nextOn: kata.get(ch.meta.id)?.nextOn ?? null,
         hidden: hidden.has(ch.meta.id),
         goldenAnswers: ch.golden.length,
         players: s?.players ?? 0,

@@ -6,7 +6,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 ## [Unreleased]
 
 ### Added
-- Admin panel at `/admin` for emails in `ADMIN_EMAILS` (spec in `docs/requirements/admin.md`): change Battle Pack dates (upcoming packs freely, live packs only longer), hide or unhide a broken challenge, find a player, hide them from boards, reset a handle, void a Submit (best score, points and belts are rebuilt), health and 30-day stats, and an audit log with a reason for every change.
+- Admin panel at `/admin` for emails in `ADMIN_EMAILS` (spec in `docs/requirements/admin.md`), with separate Battle Packs and Daily kata tabs: change Battle Pack dates (upcoming packs freely, live packs only longer), hide or unhide a broken challenge, find a player, hide them from boards, reset a handle, void a Submit (best score, points and belts are rebuilt), health and 30-day stats, and an audit log with a reason for every change.
 - Migration `0002_admin`: `hidden_at` on challenges and players, `voided_at` and `voided_by` on submissions, and the `admin_actions` table.
 - Ranking (rules in `docs/requirements/ranking.md`): points per Battle Pack challenge by belt (white 200 up to black 1000, `max * ((score - 50) / 50)^2`), the Wall (all-time points), ties to whoever got there first.
 - Battle Packs: 5 packs of 6 challenges in `challenges/packs.json`. Upcoming packs hide their challenges, live packs run 28 days, finished packs keep frozen final standings and stay playable.
