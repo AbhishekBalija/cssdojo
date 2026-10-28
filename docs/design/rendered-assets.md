@@ -1,6 +1,6 @@
 # Rendered assets: spec
 
-Status: in progress, 2026-10-28. Done: brass rail. Next: streak tag, pillars, belt knot and band. Replaces the hand-drawn SVG and CSS objects (belt knot, belt band, brass rail, streak tag, belt pillars) with images rendered in Blender, because brass shine and cloth folds need real light and reflections.
+Status: in progress, 2026-10-28. Done: brass rail, streak tag. Next: pillars, belt knot and band. Replaces the hand-drawn SVG and CSS objects (belt knot, belt band, brass rail, streak tag, belt pillars) with images rendered in Blender, because brass shine and cloth folds need real light and reflections.
 
 ## Art direction (same for every asset, so they read as one set)
 

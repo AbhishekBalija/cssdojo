@@ -26,6 +26,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - Unused exports and the unused `codemirror` meta package (found by `bunx fallow`).
 
 ### Changed
+- The header streak tag is now rendered in Blender: charcoal enamel, polished rim, brass grommet and nail, a twisted cord. Cord and tag are separate layers, so the tag swings a little behind the cord. A live streak shows as a faint green edge glow. About 5 KB at 2x.
 - The brass rail above hanging cards is now rendered in Blender (satin brass, real highlights), cut into stretchable WebP pieces by `bun run art`. The whole rail is about 3 KB at 2x. Spec: `docs/design/rendered-assets.md`.
 - Daily kata is for fun and streaks only: kata solves no longer count toward belts or belt badges.
 - Play screen: the challenge description is gone and the outcome checks fold into one line with a pass count.

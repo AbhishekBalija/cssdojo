@@ -198,7 +198,6 @@ function StreakTag() {
   const current = d?.current ?? me.data?.streak ?? 0;
   const played = d?.playedToday ?? false;
   const broken = current === 0;
-  const edge = broken ? "rgba(255,255,255,0.22)" : "rgba(94,211,154,0.55)";
   const label = broken ? "No streak yet" : `${current} day streak, ${played ? "played" : "not played"} today`;
   const note = broken
     ? "Submit an attempt on today's kata to start one."
@@ -221,38 +220,24 @@ function StreakTag() {
   return (
     <span className="d-streak">
       <Link to="/kata" aria-label={label}>
-        <span className={`d-stag${grow ? " grow" : ""}`}>
-          <svg className="shape" width="72" height="132" viewBox="0 0 72 132" aria-hidden="true">
-            <defs>
-              <linearGradient id="stf" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stopColor={broken ? "rgba(255,255,255,0.08)" : "rgba(94,211,154,0.16)"} />
-                <stop offset="1" stopColor={broken ? "rgba(255,255,255,0.02)" : "rgba(94,211,154,0.04)"} />
-              </linearGradient>
-              <linearGradient id="sts" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0" stopColor="#C9CDD6" />
-                <stop offset="1" stopColor="#8F939C" />
-              </linearGradient>
-            </defs>
-            <path d="M36 4 C 30 16, 31 34, 36 44" fill="none" stroke="#6A6E78" strokeWidth="1.6" strokeLinecap="round" />
-            <path d="M36 32 L60 50 Q63 52 63 56 V104 Q63 108 60 110 L36 128 L12 110 Q9 108 9 104 V56 Q9 52 12 50 Z" fill="#14161A" />
-            <path d="M36 32 L60 50 Q63 52 63 56 V104 Q63 108 60 110 L36 128 L12 110 Q9 108 9 104 V56 Q9 52 12 50 Z" fill="url(#stf)" stroke={edge} strokeWidth="1" />
-            <path d="M14 53 L36 36.5" stroke="rgba(255,255,255,0.22)" strokeWidth="1" strokeLinecap="round" />
-            <circle cx="36" cy="44" r="3.2" fill="#0C0D10" stroke={edge} strokeWidth="1" />
-            <path d="M36 4 C 42 16, 41 34, 36 44" fill="none" stroke="url(#sts)" strokeWidth="1.6" strokeLinecap="round" />
-            <circle cx="36" cy="4" r="3.2" fill="#8F939C" />
-            <circle cx="35.2" cy="3.2" r="1" fill="#ECEAE4" />
-          </svg>
-          <span className="in">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={broken ? "#8F939C" : "#5ED39A"} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              {played ? <path d="M5 12.5l4.5 4.5L19 7.5" strokeWidth="3" /> : (
-                <>
-                  <circle cx="12" cy="12" r="9" />
-                  <path d="M12 7v5l3 2" />
-                </>
-              )}
-            </svg>
-            <span className="n">{current}</span>
+        <span className={`d-stag${grow ? " grow" : ""}${broken ? "" : " live"}`}>
+          {/* Rendered in Blender (docs/design/rendered-assets.md). The tag hangs inside the cord's
+              swing and adds its own small swing on the eyelet; the cord is drawn on top of it. */}
+          <span className="d-stag-tag">
+            <img className="d-stag-img" src="/art/streak/tag@2x.webp" srcSet="/art/streak/tag@1x.webp 1x, /art/streak/tag@2x.webp 2x, /art/streak/tag@3x.webp 3x" width="72" height="132" alt="" decoding="async" />
+            <span className="in">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={broken ? "#8F939C" : "#5ED39A"} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                {played ? <path d="M5 12.5l4.5 4.5L19 7.5" strokeWidth="3" /> : (
+                  <>
+                    <circle cx="12" cy="12" r="9" />
+                    <path d="M12 7v5l3 2" />
+                  </>
+                )}
+              </svg>
+              <span className="n">{current}</span>
+            </span>
           </span>
+          <img className="d-stag-cord" src="/art/streak/cord@2x.webp" srcSet="/art/streak/cord@1x.webp 1x, /art/streak/cord@2x.webp 2x, /art/streak/cord@3x.webp 3x" width="72" height="132" alt="" decoding="async" />
         </span>
       </Link>
       <div className="pop" role="tooltip">

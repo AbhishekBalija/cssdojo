@@ -53,6 +53,23 @@ const RAIL: AssetSpec = {
   },
 };
 
+// The streak tag: canvas 72 x 132. Two full-canvas layers; the tag hangs inside the cord, so it
+// swings with the cord around the nail and a little more around its own eyelet.
+const STREAK: AssetSpec = {
+  asset: "streak",
+  canvas: { width: 72, height: 132 },
+  crops: [
+    { name: "cord", layer: "cord", x: 0, width: 72 },
+    { name: "tag", layer: "tag", x: 0, width: 72 },
+  ],
+  meta: {
+    cordPivot: { x: "36px", y: "4px" },
+    tagPivot: { x: "36px", y: "44px" },
+    // Free face for the live icon and number.
+    face: { top: 58, left: 9, right: 9 },
+  },
+};
+
 async function exportAsset(spec: AssetSpec): Promise<void> {
   const outDir = path.join(OUT, spec.asset);
   await mkdir(outDir, { recursive: true });
@@ -87,3 +104,4 @@ async function exportAsset(spec: AssetSpec): Promise<void> {
 }
 
 await exportAsset(RAIL);
+await exportAsset(STREAK);

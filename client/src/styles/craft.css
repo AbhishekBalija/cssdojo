@@ -61,8 +61,12 @@
 /* streak tag hanging from the header */
 .d-streak{position:relative;justify-self:center;align-self:start;height:56px}
 .d-streak>a{position:relative;z-index:2;display:block;width:72px;height:132px;margin-top:-2px;text-decoration:none}
-.d-stag{position:relative;display:block;width:72px;height:132px;transform-origin:36px 4px;animation:d-swing 5s ease-in-out infinite;filter:drop-shadow(0 10px 14px rgba(0,0,0,.5))}
-.d-stag svg.shape{position:absolute;inset:0;overflow:visible}
+.d-stag{position:relative;display:block;width:72px;height:132px;transform-origin:36px 4px;animation:d-swing 5s ease-in-out infinite;filter:drop-shadow(1px 3px 2px rgba(0,0,0,.5)) drop-shadow(4px 12px 12px rgba(0,0,0,.4))}
+[data-theme="light"] .d-stag{filter:drop-shadow(1px 2px 1.5px rgba(30,32,40,.22)) drop-shadow(4px 12px 14px rgba(30,32,40,.16))}
+/* Rendered tag and cord (docs/design/rendered-assets.md): same 72 x 132 canvas, so they line up. */
+.d-stag-tag{position:absolute;inset:0;transform-origin:36px 44px}
+.d-stag-img,.d-stag-cord{position:absolute;left:0;top:0;width:72px;height:132px;pointer-events:none;user-select:none}
+.d-stag.live .d-stag-img{filter:drop-shadow(0 0 1.5px rgba(94,211,154,.55))}
 .d-stag .in{position:absolute;left:9px;right:9px;top:58px;display:flex;flex-direction:column;align-items:center;gap:8px}
 .d-stag .n{font:700 26px/1 var(--font-ui);font-variant-numeric:tabular-nums;color:#F4F5F7}
 @keyframes d-swing{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
@@ -562,6 +566,9 @@ html[data-ligatures] .cm-content{font-variant-ligatures:normal}
 .d-ann .lv:before,.d-lvdot:before{box-shadow:none}
 .d-stag{animation:none}
 .d-streak>a:hover .d-stag,.d-stag.grow{animation:d-swing1 .3s var(--d-ease)}
+/* The tag lags a touch behind the cord, like a real tag on a loop. */
+.d-streak>a:hover .d-stag-tag,.d-stag.grow .d-stag-tag{animation:d-swing2 .3s var(--d-ease)}
+@keyframes d-swing2{0%{transform:rotate(0)}35%{transform:rotate(-3deg)}70%{transform:rotate(1.5deg)}100%{transform:rotate(0)}}
 @keyframes d-swing1{0%{transform:rotate(0)}25%{transform:rotate(7deg)}55%{transform:rotate(-4deg)}80%{transform:rotate(2deg)}100%{transform:rotate(0)}}
 .w-r.moved{animation-duration:280ms}
 .d-tabs{position:relative}
@@ -570,7 +577,7 @@ html[data-ligatures] .cm-content{font-variant-ligatures:normal}
 .d-pagein{animation:d-fade .12s var(--d-ease)}
 .d-wait{animation:d-fade .12s var(--d-ease) .3s both}
 ::view-transition-old(root),::view-transition-new(root){animation-duration:.15s;animation-timing-function:var(--d-ease)}
-@media (prefers-reduced-motion:reduce){.d-tst,.d-pagein,.d-wait,.d-stag.grow,.d-streak>a:hover .d-stag{animation:none}.d-roll>span,.d-tabs .glide{transition:none}}
+@media (prefers-reduced-motion:reduce){.d-tst,.d-pagein,.d-wait,.d-stag.grow,.d-streak>a:hover .d-stag,.d-stag.grow .d-stag-tag,.d-streak>a:hover .d-stag-tag{animation:none}.d-roll>span,.d-tabs .glide{transition:none}}
 /* No opacity on .mm itself: that would isolate the blend. Each layer fades on its own. */
 .frame .mm{position:absolute;inset:0;pointer-events:none}
 .frame .mm>*{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity .2s var(--d-ease)}

@@ -1,0 +1,31 @@
+{
+  "canvas": {
+    "width": 72,
+    "height": 132
+  },
+  "pieces": {
+    "cord": {
+      "width": 72,
+      "height": 132,
+      "bytes2x": 1988
+    },
+    "tag": {
+      "width": 72,
+      "height": 132,
+      "bytes2x": 2928
+    }
+  },
+  "cordPivot": {
+    "x": "36px",
+    "y": "4px"
+  },
+  "tagPivot": {
+    "x": "36px",
+    "y": "44px"
+  },
+  "face": {
+    "top": 58,
+    "left": 9,
+    "right": 9
+  }
+}
