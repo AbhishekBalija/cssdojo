@@ -47,7 +47,7 @@ export function PackCard({ p }: { p: PackSummary }) {
   const leaders = [...new Set(p.challenges.flatMap((x) => (x.top ? [x.top.handle] : [])))].slice(0, 3);
   const cta = solved === p.challenges.length ? "Improve scores" : solved + tried === 0 ? "Play" : "Continue";
   return (
-    <article className="d-banded" style={{ ["--bm" as string]: c.md, ["--ba" as string]: c.acc, display: "grid", gridTemplateColumns: "minmax(0,300px) minmax(0,1fr)", gap: 28 }}>
+    <article className="d-banded d-packcard" style={{ ["--bm" as string]: c.md, ["--ba" as string]: c.acc, display: "grid", gridTemplateColumns: "minmax(0,300px) minmax(0,1fr)", gap: 28 }}>
       <BeltBand belt={belt} />
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         <span style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>

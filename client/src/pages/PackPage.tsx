@@ -17,7 +17,7 @@ function solvedOf(p: PackDetail) {
   return { solved, tried };
 }
 
-function ChallengeCard({ c, next, start }: { c: PackChallengeTile; next: boolean; start: boolean }) {
+function ChallengeCard({ c, next }: { c: PackChallengeTile; next: boolean }) {
   const solved = c.best !== null && c.best >= SOLVED_AT;
   const card = (
     <div className={`d-pcard${next ? " next" : ""}`}>
@@ -25,10 +25,7 @@ function ChallengeCard({ c, next, start }: { c: PackChallengeTile; next: boolean
         <HoverThumb id={c.id} title={c.title} background={c.background} />
         <span className="n">{n3(c.number)}</span>
       </Link>
-      <span className="ttl">
-        {c.title}
-        {next ? <span className="d-chip new">{start ? "Start" : "Next"}</span> : null}
-      </span>
+      <span className="ttl">{c.title}</span>
       <span className="st">
         {solved ? (
           <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -63,7 +60,7 @@ function ChallengeCard({ c, next, start }: { c: PackChallengeTile; next: boolean
           </Link>
         )}
       </span>
-      <span className="top">{c.top ? `Top ${c.top.score.toFixed(1)} · ${c.top.handle}` : "No scores yet. Be the first."}</span>
+      <span className="top">{c.top ? `Top ${c.top.score.toFixed(1)} · ${c.top.handle}` : "No scores yet"}</span>
     </div>
   );
   return next ? <Hang>{card}</Hang> : card;
@@ -201,7 +198,7 @@ export function PackPage() {
           <div className="d-packbody">
             <div className="d-pgrid">
               {p.challenges.map((x) => (
-                <ChallengeCard key={x.id} c={x} next={x.id === nextC?.id} start={start} />
+                <ChallengeCard key={x.id} c={x} next={x.id === nextC?.id} />
               ))}
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
