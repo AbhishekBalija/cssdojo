@@ -74,6 +74,8 @@ export const PublicChallengeSchema = z.object({
   brief: z.string(),
   frames: z.array(z.enum(FRAMES)),
   hooks: z.record(z.string(), z.string()),
+  /** Which hook the scorer hovers and tabs to, so the preview can match it. */
+  states: z.object({ hover: z.string().optional(), focus: z.string().optional() }),
   checks: z.array(z.enum(CHECK_IDS)),
   colors: z.array(z.string()),
   /** Fonts the target uses. They are bundled and already loaded in the preview. */

@@ -74,6 +74,11 @@ Concepts used in CSS Dojo, from basic to advanced, with why and how they were bu
 **What:** `tail = tail.then(task)` runs tasks one after another.
 **Why:** the free host has 512 MB, so only one page renders at a time.
 
+### Showing the player what the score counted
+**What:** after a Submit the scorer returns a small mismatch map per state (red = shape, amber = colour) built from the same pixel flags that make the score. The play screen lays it over the output until the code changes.
+**Why:** the live Mismatch view is a CSS `mix-blend-mode: difference` between the player's browser and the target PNG. It hides small colour gaps (a background 7/255 off looks black) and shows font anti-aliasing noise from the player's OS that the scorer never sees. The map comes from the scorer, so it can't disagree with the score.
+**How:** the maps are not stored. The worker puts them in an in-memory map keyed by submission id, capped at 300 entries and 10 minutes (a tiny time-to-live cache: a JS `Map` keeps insertion order, so the first key is always the oldest to evict). Only the request the play screen waits on returns them.
+
 ## Auth
 
 **Q: How does a guest's progress survive signing in?**

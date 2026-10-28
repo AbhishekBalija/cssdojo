@@ -12,7 +12,41 @@ function prepForStates(code: string): string {
   return code
     .replace(/:hover/g, ":is(:hover,.dj-hover)")
     .replace(/:focus-visible/g, ":is(:focus-visible,.dj-focus)")
+    .replace(/:focus-within/g, ":is(:focus-within,.dj-focus-within)")
     .replace(/:focus(?![-\w])/g, ":is(:focus,.dj-focus)");
+}
+
+const FOCUSABLE = "a[href], button, input, select, textarea, summary, [tabindex]:not([tabindex='-1'])";
+
+/**
+ * Marks the same elements the scorer puts in a state. The scorer moves the
+ * mouse to the centre of the hover hook, so :hover matches the element under
+ * that point and its ancestors. It tabs to the focus hook, so :focus matches
+ * that one element and :focus-within its ancestors.
+ */
+function applyState(d: Document, state: PreviewState, hoverSel: string | undefined, focusSel: string | undefined) {
+  d.querySelectorAll(".dj-hover, .dj-focus, .dj-focus-within").forEach((el) => el.classList.remove("dj-hover", "dj-focus", "dj-focus-within"));
+  const find = (sel: string | undefined) => {
+    if (!sel) return null;
+    try {
+      return d.querySelector(sel);
+    } catch {
+      return null;
+    }
+  };
+  if (state === "hover") {
+    const hook = find(hoverSel);
+    if (!hook) return;
+    const r = hook.getBoundingClientRect();
+    let el: Element | null = d.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2) ?? hook;
+    for (; el && el !== d.documentElement; el = el.parentElement) el.classList.add("dj-hover");
+  } else if (state === "focus") {
+    const hook = find(focusSel);
+    const target = hook && (hook.matches(FOCUSABLE) ? hook : hook.querySelector(FOCUSABLE));
+    if (!target) return;
+    target.classList.add("dj-focus");
+    for (let el: Element | null = target; el && el !== d.documentElement; el = el.parentElement) el.classList.add("dj-focus-within");
+  }
 }
 
 function fontBase(): string {
@@ -22,17 +56,25 @@ function fontBase(): string {
 export function OutputFrame({
   code,
   challengeId,
+  hooks,
+  states,
   state,
   slide,
   diff,
+  scoreMap,
   onion = false,
   onSlide,
 }: {
   code: string;
   challengeId: string;
+  /** The challenge's hooks and which of them the scorer hovers and tabs to. */
+  hooks: Record<string, string>;
+  states: { hover?: string | undefined; focus?: string | undefined };
   state: PreviewState;
   slide: boolean;
   diff: boolean;
+  /** What the scorer counted wrong in this state on your last Submit, shown instead of the live mismatch while the code is unchanged. */
+  scoreMap?: string | undefined;
   /** The target at 30% over your output. */
   onion?: boolean;
   onSlide?: () => void;
@@ -51,13 +93,12 @@ export function OutputFrame({
   useEffect(() => {
     const f = iframeRef.current;
     if (!f) return;
+    const hoverSel = states.hover ? hooks[states.hover] : undefined;
+    const focusSel = states.focus ? hooks[states.focus] : undefined;
     const apply = () => {
       try {
         const d = f.contentDocument;
-        d?.querySelectorAll("body *").forEach((el) => {
-          el.classList.toggle("dj-hover", state === "hover");
-          el.classList.toggle("dj-focus", state === "focus");
-        });
+        if (d) applyState(d, state, hoverSel, focusSel);
       } catch {
         /* cross-origin: ignore */
       }
@@ -65,7 +106,7 @@ export function OutputFrame({
     apply();
     f.addEventListener("load", apply);
     return () => f.removeEventListener("load", apply);
-  }, [state, srcDoc]);
+  }, [state, srcDoc, hooks, states]);
 
   useEffect(() => {
     if (!pos) return;
@@ -99,8 +140,10 @@ export function OutputFrame({
         <div className="over" style={{ clipPath: clip }}>
           <img src={targetSrc} alt="" width={400} height={300} style={{ width: "100%", height: "100%", display: "block" }} draggable={false} />
         </div>
-        {/* Mismatch: where your output and the target differ shows red. */}
-        <div className={`mm${diff ? " on" : ""}`} aria-hidden="true">
+        {/* Mismatch: where your output and the target differ shows red. After a
+            Submit, the scorer's own map replaces it until the code changes. */}
+        {scoreMap ? <img className={`smap${diff ? " on" : ""}`} src={scoreMap} alt="" width={400} height={300} draggable={false} aria-hidden="true" data-testid="score-map" /> : null}
+        <div className={`mm${diff && !scoreMap ? " on" : ""}`} aria-hidden="true">
           <img src={targetSrc} alt="" width={400} height={300} draggable={false} />
           <span className="tint" />
         </div>
