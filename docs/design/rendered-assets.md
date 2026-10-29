@@ -1,6 +1,6 @@
 # Rendered assets: spec
 
-Status: in progress, 2026-10-28. Done: brass rail, streak tag, belt pillars, cloth banners, player tokens. Next: belt knot and band. Replaces the hand-drawn SVG and CSS objects (belt knot, belt band, brass rail, streak tag, belt pillars) with images rendered in Blender, because brass shine and cloth folds need real light and reflections.
+Status: in progress, 2026-10-28. Done: brass rail, streak tag, belt pillars, cloth banners, player tokens, belt knot, achievement badges (pilot: belts, pack cleared, streaks). Next: the other 9 badges. Replaces the hand-drawn SVG and CSS objects (belt knot, belt band, brass rail, streak tag, belt pillars) with images rendered in Blender, because brass shine and cloth folds need real light and reflections.
 
 ## Art direction (same for every asset, so they read as one set)
 
@@ -90,6 +90,21 @@ Motion on the site is CSS `transform` and `opacity` only (`motion/approved-polis
 
 - The current SVG components stay as the fallback until each image ships. They are swapped one asset at a time, each in its own PR.
 - No new motion without approval. Existing hover and swing rules from `motion/approved-polish.md` apply to the image versions, and all motion stays off under `prefers-reduced-motion`.
+
+## Belt knot and achievement badges
+
+Built in the studio file with their own light rig ("Badge Lights": key, fill, rim, top), not the shared one, so every badge has the same contrasty look. Rendered by the text `badge_render.py` in the .blend; `bun run art` cuts them. Each layer names the objects it draws, the objects in front of it (holdouts), the objects that only catch its shadow (shadow catchers) and the objects left out. Everything else is hidden from the camera but still casts its shadow, so stacked layers match the full render.
+
+| Asset | Size | Layers (back to front) | Motion |
+|---|---|---|---|
+| Belt knot (`knot`), one set per belt | 56 x 64, band top 10px, 22px band | shadow on the band, left tail, right tail, knot | tails swing when the card is hovered |
+| Belt badges (`badge-belt`), one set per belt | 64 x 64 | belt ring and knot, left tail, right tail | tails sway slowly, out of step |
+| Pack cleared (`badge-scroll`) | 64 x 64 | scroll (indigo brocade, gold lattice, lacquer rod, braided cord), seal | the seal stamps on in the earn toast and gives a little on hover |
+| Streaks 3, 7, 30 (`badge-lantern`) | 64 x 64 | lit, dim, unlit | sways from its ring; dim fades over lit like a flame; unlit is the locked look; lights up in the earn toast |
+
+The cotton is one procedural material: 8 stitch rows, dashed thread, woven noise, a stitched hem on the tail ends. The lantern number is the site's Instrument Serif, drawn by headless Chromium (Blender cannot read woff2) and projected onto the washi as ink.
+
+Used on: profile badges, the earn toast and the bell, the result card, the belt earned card, the Assets page (badges); pack cards, the pack page, the belt record and the sidebar belt (knot). Locked badges are greyscale in CSS; lanterns use their unlit render.
 
 ## Order
 

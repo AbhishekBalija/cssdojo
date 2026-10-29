@@ -1,0 +1,26 @@
+{
+  "canvas": {
+    "width": 64,
+    "height": 64
+  },
+  "pieces": {
+    "scroll": {
+      "width": 64,
+      "height": 64,
+      "bytes2x": 3548
+    },
+    "seal": {
+      "width": 64,
+      "height": 64,
+      "bytes2x": 1258
+    }
+  },
+  "stack": [
+    "scroll",
+    "seal"
+  ],
+  "sealCentre": {
+    "x": "31.88px",
+    "y": "28.29px"
+  }
+}

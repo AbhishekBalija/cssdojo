@@ -1,9 +1,10 @@
 import { Link } from "@tanstack/react-router";
 import { BADGE_GROUPS, BADGES, BELTS, SOLVED_AT, SOLVES_PER_BELT, type BadgeDef, type BadgeGroup, type BadgeView, type Belt, type ProfileView } from "@cssdojo/shared";
 import { useId, type ReactNode } from "react";
+import { BadgeArt, hasBadgeArt } from "@/components/BadgeArt";
+import { Token } from "@/components/Token";
 import { CLOTH, I, Knot, Mountain } from "@/components/Craft";
 import { scoreClass } from "@/components/KataStage";
-import { initials } from "@/components/Shell";
 import { EmptyState } from "@/components/States";
 import { staticUrl } from "@/lib/api";
 import { packName, shortDate, useProfile, usePacks } from "@/lib/dojo";
@@ -160,10 +161,14 @@ function Badge({ b, v }: { b: BadgeDef; v: BadgeView | undefined }) {
   const color = b.group === "belts" ? CLOTH[b.id.slice(5) as Belt].acc : GROUP_COLOR[b.group];
   const sub = earned ? shortDate(v.earnedAt ?? "") : !b.enabled ? "soon" : b.goal && v?.progress !== null && v?.progress !== undefined ? `${v.progress} of ${b.goal}` : "locked";
   return (
-    <span className={`d-badge${earned ? " on" : ""}`} title={b.description}>
-      <span className="d-medal big" style={{ ["--c" as string]: earned ? color : "var(--line-strong)" }}>
-        <BadgeIcon b={b} />
-      </span>
+    <span className={`d-badge${earned ? " on" : ""}${hasBadgeArt(b.id) ? " art" : ""}`} title={b.description}>
+      {hasBadgeArt(b.id) ? (
+        <BadgeArt b={b} earned={earned} />
+      ) : (
+        <span className="d-medal big" style={{ ["--c" as string]: earned ? color : "var(--line-strong)" }}>
+          <BadgeIcon b={b} />
+        </span>
+      )}
       <b>{b.name}</b>
       <span>{sub}</span>
     </span>
@@ -247,7 +252,9 @@ function ProfileBody({ p, own }: { p: ProfileView; own: boolean }) {
       <Mountain />
       <section className="d-card d-prof" style={{ ["--b" as string]: c.acc }}>
         <div className="top">
-          <span className="pring">{p.image ? <img src={p.image} alt="" /> : <span>{initials(p.handle)}</span>}</span>
+          <span className="pring">
+            <Token handle={p.handle} image={p.image} me={own} size={72} />
+          </span>
           <span style={{ display: "flex", flexDirection: "column", gap: 4, flex: 1, minWidth: 0 }}>
             <span className="d-kick">{own ? "Profile" : "Player"}</span>
             <h1 className="d-art" style={{ fontSize: 52, lineHeight: "56px", overflow: "hidden", textOverflow: "ellipsis" }}>

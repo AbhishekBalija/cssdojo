@@ -90,29 +90,18 @@ export function Hang({ children, cords = true, lamp = true }: { children: ReactN
   );
 }
 
+/** The belt knot (docs/design/rendered-assets.md): rendered cotton, front on, in layers: the
+ *  knot's shadow on the band, the two tails (they sway on hover) and the knot. `x` is where the
+ *  old 44px-wide knot started, so callers keep their spacing; the band is 22px at scale 1. */
 export function Knot({ belt, x = 64, scale = 1 }: { belt: Belt; x?: number | string; scale?: number }) {
-  const c = CLOTH[belt];
-  const id = useId();
+  const left = typeof x === "number" ? x - 6 * scale : `calc(${x} - ${6 * scale}px)`;
+  const base = `/art/knot/${belt}`;
   return (
-    <svg width={44 * scale} height={58 * scale} viewBox="0 0 44 58" aria-hidden="true" style={{ position: "absolute", left: x, top: -4 * scale, filter: "drop-shadow(0 6px 6px rgba(0,0,0,.45))" }}>
-      <defs>
-        <linearGradient id={`${id}g`} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor={c.lt} />
-          <stop offset=".6" stopColor={c.md} />
-          <stop offset="1" stopColor={c.dk} />
-        </linearGradient>
-        <linearGradient id={`${id}t`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor={c.md} />
-          <stop offset="1" stopColor={c.dk} />
-        </linearGradient>
-      </defs>
-      <path d="M15 20 L6 54 L14 56 L21 24Z" fill={`url(#${id}t)`} />
-      <path d="M27 22 L33 55 L41 52 L30 19Z" fill={`url(#${id}t)`} />
-      <path d="M6 54 L14 56 M33 55 L41 52" stroke="#000" strokeOpacity=".3" />
-      <rect x="11" y="4" width="22" height="22" rx="4" fill={`url(#${id}g)`} />
-      <path d="M13 9 Q22 15 31 9 M13 21 Q22 15 31 21" stroke="#000" strokeOpacity=".22" fill="none" />
-      <rect x="11.5" y="4.5" width="21" height="21" rx="3.5" fill="none" stroke="#fff" strokeOpacity=".25" />
-    </svg>
+    <span className="d-knot" aria-hidden="true" style={{ left, top: -10 * scale, width: 56 * scale, height: 64 * scale }}>
+      {["shadow", "tail-l", "tail-r", "knot"].map((l) => (
+        <img key={l} className={l} src={`${base}-${l}@1x.webp`} srcSet={`${base}-${l}@2x.webp 2x, ${base}-${l}@3x.webp 3x`} alt="" draggable={false} />
+      ))}
+    </span>
   );
 }
 
@@ -123,20 +112,23 @@ export function BeltBand({ belt, height = 22, knotX = 64 }: { belt: Belt; height
   const stitch = belt === "black" ? "rgba(236,234,228,.28)" : "rgba(12,13,16,.30)";
   return (
     <span aria-hidden="true" style={{ position: "absolute", left: 0, right: 0, top: 0, height }}>
-      <svg width="100%" height={height} viewBox={`0 0 100 ${height}`} preserveAspectRatio="none" style={{ display: "block" }}>
-        <defs>
-          <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor={c.lt} />
-            <stop offset=".5" stopColor={c.md} />
-            <stop offset="1" stopColor={c.dk} />
-          </linearGradient>
-        </defs>
-        <rect width="100" height={height} fill={`url(#${id})`} />
-        <path d={`M0 ${height / 2} H100`} stroke={stitch} strokeDasharray="1.2 1" vectorEffect="non-scaling-stroke" />
-        <path d="M0 .5 H100" stroke="#fff" strokeOpacity=".3" vectorEffect="non-scaling-stroke" />
-        <path d={`M0 ${height - 0.5} H100`} stroke="#000" strokeOpacity=".45" vectorEffect="non-scaling-stroke" />
-      </svg>
-      <Knot belt={belt} x={knotX} />
+      {/* The card does not clip (the knot rises above the band), so the band follows the card's corners itself. */}
+      <span style={{ display: "block", overflow: "hidden", borderRadius: "15px 15px 0 0" }}>
+        <svg width="100%" height={height} viewBox={`0 0 100 ${height}`} preserveAspectRatio="none" style={{ display: "block" }}>
+          <defs>
+            <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stopColor={c.lt} />
+              <stop offset=".5" stopColor={c.md} />
+              <stop offset="1" stopColor={c.dk} />
+            </linearGradient>
+          </defs>
+          <rect width="100" height={height} fill={`url(#${id})`} />
+          <path d={`M0 ${height / 2} H100`} stroke={stitch} strokeDasharray="1.2 1" vectorEffect="non-scaling-stroke" />
+          <path d="M0 .5 H100" stroke="#fff" strokeOpacity=".3" vectorEffect="non-scaling-stroke" />
+          <path d={`M0 ${height - 0.5} H100`} stroke="#000" strokeOpacity=".45" vectorEffect="non-scaling-stroke" />
+        </svg>
+      </span>
+      <Knot belt={belt} x={knotX} scale={height / 22} />
     </span>
   );
 }

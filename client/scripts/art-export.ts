@@ -103,6 +103,47 @@ const TOKEN: AssetSpec = {
   meta: { faceRadius: 19.2, rimRadius: 23.5 },
 };
 
+// Achievement badges: 64 x 64, each a real object rendered with the badge light rig, cut into the
+// layers its animation moves (design/blender, text "badge_render.py"). Layers stack in the order
+// listed and line up pixel for pixel.
+const full = (layer: string): Crop => ({ name: layer, layer, x: 0, width: 64 });
+const BELTS = ["white", "yellow", "green", "brown", "black"];
+
+// The belt knot: the band and knot stay still; each tail sways from where it leaves the knot.
+const BADGE_BELT: AssetSpec = {
+  asset: "badge-belt",
+  canvas: { width: 64, height: 64 },
+  crops: BELTS.flatMap((b) => ["belt", "tail-l", "tail-r"].map((l) => full(`${b}-${l}`))),
+  meta: { stack: ["belt", "tail-l", "tail-r"], pivots: { "tail-l": { x: "31.15px", y: "19.26px" }, "tail-r": { x: "32.85px", y: "19.08px" } } },
+};
+
+// The sealed scroll: the seal stamps in on earn and carries its own shadow.
+const BADGE_SCROLL: AssetSpec = {
+  asset: "badge-scroll",
+  canvas: { width: 64, height: 64 },
+  crops: [full("scroll"), full("seal")],
+  meta: { stack: ["scroll", "seal"], sealCentre: { x: "31.88px", y: "28.29px" } },
+};
+
+// The streak lantern, one per streak badge: lit and dim crossfade for the flicker, unlit is the
+// locked look. The whole lantern sways from its hanger ring.
+const BADGE_LANTERN: AssetSpec = {
+  asset: "badge-lantern",
+  canvas: { width: 64, height: 64 },
+  crops: ["3", "7", "30"].flatMap((n) => ["lit", "dim", "unlit"].map((s) => full(`${n}-${s}`))),
+  meta: { pivot: { x: "32px", y: "7.48px" } },
+};
+
+// The belt knot for the flat cloth bands (pack cards, pack page, the belt record): 56 x 64, front on,
+// the band's top edge 10px below the canvas top and 22px tall. The shadow layer is the knot's
+// shadow on the band; the tails sway under the knot.
+const KNOT: AssetSpec = {
+  asset: "knot",
+  canvas: { width: 56, height: 64 },
+  crops: BELTS.flatMap((b) => ["shadow", "tail-l", "tail-r", "knot"].map((l): Crop => ({ name: `${b}-${l}`, layer: `${b}-${l}`, x: 0, width: 56 }))),
+  meta: { stack: ["shadow", "tail-l", "tail-r", "knot"], bandTop: 10, bandHeight: 22, pivots: { "tail-l": { x: "56.25%", y: "40.63%" }, "tail-r": { x: "45.54%", y: "40.63%" } } },
+};
+
 async function exportAsset(spec: AssetSpec): Promise<void> {
   const outDir = path.join(OUT, spec.asset);
   await mkdir(outDir, { recursive: true });
@@ -141,6 +182,10 @@ await exportAsset(RAIL);
 await exportAsset(STREAK);
 await exportAsset(PILLAR);
 await exportAsset(TOKEN);
+await exportAsset(BADGE_BELT);
+await exportAsset(BADGE_SCROLL);
+await exportAsset(BADGE_LANTERN);
+await exportAsset(KNOT);
 
 // Banner fabric from a real scan: Poly Haven "Rough Linen" (CC0, polyhaven.com/a/rough_linen).
 // The scan is blue linen, so only its structure is kept: the normal map (thread relief), the

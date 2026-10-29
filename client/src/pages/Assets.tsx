@@ -1,4 +1,5 @@
-import { BELTS } from "@cssdojo/shared";
+import { BADGES, BELTS } from "@cssdojo/shared";
+import { BadgeArt, hasBadgeArt } from "@/components/BadgeArt";
 import { Belt } from "@/components/Belt";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
@@ -69,6 +70,19 @@ export function Assets() {
               ))}
             </div>
           </Spec>
+        </div>
+
+        <h2 className="h2">Badge art</h2>
+        <p className="note">Rendered in design/blender, layered for motion. Earned, then locked.</p>
+        <div className="asset-grid">
+          {BADGES.filter((b) => hasBadgeArt(b.id)).map((b) => (
+            <Spec key={b.id} title={b.id}>
+              <div className="row-gap">
+                <BadgeArt b={b} earned />
+                <BadgeArt b={b} earned={false} />
+              </div>
+            </Spec>
+          ))}
         </div>
 
         <h2 className="h2">Share image</h2>

@@ -1,0 +1,98 @@
+{
+  "canvas": {
+    "width": 64,
+    "height": 64
+  },
+  "pieces": {
+    "white-belt": {
+      "width": 64,
+      "height": 64,
+      "bytes2x": 1538
+    },
+    "white-tail-l": {
+      "width": 64,
+      "height": 64,
+      "bytes2x": 1106
+    },
+    "white-tail-r": {
+      "width": 64,
+      "height": 64,
+      "bytes2x": 1050
+    },
+    "yellow-belt": {
+      "width": 64,
+      "height": 64,
+      "bytes2x": 2020
+    },
+    "yellow-tail-l": {
+      "width": 64,
+      "height": 64,
+      "bytes2x": 1454
+    },
+    "yellow-tail-r": {
+      "width": 64,
+      "height": 64,
+      "bytes2x": 1352
+    },
+    "green-belt": {
+      "width": 64,
+      "height": 64,
+      "bytes2x": 1864
+    },
+    "green-tail-l": {
+      "width": 64,
+      "height": 64,
+      "bytes2x": 1322
+    },
+    "green-tail-r": {
+      "width": 64,
+      "height": 64,
+      "bytes2x": 1274
+    },
+    "brown-belt": {
+      "width": 64,
+      "height": 64,
+      "bytes2x": 1836
+    },
+    "brown-tail-l": {
+      "width": 64,
+      "height": 64,
+      "bytes2x": 1328
+    },
+    "brown-tail-r": {
+      "width": 64,
+      "height": 64,
+      "bytes2x": 1230
+    },
+    "black-belt": {
+      "width": 64,
+      "height": 64,
+      "bytes2x": 1428
+    },
+    "black-tail-l": {
+      "width": 64,
+      "height": 64,
+      "bytes2x": 996
+    },
+    "black-tail-r": {
+      "width": 64,
+      "height": 64,
+      "bytes2x": 984
+    }
+  },
+  "stack": [
+    "belt",
+    "tail-l",
+    "tail-r"
+  ],
+  "pivots": {
+    "tail-l": {
+      "x": "31.15px",
+      "y": "19.26px"
+    },
+    "tail-r": {
+      "x": "32.85px",
+      "y": "19.08px"
+    }
+  }
+}

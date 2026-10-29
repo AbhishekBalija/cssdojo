@@ -26,6 +26,9 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - Unused exports and the unused `codemirror` meta package (found by `bunx fallow`).
 
 ### Changed
+- Achievement badges are now rendered objects (pilot of 9): a tied cotton belt per belt colour, a sealed brocade scroll for Pack cleared, and a paper lantern with its number in ink for each streak. Layered so the tails sway, the lantern flickers and sways, and the seal stamps on in the earn toast. On the profile, toasts, the bell, the result card, the belt earned card and the Assets page. 1 to 4 KB per layer.
+- The belt knot on pack cards, the pack page, the belt record and the sidebar belt is now rendered stitched cotton with its real shadow on the band; the tails swing when a card is hovered.
+- The header account button and the profile avatar use the enamel token too.
 - Player avatars are now enamel tokens: a Blender-rendered brass rim over a glassy enamel face in the player's own colour, with initials, or their photo inside the rim. Used on pack boards, the Packs page, pack cards, the Wall and the cloth banners. About 5 KB.
 - The top 3 banners on the Wall are now real cloth: a live cloth simulation (gathered on the rod, buckling folds, gusting wind) drawn with three.js in a scanned linen (Poly Haven Rough Linen, CC0), with fabric sheen, soft self-shadows, stitched hems and a rod pocket. The rank, name and token are printed on the fabric and fold with it. Brass rails like the rest of the set. three.js loads only on that page; SVG banner without WebGL; one still frame under reduced motion.
 - Belts on the wall are now Blender-rendered black marble plinths (veins, fine cracks, worn edges, brass foot), one image per belt at its own height so the stone never stretches. The medal sits on the top face; names and counts sit on a plaque row underneath. About 27 KB for all five at 2x.

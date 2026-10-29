@@ -1,0 +1,57 @@
+{
+  "canvas": {
+    "width": 64,
+    "height": 64
+  },
+  "pieces": {
+    "3-lit": {
+      "width": 64,
+      "height": 64,
+      "bytes2x": 2692
+    },
+    "3-dim": {
+      "width": 64,
+      "height": 64,
+      "bytes2x": 2634
+    },
+    "3-unlit": {
+      "width": 64,
+      "height": 64,
+      "bytes2x": 2540
+    },
+    "7-lit": {
+      "width": 64,
+      "height": 64,
+      "bytes2x": 2644
+    },
+    "7-dim": {
+      "width": 64,
+      "height": 64,
+      "bytes2x": 2606
+    },
+    "7-unlit": {
+      "width": 64,
+      "height": 64,
+      "bytes2x": 2510
+    },
+    "30-lit": {
+      "width": 64,
+      "height": 64,
+      "bytes2x": 2780
+    },
+    "30-dim": {
+      "width": 64,
+      "height": 64,
+      "bytes2x": 2744
+    },
+    "30-unlit": {
+      "width": 64,
+      "height": 64,
+      "bytes2x": 2614
+    }
+  },
+  "pivot": {
+    "x": "32px",
+    "y": "7.48px"
+  }
+}

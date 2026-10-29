@@ -92,6 +92,9 @@ OAuth cannot run in CI, so Playwright signs in through `POST /api/test-login`, b
 
 ## Rendered art and WebGL
 
+**Q: How do you cut a 3D render into layers that animate separately but still line up?**
+Each layer is its own render from the same camera. Its objects render normally; objects in front of it are holdouts (they punch transparent holes, so the layer is hidden where it really is covered); everything else is hidden from the camera but still casts shadows, so lighting stays the same. Stacked back to front, the layers match the full render pixel for pixel. When a part must bring its shadow with it (the seal stamping on), the surface under it is a shadow catcher: it renders only the shadow, as transparency.
+
 **Q: How do the cloth banners move like real cloth?**
 A small Verlet simulation. Each point remembers where it was, so it keeps moving on its own momentum, and springs pull neighbours back to their rest distance. Three tricks make it look like fabric instead of rubber. The top is pinned narrower than the cloth, so the slack drapes. Springs push back only weakly when squashed, so the cloth buckles into folds. Long-range tethers cap each point's distance to the rod, so it never sags. Wind pushes each triangle by how much it faces the wind, so gusts make folds roll. three.js then lights it with a physical fabric material and a scanned linen texture.
 

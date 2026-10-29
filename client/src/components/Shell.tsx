@@ -7,7 +7,9 @@ import { shortDate, useEvents, useNotifications, useSettings } from "@/lib/dojo"
 import { useGuestMerge, useMe } from "@/lib/me";
 import { loadTasks, onTasks, TASKS, type Tasks } from "@/lib/tasks";
 import { storage } from "@/lib/storage";
-import { CLOTH, I } from "./Craft";
+import { BadgeArt, badgeForNote, hasBadgeArt } from "./BadgeArt";
+import { Token } from "./Token";
+import { CLOTH, I, Knot } from "./Craft";
 
 // The app frame from the approved mockup: sidebar on the left, a header with the
 // LIVE line, the hanging streak tag, the bell and you, and the page below.
@@ -56,13 +58,11 @@ function BeltStrip({ belt, have }: { belt: Belt; have: number }) {
         {Array.from({ length: have }, (_, i) => (
           <rect key={i} x={146 + i * 6} y="2" width="4" height="12" fill="#F3F1EC" />
         ))}
-        <g transform={`translate(${knot} -2)`}>
-          <path d="M5 10 L1 22 L5 23 L8 12Z" fill={c.dk} />
-          <path d="M12 11 L16 22 L20 21 L15 9Z" fill={c.dk} />
-          <rect x="3" y="0" width="15" height="15" rx="3" fill="url(#sbb)" />
-          <rect x="3.5" y=".5" width="14" height="14" rx="2.5" fill="none" stroke="#fff" strokeOpacity=".3" />
-        </g>
       </svg>
+      {/* the band is 12px tall, 2px down; the rendered knot is drawn for a 22px band */}
+      <span style={{ position: "absolute", left: 0, right: 0, top: 2 }}>
+        <Knot belt={belt} x={`${(knot / 180) * 100}%`} scale={12 / 22} />
+      </span>
     </span>
   );
 }
@@ -294,6 +294,17 @@ function NoteIcon({ kind }: { kind: NotificationView["kind"] }) {
   );
 }
 
+/** The badge object in a "badge earned" toast; the seal stamps on and the lantern lights. */
+function ToastBadge({ t }: { t: NotificationView }) {
+  const art = badgeForNote(t);
+  if (art && hasBadgeArt(art.id)) return <BadgeArt b={art} earned fresh size={52} />;
+  return (
+    <span className="d-medal" style={{ ["--c" as string]: "#5ED39A", width: 44, height: 44, borderWidth: 2 }}>
+      <NoteIcon kind={t.kind} />
+    </span>
+  );
+}
+
 function Bell() {
   const n = useNotifications();
   const qc = useQueryClient();
@@ -340,11 +351,16 @@ function Bell() {
           {n.data && n.data.items.length ? (
             <ul>
               {n.data.items.map((it) => {
+                const art = badgeForNote(it);
                 const inner = (
                   <>
-                    <span className="d-medal sm" style={{ ["--c" as string]: NOTE_COLOR[it.kind] }}>
-                      <NoteIcon kind={it.kind} />
-                    </span>
+                    {art && hasBadgeArt(art.id) ? (
+                      <BadgeArt b={art} earned size={34} />
+                    ) : (
+                      <span className="d-medal sm" style={{ ["--c" as string]: NOTE_COLOR[it.kind] }}>
+                        <NoteIcon kind={it.kind} />
+                      </span>
+                    )}
                     <span style={{ display: "flex", flexDirection: "column", gap: 3 }}>
                       <b>{it.title}</b>
                       <span className="body">{it.body}</span>
@@ -458,9 +474,7 @@ function NoticeToasts() {
         ) : (
           <div key={t.id} className="d-toast" style={{ ["--c" as string]: "#5ED39A" }} onClick={() => drop(t.id)}>
             <span className="row">
-              <span className="d-medal" style={{ ["--c" as string]: "#5ED39A", width: 44, height: 44, borderWidth: 2 }}>
-                <NoteIcon kind={t.kind} />
-              </span>
+              <ToastBadge t={t} />
               <span style={{ display: "flex", flexDirection: "column", gap: 2 }}>
                 <span className="d-kick" style={{ fontSize: 9.5, letterSpacing: ".16em" }}>
                   {t.kind === "belt" ? "Belt earned" : "Badge earned"}
@@ -487,8 +501,8 @@ function Account() {
     );
   }
   return (
-    <Link to="/me" className="d-round" aria-label="Your profile" style={{ background: "var(--line-strong)" }}>
-      {user.image ? <img src={user.image} alt="" /> : initials(user.handle ?? user.name)}
+    <Link to="/me" className="d-round tok" aria-label="Your profile">
+      <Token handle={user.handle ?? user.name} image={user.image} me size={36} />
     </Link>
   );
 }

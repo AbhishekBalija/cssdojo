@@ -1,0 +1,126 @@
+{
+  "canvas": {
+    "width": 56,
+    "height": 64
+  },
+  "pieces": {
+    "white-shadow": {
+      "width": 56,
+      "height": 64,
+      "bytes2x": 1692
+    },
+    "white-tail-l": {
+      "width": 56,
+      "height": 64,
+      "bytes2x": 1224
+    },
+    "white-tail-r": {
+      "width": 56,
+      "height": 64,
+      "bytes2x": 1010
+    },
+    "white-knot": {
+      "width": 56,
+      "height": 64,
+      "bytes2x": 1560
+    },
+    "yellow-shadow": {
+      "width": 56,
+      "height": 64,
+      "bytes2x": 1632
+    },
+    "yellow-tail-l": {
+      "width": 56,
+      "height": 64,
+      "bytes2x": 1694
+    },
+    "yellow-tail-r": {
+      "width": 56,
+      "height": 64,
+      "bytes2x": 1322
+    },
+    "yellow-knot": {
+      "width": 56,
+      "height": 64,
+      "bytes2x": 2044
+    },
+    "green-shadow": {
+      "width": 56,
+      "height": 64,
+      "bytes2x": 1698
+    },
+    "green-tail-l": {
+      "width": 56,
+      "height": 64,
+      "bytes2x": 1546
+    },
+    "green-tail-r": {
+      "width": 56,
+      "height": 64,
+      "bytes2x": 1276
+    },
+    "green-knot": {
+      "width": 56,
+      "height": 64,
+      "bytes2x": 1962
+    },
+    "brown-shadow": {
+      "width": 56,
+      "height": 64,
+      "bytes2x": 1704
+    },
+    "brown-tail-l": {
+      "width": 56,
+      "height": 64,
+      "bytes2x": 1566
+    },
+    "brown-tail-r": {
+      "width": 56,
+      "height": 64,
+      "bytes2x": 1298
+    },
+    "brown-knot": {
+      "width": 56,
+      "height": 64,
+      "bytes2x": 2002
+    },
+    "black-shadow": {
+      "width": 56,
+      "height": 64,
+      "bytes2x": 1688
+    },
+    "black-tail-l": {
+      "width": 56,
+      "height": 64,
+      "bytes2x": 1084
+    },
+    "black-tail-r": {
+      "width": 56,
+      "height": 64,
+      "bytes2x": 978
+    },
+    "black-knot": {
+      "width": 56,
+      "height": 64,
+      "bytes2x": 1556
+    }
+  },
+  "stack": [
+    "shadow",
+    "tail-l",
+    "tail-r",
+    "knot"
+  ],
+  "bandTop": 10,
+  "bandHeight": 22,
+  "pivots": {
+    "tail-l": {
+      "x": "56.25%",
+      "y": "40.63%"
+    },
+    "tail-r": {
+      "x": "45.54%",
+      "y": "40.63%"
+    }
+  }
+}

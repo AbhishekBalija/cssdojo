@@ -6,6 +6,7 @@ import { packName } from "@/lib/dojo";
 import { useMe } from "@/lib/me";
 import { toast } from "@/lib/toast";
 import { BadgeIcon, BigBelt, GROUP_COLOR } from "@/pages/Profile";
+import { BadgeArt, hasBadgeArt } from "./BadgeArt";
 import { CLOTH, Hang, I } from "./Craft";
 
 // The two moments after a Submit: the result card hanging from the rod, and
@@ -161,9 +162,13 @@ export function ResultCard({
               ) : null}
               {badges.map((b) => (
                 <div key={b.id} className="mv row">
-                  <span className="d-medal" style={{ ["--c" as string]: GROUP_COLOR[b.group] }}>
-                    <BadgeIcon b={b} />
-                  </span>
+                  {hasBadgeArt(b.id) ? (
+                    <BadgeArt b={b} earned fresh size={44} />
+                  ) : (
+                    <span className="d-medal" style={{ ["--c" as string]: GROUP_COLOR[b.group] }}>
+                      <BadgeIcon b={b} />
+                    </span>
+                  )}
                   <span className="tx">
                     <b>{b.name}</b> badge earned
                   </span>
@@ -207,6 +212,7 @@ function listNames(names: string[]): string {
 
 export function BeltEarned({ belt, pack, onClose }: { belt: Belt; pack: PackSummary | undefined; onClose: () => void }) {
   const c = CLOTH[belt];
+  const beltBadge = BADGES.find((b) => b.id === `belt-${belt}`);
   const next = BELTS[BELTS.indexOf(belt) + 1];
   const nextMax: Record<Belt, number> = { white: 200, yellow: 400, green: 600, brown: 800, black: 1000 };
   const share = () => {
@@ -224,18 +230,11 @@ export function BeltEarned({ belt, pack, onClose }: { belt: Belt; pack: PackSumm
             Belt earned
           </span>
           <h2 className="d-art">{belt[0]?.toUpperCase() + belt.slice(1)} belt</h2>
-          <BigBelt belt={belt} have={0} />
+          {beltBadge ? <BadgeArt b={beltBadge} earned size={132} /> : <BigBelt belt={belt} have={0} />}
           <p>
             Five solves at {SOLVED_AT} or more{pack ? ` in ${packName(pack.number)}` : ""}.{next ? ` ${next[0]?.toUpperCase() + next.slice(1)} is next, with targets worth up to ${fmt(nextMax[next])} points.` : " That is every belt in the dojo."}
           </p>
           <span className="badge">
-            <span className="d-medal" style={{ ["--c" as string]: c.acc }}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
-                <path d="M3 10.5h6.5M14.5 10.5H21" />
-                <rect x="9.5" y="8" width="5" height="5" rx="1" fill="currentColor" />
-                <path d="M11 13l-2.5 6M13 13l2.5 6" />
-              </svg>
-            </span>
             Badge added to your profile
           </span>
           <div className="acts">
